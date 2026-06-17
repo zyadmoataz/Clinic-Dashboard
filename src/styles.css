@@ -1,3 +1,56 @@
 /* You can add global styles to this file, and also import other style files */
 
 @import 'tailwindcss';
+
+@theme {
+  /* ── Primary (Teal) ── */
+  --color-primary: #0e9488;
+  --color-primary-hover: #0b7a70;
+  --color-primary-soft: #e3f4f2;
+  --color-primary-ring: rgba(14, 148, 136, 0.3);
+  --color-on-primary: #ffffff;
+
+  /* ── Surfaces & Backgrounds ── */
+  --color-bg: #f7fafa;
+  --color-surface: #ffffff;
+  --color-surface-2: #f1f6f5;
+
+  /* ── Borders ── */
+  --color-border: #e4ecec;
+  --color-border-strong: #cbd8d6;
+
+  /* ── Text ── */
+  --color-text: #13201f;
+  --color-muted: #5f716f;
+  --color-faint: #90a09e;
+
+  /* ── Semantic ── */
+  --color-success: #2f9e6b;
+  --color-success-soft: #e4f4ec;
+  --color-warning: #c9852b;
+  --color-warning-soft: #f8eedd;
+  --color-danger: #cf4636;
+  --color-danger-soft: #fbe7e4;
+
+  /* ── Shadows ── */
+  --shadow-sm: 0 1px 2px rgba(16, 40, 38, 0.05), 0 1px 3px rgba(16, 40, 38, 0.06);
+  --shadow-md: 0 4px 14px rgba(16, 40, 38, 0.07), 0 2px 6px rgba(16, 40, 38, 0.04);
+  --shadow-lg: 0 18px 48px rgba(16, 40, 38, 0.16), 0 6px 16px rgba(16, 40, 38, 0.08);
+
+  /* ── Radii ── */
+  --radius-sm: 6px;
+  --radius: 10px;
+  --radius-lg: 14px;
+  --radius-full: 999px;
+
+  /* ── Typography ── */
+  --font-sans: "Public Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
