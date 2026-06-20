@@ -1,6 +1,26 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
+import {
+  User,
+  LoginResponse,
+  Doctor,
+  Slot,
+  DoctorAvailability,
+  Service,
+  Appointment,
+  WalkInBookingRequest,
+  RescheduleRequest,
+  VisitRecordRequest,
+  Visit,
+  Patient,
+  Staff,
+  DoctorRegisterRequest,
+  ReceptionistRegisterRequest,
+  ClinicReports,
+  DashboardStats,
+} from '../models';
 
 @Injectable({ providedIn: 'root' })
 export class ApiService {
@@ -9,142 +29,142 @@ export class ApiService {
   constructor(private http: HttpClient) {}
 
   // ── Auth ──
-  login(email: string, password: string) {
-    return this.http.post<any>(`${this.baseUrl}/auth/login`, { email, password });
+  login(email: string, password: string): Observable<LoginResponse> {
+    return this.http.post<LoginResponse>(`${this.baseUrl}/auth/login`, { email, password });
   }
 
-  getMe() {
-    return this.http.get<any>(`${this.baseUrl}/auth/me`);
+  getMe(): Observable<User> {
+    return this.http.get<User>(`${this.baseUrl}/auth/me`);
   }
 
-  updateProfile(data: any) {
-    return this.http.put<any>(`${this.baseUrl}/auth/profile`, data);
+  updateProfile(data: Partial<User>): Observable<User> {
+    return this.http.put<User>(`${this.baseUrl}/auth/profile`, data);
   }
 
   // ── Doctors ──
-  getDoctors(params?: any) {
-    return this.http.get<any>(`${this.baseUrl}/doctors`, { params });
+  getDoctors(params?: { search?: string; specialty?: string }): Observable<Doctor[]> {
+    return this.http.get<Doctor[]>(`${this.baseUrl}/doctors`, { params });
   }
 
-  getDoctorById(id: number) {
-    return this.http.get<any>(`${this.baseUrl}/doctors/${id}`);
+  getDoctorById(id: number): Observable<Doctor> {
+    return this.http.get<Doctor>(`${this.baseUrl}/doctors/${id}`);
   }
 
-  getDoctorSlots(id: number, params?: any) {
-    return this.http.get<any>(`${this.baseUrl}/doctors/${id}/slots`, { params });
+  getDoctorSlots(id: number, params?: { date?: string; serviceId?: number }): Observable<Slot[]> {
+    return this.http.get<Slot[]>(`${this.baseUrl}/doctors/${id}/slots`, { params });
   }
 
-  getDoctorAvailability(id: number) {
-    return this.http.get<any>(`${this.baseUrl}/doctors/${id}/availability`);
+  getDoctorAvailability(id: number): Observable<DoctorAvailability[]> {
+    return this.http.get<DoctorAvailability[]>(`${this.baseUrl}/doctors/${id}/availability`);
   }
 
-  setDoctorAvailability(id: number, data: any) {
-    return this.http.put<any>(`${this.baseUrl}/doctors/${id}/availability`, data);
+  setDoctorAvailability(id: number, data: DoctorAvailability[]): Observable<void> {
+    return this.http.put<void>(`${this.baseUrl}/doctors/${id}/availability`, data);
   }
 
   // ── Services ──
-  getServices() {
-    return this.http.get<any>(`${this.baseUrl}/services`);
+  getServices(): Observable<Service[]> {
+    return this.http.get<Service[]>(`${this.baseUrl}/services`);
   }
 
-  createService(data: any) {
-    return this.http.post<any>(`${this.baseUrl}/services`, data);
+  createService(data: Omit<Service, 'id'>): Observable<Service> {
+    return this.http.post<Service>(`${this.baseUrl}/services`, data);
   }
 
-  updateService(id: number, data: any) {
-    return this.http.put<any>(`${this.baseUrl}/services/${id}`, data);
+  updateService(id: number, data: Partial<Service>): Observable<Service> {
+    return this.http.put<Service>(`${this.baseUrl}/services/${id}`, data);
   }
 
-  deleteService(id: number) {
-    return this.http.delete<any>(`${this.baseUrl}/services/${id}`);
+  deleteService(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/services/${id}`);
   }
 
   // ── Appointments (Front desk) ──
-  getAppointments(params?: any) {
-    return this.http.get<any>(`${this.baseUrl}/appointments`, { params });
+  getAppointments(params?: { date?: string }): Observable<Appointment[]> {
+    return this.http.get<Appointment[]>(`${this.baseUrl}/appointments`, { params });
   }
 
-  getAppointmentById(id: number) {
-    return this.http.get<any>(`${this.baseUrl}/appointments/${id}`);
+  getAppointmentById(id: number): Observable<Appointment> {
+    return this.http.get<Appointment>(`${this.baseUrl}/appointments/${id}`);
   }
 
-  bookWalkIn(data: any) {
-    return this.http.post<any>(`${this.baseUrl}/appointments/walk-in`, data);
+  bookWalkIn(data: WalkInBookingRequest): Observable<Appointment> {
+    return this.http.post<Appointment>(`${this.baseUrl}/appointments/walk-in`, data);
   }
 
-  rescheduleAppointment(id: number, data: any) {
-    return this.http.put<any>(`${this.baseUrl}/appointments/${id}/reschedule`, data);
+  rescheduleAppointment(id: number, data: RescheduleRequest): Observable<Appointment> {
+    return this.http.put<Appointment>(`${this.baseUrl}/appointments/${id}/reschedule`, data);
   }
 
-  markArrived(id: number) {
-    return this.http.put<any>(`${this.baseUrl}/appointments/${id}/arrived`, {});
+  markArrived(id: number): Observable<Appointment> {
+    return this.http.put<Appointment>(`${this.baseUrl}/appointments/${id}/arrived`, {});
   }
 
-  markNoShow(id: number) {
-    return this.http.put<any>(`${this.baseUrl}/appointments/${id}/no-show`, {});
+  markNoShow(id: number): Observable<Appointment> {
+    return this.http.put<Appointment>(`${this.baseUrl}/appointments/${id}/no-show`, {});
   }
 
-  markCashPaid(id: number) {
-    return this.http.put<any>(`${this.baseUrl}/appointments/${id}/cash-paid`, {});
+  markCashPaid(id: number): Observable<Appointment> {
+    return this.http.put<Appointment>(`${this.baseUrl}/appointments/${id}/cash-paid`, {});
   }
 
-  cancelAppointment(id: number) {
-    return this.http.put<any>(`${this.baseUrl}/appointments/${id}/cancel`, {});
+  cancelAppointment(id: number): Observable<Appointment> {
+    return this.http.put<Appointment>(`${this.baseUrl}/appointments/${id}/cancel`, {});
   }
 
   // ── Doctor Clinical ──
-  getDoctorSchedule() {
-    return this.http.get<any>(`${this.baseUrl}/doctor/schedule`);
+  getDoctorSchedule(): Observable<Appointment[]> {
+    return this.http.get<Appointment[]>(`${this.baseUrl}/doctor/schedule`);
   }
 
-  completeAppointment(id: number) {
-    return this.http.put<any>(`${this.baseUrl}/appointments/${id}/complete`, {});
+  completeAppointment(id: number): Observable<Appointment> {
+    return this.http.put<Appointment>(`${this.baseUrl}/appointments/${id}/complete`, {});
   }
 
-  recordVisit(appointmentId: number, data: any) {
-    return this.http.post<any>(`${this.baseUrl}/appointments/${appointmentId}/visit`, data);
+  recordVisit(appointmentId: number, data: VisitRecordRequest): Observable<Visit> {
+    return this.http.post<Visit>(`${this.baseUrl}/appointments/${appointmentId}/visit`, data);
   }
 
-  getPatientHistory(patientId: number) {
-    return this.http.get<any>(`${this.baseUrl}/patients/${patientId}/history`);
+  getPatientHistory(patientId: number): Observable<Visit[]> {
+    return this.http.get<Visit[]>(`${this.baseUrl}/patients/${patientId}/history`);
   }
 
   // ── Patients ──
-  getPatients(params?: any) {
-    return this.http.get<any>(`${this.baseUrl}/patients`, { params });
+  getPatients(params?: { search?: string }): Observable<Patient[]> {
+    return this.http.get<Patient[]>(`${this.baseUrl}/patients`, { params });
   }
 
-  createPatient(data: any) {
-    return this.http.post<any>(`${this.baseUrl}/patients`, data);
+  createPatient(data: Omit<Patient, 'id'>): Observable<Patient> {
+    return this.http.post<Patient>(`${this.baseUrl}/patients`, data);
   }
 
   // ── Admin ──
-  getStaff() {
-    return this.http.get<any>(`${this.baseUrl}/admin/staff`);
+  getStaff(): Observable<Staff[]> {
+    return this.http.get<Staff[]>(`${this.baseUrl}/admin/staff`);
   }
 
-  addDoctor(data: any) {
-    return this.http.post<any>(`${this.baseUrl}/admin/doctors`, data);
+  addDoctor(data: DoctorRegisterRequest): Observable<Staff> {
+    return this.http.post<Staff>(`${this.baseUrl}/admin/doctors`, data);
   }
 
-  addReceptionist(data: any) {
-    return this.http.post<any>(`${this.baseUrl}/admin/receptionists`, data);
+  addReceptionist(data: ReceptionistRegisterRequest): Observable<Staff> {
+    return this.http.post<Staff>(`${this.baseUrl}/admin/receptionists`, data);
   }
 
-  updateStaff(id: number, data: any) {
-    return this.http.put<any>(`${this.baseUrl}/admin/staff/${id}`, data);
+  updateStaff(id: number, data: Partial<Staff>): Observable<Staff> {
+    return this.http.put<Staff>(`${this.baseUrl}/admin/staff/${id}`, data);
   }
 
-  toggleStaffActive(id: number, data: any) {
-    return this.http.put<any>(`${this.baseUrl}/admin/staff/${id}/active`, data);
+  toggleStaffActive(id: number, data: { isActive: boolean }): Observable<Staff> {
+    return this.http.put<Staff>(`${this.baseUrl}/admin/staff/${id}/active`, data);
   }
 
-  getReports() {
-    return this.http.get<any>(`${this.baseUrl}/admin/reports`);
+  getReports(): Observable<ClinicReports> {
+    return this.http.get<ClinicReports>(`${this.baseUrl}/admin/reports`);
   }
 
   // ── Dashboard ──
-  getDashboardStats() {
-    return this.http.get<any>(`${this.baseUrl}/dashboard/stats`);
+  getDashboardStats(): Observable<DashboardStats> {
+    return this.http.get<DashboardStats>(`${this.baseUrl}/dashboard/stats`);
   }
 }

@@ -1,0 +1,21 @@
+{
+  "header": {
+    "dashboard": "Dashboard",
+    "staff": "Staff",
+    "services": "Services",
+    "availability": "Availability",
+    "reports": "Reports",
+    "calendar": "Day calendar",
+    "walk_in": "Walk-in",
+    "patients": "Patients",
+    "profile": "Profile"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "subtitle": "Clinic performance at a glance.",
+    "appointments_today": "Today's appointments",
+    "confirmed": "Confirmed",
+    "checked_in": "Checked in",
+    "revenue_today": "Today's revenue"
+  }
+}

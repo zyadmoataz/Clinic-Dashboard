@@ -1,0 +1,21 @@
+{
+  "header": {
+    "dashboard": "لوحة القيادة",
+    "staff": "الموظفون",
+    "services": "الخدمات",
+    "availability": "أوقات العمل",
+    "reports": "التقارير",
+    "calendar": "جدول اليوم",
+    "walk_in": "حجز مباشر",
+    "patients": "المرضى",
+    "profile": "الملف الشخصي"
+  },
+  "dashboard": {
+    "title": "لوحة القيادة",
+    "subtitle": "أداء العيادة في لمحة.",
+    "appointments_today": "مواعيد اليوم",
+    "confirmed": "مؤكد",
+    "checked_in": "حاضر",
+    "revenue_today": "إيرادات اليوم"
+  }
+}
