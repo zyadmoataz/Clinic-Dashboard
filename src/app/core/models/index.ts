@@ -28,9 +28,10 @@ export interface Slot {
 }
 
 export interface DoctorAvailability {
-  id?: number;
-  doctorId?: number;
-  dayOfWeek: number; // 0 = Sunday, etc.
+  id: number;
+  // doctorId?: number;
+  // dayOfWeek: number; // 0 = Sunday, etc.
+  dayOfWeek: string; // e.g. Sunday, etc.
   startTime: string; // e.g. "09:00"
   endTime: string; // e.g. "17:00"
 }
@@ -40,7 +41,9 @@ export interface Service {
   name: string;
   durationMinutes: number;
   price: number;
-  isActive: boolean;
+  // isActive: boolean;
+  doctorId: string;
+  doctorName: string;
 }
 
 export interface Appointment {
