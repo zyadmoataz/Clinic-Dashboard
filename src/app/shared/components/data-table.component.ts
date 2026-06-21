@@ -4,11 +4,12 @@
 // ==========================================
 import { Component, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-data-table',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslatePipe],
   template: ` <div
     class="border-border bg-surface w-full overflow-hidden rounded-xl border shadow-sm"
   >
@@ -17,8 +18,8 @@ import { CommonModule } from '@angular/common';
         <thead class="border-border bg-surface-2 border-b">
           <tr>
             @for (column of columns(); track column) {
-              <th class="text-muted px-6 py-3 font-medium">
-                {{ column }}
+              <th class="text-muted px-6 py-3 text-center font-medium">
+                {{ column | translate }}
               </th>
             }
           </tr>
@@ -27,7 +28,7 @@ import { CommonModule } from '@angular/common';
           @for (row of data(); track $index) {
             <tr class="bg-surface hover:bg-surface-2 transition-colors">
               @for (cell of row; track $index) {
-                <td class="px-6 py-4">
+                <td class="px-6 py-4 text-center">
                   {{ cell }}
                 </td>
               }

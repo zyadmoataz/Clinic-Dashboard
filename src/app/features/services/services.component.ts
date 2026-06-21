@@ -10,40 +10,45 @@ import {
   FeedbackStatesComponent,
 } from '../../shared/components';
 import { LoadingComponent } from '../../shared/components/loading.component';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-services',
   standalone: true,
-  imports: [DataTableComponent, FeedbackStatesComponent, ButtonComponent, LoadingComponent],
+  imports: [
+    DataTableComponent,
+    FeedbackStatesComponent,
+    ButtonComponent,
+    LoadingComponent,
+    TranslatePipe,
+  ],
   template: `
-    <div class="p-6">
-      <div class="flex items-center justify-between">
-        <h1 class="text-3xl font-bold">Services</h1>
-        <app-button> + Add Service </app-button>
-      </div>
-
-      <p class="text-muted mb-5">Bookable services per doctor.</p>
-
-      @if (loadingStatus()) {
-        <app-loading />
-      }
-
-      @if (!loadingStatus() && servicesArr().length === 0) {
-        <app-feedback-states />
-      }
-
-      @if (errMsg()) {
-        <div
-          class="border-danger bg-danger-soft text-danger rounded-xl border p-4 text-center font-medium"
-        >
-          {{ errMsg() }}
-        </div>
-      }
-
-      @if (!loadingStatus() && !errMsg() && servicesArr().length > 0) {
-        <app-data-table [columns]="tableColumns" [data]="tableData()" />
-      }
+    <div class="flex items-center justify-between">
+      <h1 class="text-3xl font-bold">{{ 'header.services' | translate }}</h1>
+      <app-button> + {{ 'services.add' | translate }} </app-button>
     </div>
+
+    <p class="text-muted mb-5 text-xs md:text-sm">{{ 'services.subtitle' | translate }}</p>
+
+    @if (loadingStatus()) {
+      <app-loading />
+    }
+
+    @if (!loadingStatus() && servicesArr().length === 0) {
+      <app-feedback-states />
+    }
+
+    @if (errMsg()) {
+      <div
+        class="border-danger bg-danger-soft text-danger rounded-xl border p-4 text-center font-medium"
+      >
+        {{ errMsg() | translate }}
+      </div>
+    }
+
+    @if (!loadingStatus() && !errMsg() && servicesArr().length > 0) {
+      <app-data-table [columns]="tableColumns" [data]="tableData()" />
+    }
   `,
 })
 export class ServicesComponent {
@@ -53,7 +58,12 @@ export class ServicesComponent {
   loadingStatus = signal(true);
   errMsg = signal<string | null>(null);
 
-  tableColumns = ['Name', 'Doctor', 'Duration', 'Price'];
+  tableColumns = [
+    'services.columns.name',
+    'services.columns.doctor',
+    'services.columns.duration',
+    'services.columns.price',
+  ];
 
   tableData = computed(() =>
     this.servicesArr().map((ser) => [
@@ -78,7 +88,7 @@ export class ServicesComponent {
         this.loadingStatus.set(false);
       },
       error: () => {
-        this.errMsg.set('Failed to load services');
+        this.errMsg.set('services.load_failed');
         this.loadingStatus.set(false);
       },
     });
