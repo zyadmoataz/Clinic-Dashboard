@@ -17,5 +17,25 @@
     "confirmed": "مؤكد",
     "checked_in": "حاضر",
     "revenue_today": "إيرادات اليوم"
+  },
+  "services": {
+    "subtitle": "الخدمات القابلة للحجز لكل طبيب.",
+    "add": "إضافة خدمة",
+    "load_failed": "فشل تحميل الخدمات",
+    "columns": {
+      "name": "اسم الخدمة",
+      "doctor": "اسم الطبيب",
+      "duration": "مدة الخدمة",
+      "price": "سعر الخدمة",
+      "actions": "تعديل/حذف خدمة"
+    },
+    "delete_modal": {
+      "title": "حذف خدمة",
+      "message": "هل أنت متأكد من حذف هذه الخدمة؟",
+      "delete": "حذف",
+      "cancel": "إلغاء",
+      "delete_failed": "فشل حذف الخدمة",
+      "delete_success": "تم حذف الخدمة بنجاح"
+    }
   }
 }

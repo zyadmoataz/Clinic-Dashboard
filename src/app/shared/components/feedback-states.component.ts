@@ -11,10 +11,10 @@ import { CommonModule } from '@angular/common';
   imports: [CommonModule],
   template: `
     <div
-      class="flex flex-col items-center justify-center rounded-xl border border-gray-200 bg-gray-50 p-12 text-center"
+      class="border-border bg-surface flex flex-col items-center justify-center rounded-xl border p-12 text-center"
     >
-      <div class="mb-4 rounded-full bg-blue-100 p-4">
-        <svg class="h-8 w-8 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <div class="bg-primary-soft text-primary mb-4 rounded-full p-4">
+        <svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path
             stroke-linecap="round"
             stroke-linejoin="round"
@@ -23,8 +23,8 @@ import { CommonModule } from '@angular/common';
           />
         </svg>
       </div>
-      <h3 class="text-lg font-bold text-gray-900">No Data</h3>
-      <p class="mt-1 max-w-sm text-sm text-gray-500">There is nothing to display here yet.</p>
+      <h3 class="text-text text-lg font-bold">No Data</h3>
+      <p class="text-muted mt-1 max-w-sm text-sm">There is nothing to display here yet.</p>
     </div>
   `,
 })

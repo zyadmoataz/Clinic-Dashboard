@@ -17,5 +17,25 @@
     "confirmed": "Confirmed",
     "checked_in": "Checked in",
     "revenue_today": "Today's revenue"
+  },
+  "services": {
+    "subtitle": "Bookable services per doctor.",
+    "add": "Add Service",
+    "load_failed": "Failed to load services",
+    "columns": {
+      "name": "Service Name",
+      "doctor": "Doctor Name",
+      "duration": "Service Duration",
+      "price": "Service Price",
+      "actions": "Edit/Delete Service"
+    },
+    "delete_modal": {
+      "title": "Delete Service",
+      "message": "Are you sure you want to delete this service?",
+      "delete": "Delete",
+      "cancel": "Cancel",
+      "delete_failed": "Failed to delete service",
+      "delete_success": "Service deleted successfully"
+    }
   }
 }
