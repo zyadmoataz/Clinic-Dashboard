@@ -10,7 +10,7 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule],
   template: `
-    <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+    <!-- <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
       <div class="w-full max-w-md rounded-xl bg-white p-6 shadow-xl">
         <h2 class="mb-4 text-xl font-bold">Modal Title</h2>
         <p>Modal content goes here.</p>
@@ -19,6 +19,12 @@ import { CommonModule } from '@angular/common';
             Close
           </button>
         </div>
+      </div>
+    </div>-->
+
+    <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+      <div class="bg-surface border-border w-full max-w-md rounded-xl border p-6 shadow-xl">
+        <ng-content />
       </div>
     </div>
   `,

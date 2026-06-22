@@ -2,14 +2,15 @@
 // OWNER: Doaa, Helda
 // PURPOSE: Shared UI Component
 // ==========================================
-import { Component, input } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
+import { TableActionsComponent } from './table-actions.component';
 
 @Component({
   selector: 'app-data-table',
   standalone: true,
-  imports: [CommonModule, TranslatePipe],
+  imports: [CommonModule, TranslatePipe, TableActionsComponent],
   template: ` <div
     class="border-border bg-surface w-full overflow-hidden rounded-xl border shadow-sm"
   >
@@ -25,13 +26,23 @@ import { TranslatePipe } from '@ngx-translate/core';
           </tr>
         </thead>
         <tbody class="divide-border divide-y">
-          @for (row of data(); track $index) {
+          <!--  @for (row of data(); track $index) {-->
+          @for (row of data(); track row.id) {
             <tr class="bg-surface hover:bg-surface-2 transition-colors">
-              @for (cell of row; track $index) {
+              <!-- @for (cell of row; track $index) {-->
+              @for (cell of row.cells; track $index) {
                 <td class="px-6 py-4 text-center">
                   {{ cell }}
                 </td>
               }
+
+              <td class="px-6 py-4">
+                <app-table-actions
+                  [showView]="false"
+                  [showEdit]="false"
+                  (delete)="deleteClicked.emit(row.id)"
+                />
+              </td>
             </tr>
           }
         </tbody>
@@ -41,5 +52,12 @@ import { TranslatePipe } from '@ngx-translate/core';
 })
 export class DataTableComponent {
   columns = input.required<string[]>();
-  data = input.required<(string | number)[][]>();
+  data = input.required<
+    {
+      id: number;
+      cells: (string | number)[];
+    }[]
+  >();
+
+  deleteClicked = output<number>();
 }

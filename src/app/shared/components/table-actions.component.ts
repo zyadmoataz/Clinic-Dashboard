@@ -36,7 +36,8 @@ import { LucideAngularModule } from 'lucide-angular';
           class="text-danger hover:bg-danger-soft rounded p-1 transition-colors"
           title="Delete"
         >
-          <lucide-icon name="trash" class="h-4 w-4"></lucide-icon>
+          <!-- <lucide-icon name="trash" class="h-4 w-4"></lucide-icon>-->
+          Delete
         </button>
       }
     </div>
