@@ -16,6 +16,7 @@ import { CommonModule } from '@angular/common';
         customClass()
       }}"
       (click)="onClick($event)"
+      [type]="type()"
     >
       <ng-content></ng-content>
     </button>
@@ -25,6 +26,7 @@ export class ButtonComponent {
   disabled = input<boolean>(false);
   customClass = input<string>('');
   clicked = output<MouseEvent>();
+  type = input<'button' | 'submit'>('button');
 
   onClick(event: MouseEvent) {
     if (!this.disabled()) {
