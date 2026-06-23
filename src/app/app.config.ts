@@ -29,6 +29,9 @@ import {
   Inbox,
   AlertCircle,
   FileSearch,
+  Eye,
+  Edit,
+  Trash,
 } from 'lucide-angular';
 
 import { routes } from './app.routes';
@@ -68,6 +71,9 @@ export const appConfig: ApplicationConfig = {
         Inbox,
         AlertCircle,
         FileSearch,
+        Eye,
+        Edit,
+        Trash,
       }),
     ),
   ],

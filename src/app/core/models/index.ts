@@ -11,15 +11,37 @@ export interface LoginResponse {
   user: User;
 }
 
+export interface PaginatedDoctorsResponse {
+  items: Doctor[];
+  page: number;
+  pageSize: number;
+  total: number;
+}
+
 export interface Doctor {
-  id: number;
+  // id: number;
+  id: string;
   displayName: string;
-  specialty: string;
-  email: string;
+  // specialty: string;
+  specialization: string;
+  // email: string;
+  photoUrl: string | null;
+  bio: string | null;
+  services: Service[];
   rating: number;
   reviewCount: number;
   yearsExperience: number;
-  isActive: boolean;
+  // isActive: boolean;
+}
+
+export interface getDoctorsParams {
+  search?: string;
+  specialization?: string;
+  serviceId?: number;
+  availableOn?: string;
+  mode?: string;
+  page?: number;
+  pageSize?: number;
 }
 
 export interface Slot {

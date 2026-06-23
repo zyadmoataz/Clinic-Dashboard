@@ -20,6 +20,8 @@ import {
   ReceptionistRegisterRequest,
   ClinicReports,
   DashboardStats,
+  getDoctorsParams,
+  PaginatedDoctorsResponse,
 } from '../models';
 
 @Injectable({ providedIn: 'root' })
@@ -42,8 +44,14 @@ export class ApiService {
   }
 
   // ── Doctors ──
-  getDoctors(params?: { search?: string; specialty?: string }): Observable<Doctor[]> {
-    return this.http.get<Doctor[]>(`${this.baseUrl}/doctors`, { params });
+  // getDoctors(params?: { search?: string; specialty?: string }): Observable<Doctor[]> {
+  //   return this.http.get<Doctor[]>(`${this.baseUrl}/doctors`, { params });
+  // }
+
+  getDoctors(params?: getDoctorsParams): Observable<PaginatedDoctorsResponse> {
+    return this.http.get<PaginatedDoctorsResponse>(`${this.baseUrl}/doctors`, {
+      params: params as Record<string, string | number | boolean>,
+    });
   }
 
   getDoctorById(id: number): Observable<Doctor> {

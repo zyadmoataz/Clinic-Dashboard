@@ -3,7 +3,7 @@
 // ==========================================
 import { Component, computed, inject, signal } from '@angular/core';
 import { ApiService } from '../../core/services/api.service';
-import { Service } from '../../core/models';
+import { Doctor, Service } from '../../core/models';
 import {
   ButtonComponent,
   DataTableComponent,
@@ -13,6 +13,7 @@ import {
 import { LoadingComponent } from '../../shared/components/loading.component';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ToastService } from '../../core/services/toast.service';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-services',
@@ -24,11 +25,14 @@ import { ToastService } from '../../core/services/toast.service';
     LoadingComponent,
     TranslatePipe,
     ModalComponent,
+    ReactiveFormsModule,
   ],
   template: `
     <div class="flex items-center justify-between">
       <h1 class="text-3xl font-bold">{{ 'header.services' | translate }}</h1>
-      <app-button> + {{ 'services.add' | translate }} </app-button>
+      <app-button type="button" (clicked)="openCreateModal()">
+        + {{ 'services.add' | translate }}
+      </app-button>
     </div>
 
     <p class="text-muted mb-5 text-xs md:text-sm">{{ 'services.subtitle' | translate }}</p>
@@ -54,7 +58,148 @@ import { ToastService } from '../../core/services/toast.service';
         [columns]="tableColumns"
         [data]="tableData()"
         (deleteClicked)="onDeleteClicked($event)"
+        (editClicked)="onEditClicked($event)"
       />
+    }
+
+    @if (showCreateModal()) {
+      <app-modal>
+        <h2 class="text-text mb-4 text-xl font-bold">
+          {{
+            isEditMode()
+              ? ('services.edit_modal.title' | translate)
+              : ('services.create_modal.title' | translate)
+          }}
+        </h2>
+
+        <form [formGroup]="createServiceForm" (ngSubmit)="submitService()" class="space-y-4">
+          <div>
+            <label class="mb-1 block text-sm font-medium">
+              {{ 'services.create_modal.name' | translate }}
+            </label>
+
+            <input type="text" formControlName="name" class="w-full rounded-lg border p-2" />
+
+            @if (
+              createServiceForm.controls.name.touched &&
+              createServiceForm.controls.name.hasError('required')
+            ) {
+              <p class="text-danger mt-1 text-sm">
+                {{ 'services.create_modal.name_required' | translate }}
+              </p>
+            }
+
+            @if (
+              createServiceForm.controls.name.touched &&
+              createServiceForm.controls.name.hasError('minlength')
+            ) {
+              <p class="text-danger mt-1 text-sm">
+                {{ 'services.create_modal.name_min' | translate }}
+              </p>
+            }
+          </div>
+
+          <div>
+            <label class="mb-1 block text-sm font-medium">
+              {{ 'services.create_modal.duration' | translate }}
+            </label>
+
+            <input
+              type="number"
+              formControlName="durationMinutes"
+              class="w-full rounded-lg border p-2"
+            />
+
+            @if (
+              createServiceForm.controls.durationMinutes.touched &&
+              createServiceForm.controls.durationMinutes.hasError('required')
+            ) {
+              <p class="text-danger mt-1 text-sm">
+                {{ 'services.create_modal.duration_required' | translate }}
+              </p>
+            }
+
+            @if (
+              createServiceForm.controls.durationMinutes.touched &&
+              createServiceForm.controls.durationMinutes.hasError('min')
+            ) {
+              <p class="text-danger mt-1 text-sm">
+                {{ 'services.create_modal.duration_min' | translate }}
+              </p>
+            }
+          </div>
+
+          <div>
+            <label class="mb-1 block text-sm font-medium">
+              {{ 'services.create_modal.price' | translate }}
+            </label>
+
+            <input type="number" formControlName="price" class="w-full rounded-lg border p-2" />
+
+            @if (
+              createServiceForm.controls.price.touched &&
+              createServiceForm.controls.price.hasError('required')
+            ) {
+              <p class="text-danger mt-1 text-sm">
+                {{ 'services.create_modal.price_required' | translate }}
+              </p>
+            }
+
+            @if (
+              createServiceForm.controls.price.touched &&
+              createServiceForm.controls.price.hasError('min')
+            ) {
+              <p class="text-danger mt-1 text-sm">
+                {{ 'services.create_modal.price_min' | translate }}
+              </p>
+            }
+          </div>
+          <div>
+            <label class="mb-1 block text-sm font-medium">
+              {{ 'services.create_modal.doctor' | translate }}
+            </label>
+
+            <select formControlName="doctorId" class="w-full rounded-lg border p-2">
+              <option value="">Select Doctor</option>
+
+              @for (doctor of doctorsArr(); track doctor.id) {
+                <option [value]="doctor.id">
+                  {{ doctor.displayName }}
+                </option>
+              }
+            </select>
+
+            @if (
+              createServiceForm.controls.doctorId.touched &&
+              createServiceForm.controls.doctorId.hasError('required')
+            ) {
+              <p class="text-danger mt-1 text-sm">
+                {{ 'services.create_modal.doctor_required' | translate }}
+              </p>
+            }
+          </div>
+
+          <div class="flex justify-end gap-2 pt-4">
+            <app-button
+              type="button"
+              (clicked)="closeCreateModal()"
+              customClass="bg-slate-500 hover:bg-slate-400"
+            >
+              {{ 'services.create_modal.cancel' | translate }}
+            </app-button>
+
+            <app-button type="submit" [disabled]="createServiceLoading()">
+              {{
+                createServiceLoading()
+                  ? ('services.load' | translate)
+                  : isEditMode()
+                    ? ('services.edit_modal.edit' | translate)
+                    : ('services.create_modal.create' | translate)
+              }}
+            </app-button>
+          </div>
+        </form>
+      </app-modal>
     }
 
     @if (showDeleteModal()) {
@@ -69,11 +214,16 @@ import { ToastService } from '../../core/services/toast.service';
         </p>
 
         <div class="flex justify-end gap-2">
-          <app-button (clicked)="closeDeleteModal()">
+          <app-button
+            type="button"
+            (clicked)="closeDeleteModal()"
+            customClass="bg-surface-2 text-text border border-border hover:bg-slate-200"
+          >
             {{ 'services.delete_modal.cancel' | translate }}
           </app-button>
 
           <app-button
+            type="button"
             customClass="bg-red-600 hover:bg-red-700 text-white"
             (clicked)="confirmDelete()"
           >
@@ -90,12 +240,28 @@ export class ServicesComponent {
   translateService = inject(TranslateService);
 
   servicesArr = signal<Service[]>([]);
+  doctorsArr = signal<Doctor[]>([]);
 
   loadingStatus = signal<boolean>(true);
   errMsg = signal<string | null>(null);
 
+  createServiceLoading = signal<boolean>(false);
+
   selectedService = signal<Service | null>(null);
   showDeleteModal = signal<boolean>(false);
+  showCreateModal = signal<boolean>(false);
+
+  isEditMode = signal<boolean>(false);
+  editingService = signal<Service | null>(null);
+
+  fb = inject(FormBuilder);
+
+  createServiceForm = this.fb.group({
+    name: ['', [Validators.required, Validators.minLength(2)]],
+    durationMinutes: [30, [Validators.required, Validators.min(30)]],
+    price: [50, [Validators.required, Validators.min(50)]],
+    doctorId: ['', Validators.required],
+  });
 
   tableColumns = [
     'services.columns.name',
@@ -114,6 +280,7 @@ export class ServicesComponent {
 
   constructor() {
     this.loadServices();
+    this.loadDoctors();
   }
 
   loadServices() {
@@ -132,6 +299,18 @@ export class ServicesComponent {
     });
   }
 
+  loadDoctors() {
+    this.apiService.getDoctors().subscribe({
+      next: (resp) => {
+        // console.log('Doctors API Response:', resp.items);
+        this.doctorsArr.set(resp.items);
+      },
+      error: (err) => {
+        // console.error(err);
+      },
+    });
+  }
+
   openDeleteModal(currentService: Service) {
     this.selectedService.set(currentService);
     this.showDeleteModal.set(true);
@@ -140,6 +319,29 @@ export class ServicesComponent {
   closeDeleteModal() {
     this.showDeleteModal.set(false);
     this.selectedService.set(null);
+  }
+
+  openCreateModal() {
+    this.showCreateModal.set(true);
+  }
+
+  closeCreateModal() {
+    this.showCreateModal.set(false);
+    this.resetForm();
+  }
+
+  openEditModal(service: Service) {
+    this.isEditMode.set(true);
+    this.editingService.set(service);
+
+    this.createServiceForm.patchValue({
+      name: service.name,
+      durationMinutes: service.durationMinutes,
+      price: service.price,
+      doctorId: service.doctorId,
+    });
+
+    this.showCreateModal.set(true);
   }
 
   confirmDelete() {
@@ -167,5 +369,70 @@ export class ServicesComponent {
     const service = this.servicesArr().find((s) => s.id === id) ?? null;
     if (!service) return;
     this.openDeleteModal(service);
+  }
+
+  onEditClicked(id: number) {
+    const service = this.servicesArr().find((s) => s.id === id);
+    if (!service) return;
+
+    this.openEditModal(service);
+  }
+
+  submitService() {
+    if (this.createServiceForm.invalid) {
+      this.createServiceForm.markAllAsTouched();
+      return;
+    }
+
+    const formValue = this.createServiceForm.getRawValue();
+
+    this.createServiceLoading.set(true);
+
+    const request = this.isEditMode()
+      ? this.apiService.updateService(this.editingService()!.id, {
+          name: formValue.name!,
+          durationMinutes: formValue.durationMinutes!,
+          price: formValue.price!,
+        })
+      : this.apiService.createService({
+          name: formValue.name!,
+          durationMinutes: formValue.durationMinutes!,
+          price: formValue.price!,
+          doctorId: formValue.doctorId!,
+        });
+
+    request.subscribe({
+      next: (resp) => {
+        if (this.isEditMode()) {
+          this.servicesArr.update((arr) => arr.map((s) => (s.id === resp.id ? resp : s)));
+          this.toastService.success('Service updated successfully');
+        } else {
+          this.servicesArr.update((arr) => [...arr, resp]);
+          this.toastService.success('Service created successfully');
+        }
+
+        this.closeCreateModal();
+        this.resetForm();
+
+        this.createServiceLoading.set(false);
+      },
+
+      error: () => {
+        this.toastService.error('Add/Edit Service failed');
+        this.createServiceLoading.set(false);
+      },
+    });
+  }
+
+  resetForm() {
+    this.createServiceForm.reset({
+      name: '',
+      durationMinutes: 30,
+      price: 50,
+      doctorId: '',
+    });
+
+    this.isEditMode.set(false);
+    this.editingService.set(null);
   }
 }

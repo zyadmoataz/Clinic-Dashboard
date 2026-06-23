@@ -22,6 +22,7 @@
     "subtitle": "Bookable services per doctor.",
     "add": "Add Service",
     "load_failed": "Failed to load services",
+    "load": "loading...",
     "columns": {
       "name": "Service Name",
       "doctor": "Doctor Name",
@@ -36,6 +37,35 @@
       "cancel": "Cancel",
       "delete_failed": "Failed to delete service",
       "delete_success": "Service deleted successfully"
+    },
+    "create_modal": {
+      "title": "Create Service",
+      "name": "Service Name",
+      "doctor": "Doctor Name",
+      "duration": "Service Duration (in Minutes)",
+      "price": "Service Price",
+      "create": "Create",
+      "cancel": "Cancel",
+
+      "name_required": "Service name is required",
+      "name_min": "Service name must be at least 2 characters",
+
+      "doctor_required": "Doctor is required",
+
+      "duration_required": "Duration is required",
+      "duration_min": "Duration must be at least 30 min.",
+
+      "price_required": "Price is required",
+      "price_min": "Price must be at least 50",
+
+      "select_doctor": "Select Doctor",
+
+      "create_success": "Service created successfully",
+      "create_failed": "Failed to create service"
+    },
+    "edit_modal": {
+      "title": "Edit Service",
+      "edit": "Edit"
     }
   }
 }
