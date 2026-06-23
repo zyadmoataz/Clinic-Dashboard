@@ -22,7 +22,7 @@
     "subtitle": "Bookable services per doctor.",
     "add": "Add Service",
     "load_failed": "Failed to load services",
-    "load":"loading...",
+    "load": "loading...",
     "columns": {
       "name": "Service Name",
       "doctor": "Doctor Name",
@@ -62,6 +62,10 @@
 
       "create_success": "Service created successfully",
       "create_failed": "Failed to create service"
+    },
+    "edit_modal": {
+      "title": "Edit Service",
+      "edit": "Edit"
     }
   }
 }

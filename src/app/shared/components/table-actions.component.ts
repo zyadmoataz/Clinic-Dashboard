@@ -11,7 +11,7 @@ import { LucideAngularModule } from 'lucide-angular';
   standalone: true,
   imports: [CommonModule, LucideAngularModule],
   template: `
-    <div class="flex items-center justify-end gap-2">
+    <div class="flex items-center justify-center gap-2">
       @if (showView()) {
         <button
           (click)="view.emit()"
@@ -24,7 +24,7 @@ import { LucideAngularModule } from 'lucide-angular';
       @if (showEdit()) {
         <button
           (click)="edit.emit()"
-          class="text-primary hover:bg-primary-soft rounded p-1 transition-colors"
+          class="text-warning hover:bg-warning-soft rounded p-1 transition-colors"
           title="Edit"
         >
           <lucide-icon name="edit" class="h-4 w-4"></lucide-icon>
@@ -36,8 +36,7 @@ import { LucideAngularModule } from 'lucide-angular';
           class="text-danger hover:bg-danger-soft rounded p-1 transition-colors"
           title="Delete"
         >
-          <!-- <lucide-icon name="trash" class="h-4 w-4"></lucide-icon>-->
-          Delete
+          <lucide-icon name="trash" class="h-4 w-4"></lucide-icon>
         </button>
       }
     </div>

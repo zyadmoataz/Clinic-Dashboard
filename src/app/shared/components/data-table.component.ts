@@ -39,7 +39,8 @@ import { TableActionsComponent } from './table-actions.component';
               <td class="px-6 py-4">
                 <app-table-actions
                   [showView]="false"
-                  [showEdit]="false"
+                  [showEdit]="true"
+                  (edit)="editClicked.emit(row.id)"
                   (delete)="deleteClicked.emit(row.id)"
                 />
               </td>
@@ -60,4 +61,5 @@ export class DataTableComponent {
   >();
 
   deleteClicked = output<number>();
+  editClicked = output<number>();
 }

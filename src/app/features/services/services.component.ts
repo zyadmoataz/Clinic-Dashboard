@@ -30,7 +30,9 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
   template: `
     <div class="flex items-center justify-between">
       <h1 class="text-3xl font-bold">{{ 'header.services' | translate }}</h1>
-      <app-button (clicked)="openCreateModal()"> + {{ 'services.add' | translate }} </app-button>
+      <app-button type="button" (clicked)="openCreateModal()">
+        + {{ 'services.add' | translate }}
+      </app-button>
     </div>
 
     <p class="text-muted mb-5 text-xs md:text-sm">{{ 'services.subtitle' | translate }}</p>
@@ -56,14 +58,21 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
         [columns]="tableColumns"
         [data]="tableData()"
         (deleteClicked)="onDeleteClicked($event)"
+        (editClicked)="onEditClicked($event)"
       />
     }
 
     @if (showCreateModal()) {
       <app-modal>
-        <h2 class="text-text mb-4 text-xl font-bold">Create Service</h2>
+        <h2 class="text-text mb-4 text-xl font-bold">
+          {{
+            isEditMode()
+              ? ('services.edit_modal.title' | translate)
+              : ('services.create_modal.title' | translate)
+          }}
+        </h2>
 
-        <form [formGroup]="createServiceForm" (ngSubmit)="submitCreateService()" class="space-y-4">
+        <form [formGroup]="createServiceForm" (ngSubmit)="submitService()" class="space-y-4">
           <div>
             <label class="mb-1 block text-sm font-medium">
               {{ 'services.create_modal.name' | translate }}
@@ -171,7 +180,11 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
           </div>
 
           <div class="flex justify-end gap-2 pt-4">
-            <app-button type="button" (clicked)="closeCreateModal()">
+            <app-button
+              type="button"
+              (clicked)="closeCreateModal()"
+              customClass="bg-slate-500 hover:bg-slate-400"
+            >
               {{ 'services.create_modal.cancel' | translate }}
             </app-button>
 
@@ -179,7 +192,9 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
               {{
                 createServiceLoading()
                   ? ('services.load' | translate)
-                  : ('services.create_modal.create' | translate)
+                  : isEditMode()
+                    ? ('services.edit_modal.edit' | translate)
+                    : ('services.create_modal.create' | translate)
               }}
             </app-button>
           </div>
@@ -199,11 +214,16 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
         </p>
 
         <div class="flex justify-end gap-2">
-          <app-button (clicked)="closeDeleteModal()">
+          <app-button
+            type="button"
+            (clicked)="closeDeleteModal()"
+            customClass="bg-surface-2 text-text border border-border hover:bg-slate-200"
+          >
             {{ 'services.delete_modal.cancel' | translate }}
           </app-button>
 
           <app-button
+            type="button"
             customClass="bg-red-600 hover:bg-red-700 text-white"
             (clicked)="confirmDelete()"
           >
@@ -230,6 +250,9 @@ export class ServicesComponent {
   selectedService = signal<Service | null>(null);
   showDeleteModal = signal<boolean>(false);
   showCreateModal = signal<boolean>(false);
+
+  isEditMode = signal<boolean>(false);
+  editingService = signal<Service | null>(null);
 
   fb = inject(FormBuilder);
 
@@ -304,6 +327,21 @@ export class ServicesComponent {
 
   closeCreateModal() {
     this.showCreateModal.set(false);
+    this.resetForm();
+  }
+
+  openEditModal(service: Service) {
+    this.isEditMode.set(true);
+    this.editingService.set(service);
+
+    this.createServiceForm.patchValue({
+      name: service.name,
+      durationMinutes: service.durationMinutes,
+      price: service.price,
+      doctorId: service.doctorId,
+    });
+
+    this.showCreateModal.set(true);
   }
 
   confirmDelete() {
@@ -333,50 +371,68 @@ export class ServicesComponent {
     this.openDeleteModal(service);
   }
 
-  submitCreateService() {
+  onEditClicked(id: number) {
+    const service = this.servicesArr().find((s) => s.id === id);
+    if (!service) return;
+
+    this.openEditModal(service);
+  }
+
+  submitService() {
     if (this.createServiceForm.invalid) {
       this.createServiceForm.markAllAsTouched();
       return;
     }
 
-    this.createServiceLoading.set(true);
-
     const formValue = this.createServiceForm.getRawValue();
 
-    this.apiService
-      .createService({
-        name: formValue.name!,
-        durationMinutes: formValue.durationMinutes!,
-        price: formValue.price!,
-        doctorId: formValue.doctorId!,
-      })
-      .subscribe({
-        next: (createdService) => {
-          this.servicesArr.update((arr) => [...arr, createdService]);
+    this.createServiceLoading.set(true);
 
-          this.toastService.success(
-            this.translateService.instant('services.create_modal.create_success'),
-          );
+    const request = this.isEditMode()
+      ? this.apiService.updateService(this.editingService()!.id, {
+          name: formValue.name!,
+          durationMinutes: formValue.durationMinutes!,
+          price: formValue.price!,
+        })
+      : this.apiService.createService({
+          name: formValue.name!,
+          durationMinutes: formValue.durationMinutes!,
+          price: formValue.price!,
+          doctorId: formValue.doctorId!,
+        });
 
-          this.createServiceForm.reset({
-            name: '',
-            durationMinutes: 30,
-            price: 50,
-            doctorId: '',
-          });
+    request.subscribe({
+      next: (resp) => {
+        if (this.isEditMode()) {
+          this.servicesArr.update((arr) => arr.map((s) => (s.id === resp.id ? resp : s)));
+          this.toastService.success('Service updated successfully');
+        } else {
+          this.servicesArr.update((arr) => [...arr, resp]);
+          this.toastService.success('Service created successfully');
+        }
 
-          this.closeCreateModal();
+        this.closeCreateModal();
+        this.resetForm();
 
-          this.createServiceLoading.set(false);
-        },
+        this.createServiceLoading.set(false);
+      },
 
-        error: () => {
-          this.toastService.error(
-            this.translateService.instant('services.create_modal.create_failed'),
-          );
+      error: () => {
+        this.toastService.error('Add/Edit Service failed');
+        this.createServiceLoading.set(false);
+      },
+    });
+  }
 
-          this.createServiceLoading.set(false);
-        },
-      });
+  resetForm() {
+    this.createServiceForm.reset({
+      name: '',
+      durationMinutes: 30,
+      price: 50,
+      doctorId: '',
+    });
+
+    this.isEditMode.set(false);
+    this.editingService.set(null);
   }
 }
