@@ -14,6 +14,7 @@ import { LoadingComponent } from '../../shared/components/loading.component';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ToastService } from '../../core/services/toast.service';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-services',
@@ -26,6 +27,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
     TranslatePipe,
     ModalComponent,
     ReactiveFormsModule,
+    CommonModule,
   ],
   template: `
     <div class="flex items-center justify-between">
@@ -159,8 +161,14 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
               {{ 'services.create_modal.doctor' | translate }}
             </label>
 
-            <select formControlName="doctorId" class="w-full rounded-lg border p-2">
-              <option value="">Select Doctor</option>
+            <select
+              formControlName="doctorId"
+              class="bg-surface text-text w-full rounded-lg border p-2"
+              [ngClass]="{
+                'cursor-not-allowed opacity-70': isEditMode(),
+              }"
+            >
+              <option value="" disabled selected>--Select Doctor--</option>
 
               @for (doctor of doctorsArr(); track doctor.id) {
                 <option [value]="doctor.id">
@@ -342,6 +350,7 @@ export class ServicesComponent {
     });
 
     this.showCreateModal.set(true);
+    this.createServiceForm.controls.doctorId.disable();
   }
 
   confirmDelete() {
@@ -434,5 +443,6 @@ export class ServicesComponent {
 
     this.isEditMode.set(false);
     this.editingService.set(null);
+    this.createServiceForm.controls.doctorId.enable();
   }
 }
