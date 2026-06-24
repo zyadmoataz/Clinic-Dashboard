@@ -17,12 +17,12 @@ import { CommonModule } from '@angular/common';
         [value]="selectedValue()"
         (change)="onChange($event)"
       >
-        <option value="" disabled selected>
+        <option value="" disabled>
           {{ placeholder() }}
         </option>
 
         @for (item of options(); track item[valueKey()]) {
-          <option [value]="item[valueKey()]">
+          <option [value]="item[valueKey()]" [selected]="item[valueKey()] === selectedValue()">
             {{ item[labelKey()] }}
           </option>
         }
