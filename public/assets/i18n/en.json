@@ -67,5 +67,13 @@
       "title": "Edit Service",
       "edit": "Edit"
     }
+  },
+  "availability": {
+    "subtitle": "Working hours and blocked days.",
+    "select_doctor": "Select Doctor"
+  },
+  "feedback": {
+    "no_data_title": "No Data",
+    "no_data_description": "There is nothing to display here yet."
   }
 }

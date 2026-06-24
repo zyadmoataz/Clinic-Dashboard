@@ -2,7 +2,7 @@
 // OWNER: Othman, Omar, Doaa, Helda
 // PURPOSE: Shared UI Component
 // ==========================================
-import { Component } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -12,13 +12,16 @@ import { CommonModule } from '@angular/common';
   template: `
     <div class="mb-8 flex items-center justify-between">
       <div>
-        <h1 class="text-2xl font-bold text-gray-900">Page Title</h1>
-        <p class="mt-1 text-sm text-gray-500">Page description goes here.</p>
+        <h1 class="text-3xl font-bold">{{ title() }}</h1>
+        <p class="text-muted mb-5 text-xs md:text-sm">{{ description() }}</p>
       </div>
       <div class="flex gap-2">
-        <!-- Actions go here -->
+        <ng-content></ng-content>
       </div>
     </div>
   `,
 })
-export class PageHeaderComponent {}
+export class PageHeaderComponent {
+  title = input<string>('Page Title');
+  description = input<string>('Page description goes here.');
+}
