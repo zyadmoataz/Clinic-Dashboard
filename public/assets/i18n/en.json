@@ -75,6 +75,10 @@
     "blocked_days": "Blocked Days",
     "no_working_hours": "No available working hours.",
     "no_blocked_days": "No blocked days.",
+    "add_blocked_date": "Add Blocked Date",
+    "create_blocked_date_success": "Blocked date added successfully.",
+    "create_blocked_date_failed": "Failed to add blocked date.",
+    "date_already_blocked": "This date is already blocked.",
     "delete_modal": {
       "title": "Delete Blocked Date",
       "message": "Are you sure you want to remove this blocked date?",

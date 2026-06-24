@@ -85,6 +85,19 @@ import { LucideAngularModule } from 'lucide-angular';
               />
             }
 
+            <div class="mb-4 flex flex-col gap-3 sm:flex-row">
+              <input
+                type="date"
+                [value]="newBlockedDate()"
+                (input)="newBlockedDate.set($any($event.target).value)"
+                class="border-border bg-surface flex-1 rounded-lg border px-3 py-2"
+              />
+
+              <app-button (clicked)="createBlockedDate()" [disabled]="!newBlockedDate()">
+                {{ 'availability.add_blocked_date' | translate }}
+              </app-button>
+            </div>
+
             <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
               @for (item of blockedDatesArr(); track item.id) {
                 <div
@@ -151,6 +164,7 @@ export class AvailabilityComponent {
   doctorsArr = signal<Doctor[]>([]);
   availabilityArr = signal<DoctorAvailability[]>([]);
   blockedDatesArr = signal<BlockedDate[]>([]);
+  newBlockedDate = signal<string>('');
 
   selectedDoctor = signal<Doctor | null>(null);
   selectedBlockedDate = signal<BlockedDate | null>(null);
@@ -245,6 +259,37 @@ export class AvailabilityComponent {
       error: () => {
         this.toastService.error(
           this.translateService.instant('availability.delete_modal.delete_failed'),
+        );
+      },
+    });
+  }
+
+  createBlockedDate() {
+    const doctor = this.selectedDoctor();
+    const date = this.newBlockedDate();
+
+    if (!doctor || !date) return;
+
+    this.apiService.createDoctorBlockedDate(doctor.id, { date }).subscribe({
+      next: (resp) => {
+        this.blockedDatesArr.update((arr) => [...arr, resp]);
+
+        this.newBlockedDate.set('');
+
+        this.toastService.success(
+          this.translateService.instant('availability.create_blocked_date_success'),
+        );
+      },
+      error: (err) => {
+        if (err.status === 409) {
+          this.toastService.error(
+            this.translateService.instant('availability.date_already_blocked'),
+          );
+          return;
+        }
+
+        this.toastService.error(
+          this.translateService.instant('availability.create_blocked_date_failed'),
         );
       },
     });
