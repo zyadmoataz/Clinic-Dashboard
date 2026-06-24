@@ -83,6 +83,7 @@
     "save_changes": "Save Changes",
     "availability_updated": "Availability updated successfully.",
     "availability_update_failed": "Failed to update availability.",
+    "select_day": "Select Day",
     "delete_modal": {
       "title": "Delete Blocked Date",
       "message": "Are you sure you want to remove this blocked date?",

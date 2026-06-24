@@ -64,17 +64,14 @@ import { LucideAngularModule } from 'lucide-angular';
           } @else {
             @for (item of editableAvailabilityArr(); track $index) {
               <div class="mb-3 flex items-center gap-3">
-                <select
-                  class="border-border rounded border px-2 py-1"
-                  [value]="item.dayOfWeek"
-                  (change)="updateDay($index, $any($event.target).value)"
-                >
-                  @for (day of daysOfWeek; track day) {
-                    <option [value]="day">
-                      {{ day }}
-                    </option>
-                  }
-                </select>
+                <app-select
+                  [options]="dayOptions"
+                  labelKey="label"
+                  valueKey="value"
+                  [selectedValue]="item.dayOfWeek"
+                  [placeholder]="'availability.select_day' | translate"
+                  (valueChange)="updateDay($index, $event)"
+                ></app-select>
 
                 <input
                   type="time"
@@ -219,6 +216,11 @@ export class AvailabilityComponent {
   }
 
   daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+  dayOptions = this.daysOfWeek.map((day) => ({
+    label: day,
+    value: day,
+  }));
 
   loadDoctors() {
     this.apiService.getDoctors().subscribe({
