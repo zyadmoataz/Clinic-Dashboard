@@ -4,11 +4,12 @@
 // ==========================================
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-feedback-states',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslatePipe],
   template: `
     <div
       class="border-border bg-surface flex flex-col items-center justify-center rounded-xl border p-12 text-center"
@@ -23,8 +24,10 @@ import { CommonModule } from '@angular/common';
           />
         </svg>
       </div>
-      <h3 class="text-text text-lg font-bold">No Data</h3>
-      <p class="text-muted mt-1 max-w-sm text-sm">There is nothing to display here yet.</p>
+      <h3 class="text-text text-lg font-bold">{{ 'feedback.no_data_title' | translate }}</h3>
+      <p class="text-muted mt-1 max-w-sm text-sm">
+        {{ 'feedback.no_data_description' | translate }}
+      </p>
     </div>
   `,
 })

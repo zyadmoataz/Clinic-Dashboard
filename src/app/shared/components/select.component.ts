@@ -2,7 +2,7 @@
 // OWNER: Zyad (Maintainer) & All Developers (Consumers)
 // PURPOSE: Shared UI Component
 // ==========================================
-import { Component } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -12,13 +12,34 @@ import { CommonModule } from '@angular/common';
   template: `
     <div class="w-full">
       <select
-        class="flex h-10 w-full appearance-none rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
+        class="text-text bg-surface focus:border-primary focus:ring-primary mb-5 flex h-10 w-full rounded-lg border px-3 py-2 text-sm focus:ring-1 focus:outline-none"
+        [disabled]="disabled()"
+        (change)="onChange($event)"
       >
-        <option value="" disabled hidden>Select an option</option>
-        <option value="1">Option 1</option>
-        <option value="2">Option 2</option>
+        <option value="" disabled selected>
+          {{ placeholder() }}
+        </option>
+
+        @for (item of options(); track item[valueKey()]) {
+          <option [value]="item[valueKey()]">
+            {{ item[labelKey()] }}
+          </option>
+        }
       </select>
     </div>
   `,
 })
-export class SelectComponent {}
+export class SelectComponent {
+  options = input<any[]>([]);
+  labelKey = input<string>('label');
+  valueKey = input<string>('value');
+  placeholder = input<string>('Select an option');
+  disabled = input<boolean>(false);
+
+  valueChange = output<string>();
+
+  onChange(event: Event) {
+    const value = (event.target as HTMLSelectElement).value;
+    this.valueChange.emit(value);
+  }
+}

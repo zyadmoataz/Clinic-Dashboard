@@ -9,11 +9,13 @@ import {
   DataTableComponent,
   FeedbackStatesComponent,
   ModalComponent,
+  PageHeaderComponent,
 } from '../../shared/components';
 import { LoadingComponent } from '../../shared/components/loading.component';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ToastService } from '../../core/services/toast.service';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-services',
@@ -26,16 +28,18 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
     TranslatePipe,
     ModalComponent,
     ReactiveFormsModule,
+    CommonModule,
+    PageHeaderComponent,
   ],
   template: `
-    <div class="flex items-center justify-between">
-      <h1 class="text-3xl font-bold">{{ 'header.services' | translate }}</h1>
+    <app-page-header
+      [title]="'header.services' | translate"
+      [description]="'services.subtitle' | translate"
+    >
       <app-button type="button" (clicked)="openCreateModal()">
         + {{ 'services.add' | translate }}
       </app-button>
-    </div>
-
-    <p class="text-muted mb-5 text-xs md:text-sm">{{ 'services.subtitle' | translate }}</p>
+    </app-page-header>
 
     @if (loadingStatus()) {
       <app-loading />
@@ -159,8 +163,16 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
               {{ 'services.create_modal.doctor' | translate }}
             </label>
 
-            <select formControlName="doctorId" class="w-full rounded-lg border p-2">
-              <option value="">Select Doctor</option>
+            <select
+              formControlName="doctorId"
+              class="bg-surface text-text w-full rounded-lg border p-2"
+              [ngClass]="{
+                'cursor-not-allowed opacity-70': isEditMode(),
+              }"
+            >
+              <option value="" disabled selected>
+                {{ 'services.create_modal.select_doctor' | translate }}
+              </option>
 
               @for (doctor of doctorsArr(); track doctor.id) {
                 <option [value]="doctor.id">
@@ -288,8 +300,8 @@ export class ServicesComponent {
     this.errMsg.set(null);
 
     this.apiService.getServices().subscribe({
-      next: (data) => {
-        this.servicesArr.set(data);
+      next: (resp) => {
+        this.servicesArr.set(resp);
         this.loadingStatus.set(false);
       },
       error: () => {
@@ -302,11 +314,7 @@ export class ServicesComponent {
   loadDoctors() {
     this.apiService.getDoctors().subscribe({
       next: (resp) => {
-        // console.log('Doctors API Response:', resp.items);
         this.doctorsArr.set(resp.items);
-      },
-      error: (err) => {
-        // console.error(err);
       },
     });
   }
@@ -342,6 +350,7 @@ export class ServicesComponent {
     });
 
     this.showCreateModal.set(true);
+    this.createServiceForm.controls.doctorId.disable();
   }
 
   confirmDelete() {
@@ -434,5 +443,6 @@ export class ServicesComponent {
 
     this.isEditMode.set(false);
     this.editingService.set(null);
+    this.createServiceForm.controls.doctorId.enable();
   }
 }

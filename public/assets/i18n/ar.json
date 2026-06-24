@@ -67,5 +67,14 @@
       "title": "تعديل خدمة",
       "edit": "تعديل"
     }
+  },
+  "availability": {
+    "subtitle": "ساعات العمل والأيام المحظورة.",
+    "select_doctor": "اختر طبيب"
+  },
+
+  "feedback": {
+    "no_data_title": "لا توجد بيانات",
+    "no_data_description": "لا يوجد أي محتوى لعرضه حالياً."
   }
 }
