@@ -70,7 +70,11 @@
   },
   "availability": {
     "subtitle": "ساعات العمل والأيام المحظورة.",
-    "select_doctor": "اختر طبيب"
+    "select_doctor": "اختر طبيب",
+    "working_hours": "ساعات العمل",
+    "blocked_days": "الأيام المحظورة",
+    "no_working_hours": "لا توجد ساعات عمل متاحة.",
+    "no_blocked_days": "لا توجد أيام محظورة."
   },
 
   "feedback": {

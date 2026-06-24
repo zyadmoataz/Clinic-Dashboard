@@ -70,7 +70,11 @@
   },
   "availability": {
     "subtitle": "Working hours and blocked days.",
-    "select_doctor": "Select Doctor"
+    "select_doctor": "Select Doctor",
+    "working_hours": "Working Hours",
+    "blocked_days": "Blocked Days",
+    "no_working_hours": "No available working hours.",
+    "no_blocked_days": "No blocked days."
   },
   "feedback": {
     "no_data_title": "No Data",

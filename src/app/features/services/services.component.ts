@@ -229,7 +229,7 @@ import { CommonModule } from '@angular/common';
           <app-button
             type="button"
             (clicked)="closeDeleteModal()"
-            customClass="bg-surface-2 text-text border border-border hover:bg-slate-200"
+            customClass="bg-slate-500 hover:bg-slate-400"
           >
             {{ 'services.delete_modal.cancel' | translate }}
           </app-button>
