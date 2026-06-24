@@ -48,25 +48,64 @@ import { LucideAngularModule } from 'lucide-angular';
 
     @if (selectedDoctor()) {
       <div class="mt-6 flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
-        <section class="bg-surface flex-1 rounded-xl p-4">
-          <h2 class="mb-3 text-lg font-semibold">{{ 'availability.working_hours' | translate }}</h2>
+        <section class="bg-surface flex-1 rounded-xl p-4 text-center">
+          <div class="mb-4 flex flex-col text-center sm:flex-row sm:justify-between">
+            <h2 class="mb-3 text-lg font-semibold">
+              {{ 'availability.working_hours' | translate }}
+            </h2>
+
+            <app-button (clicked)="addAvailabilityRow()">
+              + {{ 'availability.add_day' | translate }}
+            </app-button>
+          </div>
 
           @if (loadingAvailStatus()) {
             <app-loading />
           } @else {
-            @if (availabilityArr().length === 0) {
+            @for (item of editableAvailabilityArr(); track $index) {
+              <div class="mb-3 flex items-center gap-3">
+                <select
+                  class="border-border rounded border px-2 py-1"
+                  [value]="item.dayOfWeek"
+                  (change)="updateDay($index, $any($event.target).value)"
+                >
+                  @for (day of daysOfWeek; track day) {
+                    <option [value]="day">
+                      {{ day }}
+                    </option>
+                  }
+                </select>
+
+                <input
+                  type="time"
+                  [value]="item.startTime"
+                  (input)="updateStartTime($index, $any($event.target).value)"
+                  class="border-border rounded border px-2 py-1"
+                />
+
+                <input
+                  type="time"
+                  [value]="item.endTime"
+                  (input)="updateEndTime($index, $any($event.target).value)"
+                  class="border-border rounded border px-2 py-1"
+                />
+
+                <button type="button" (click)="removeAvailability($index)" class="text-danger">
+                  <lucide-icon name="trash"></lucide-icon>
+                </button>
+              </div>
+            }
+
+            @if (availabilityArr().length === 0 && editableAvailabilityArr().length === 0) {
               <app-feedback-states
                 [showIcon]="false"
                 titleKey=""
                 descriptionKey="availability.no_working_hours"
               />
-            }
-
-            @for (item of availabilityArr(); track item.id) {
-              <div class="flex gap-2">
-                <span>{{ item.dayOfWeek }}</span>
-                <span>{{ item.startTime }} - {{ item.endTime }}</span>
-              </div>
+            } @else {
+              <app-button (clicked)="saveAvailability()">
+                {{ 'availability.save_changes' | translate }}
+              </app-button>
             }
           }
         </section>
@@ -77,15 +116,7 @@ import { LucideAngularModule } from 'lucide-angular';
           @if (loadingBlockedStatus()) {
             <app-loading />
           } @else {
-            @if (blockedDatesArr().length === 0) {
-              <app-feedback-states
-                [showIcon]="false"
-                titleKey=""
-                descriptionKey="availability.no_blocked_days"
-              />
-            }
-
-            <div class="mb-4 flex flex-col gap-3 sm:flex-row">
+            <div class="mb-4 flex flex-col gap-3 text-center sm:flex-row">
               <input
                 type="date"
                 [value]="newBlockedDate()"
@@ -94,9 +125,17 @@ import { LucideAngularModule } from 'lucide-angular';
               />
 
               <app-button (clicked)="createBlockedDate()" [disabled]="!newBlockedDate()">
-                {{ 'availability.add_blocked_date' | translate }}
+                + {{ 'availability.add_blocked_date' | translate }}
               </app-button>
             </div>
+
+            @if (blockedDatesArr().length === 0) {
+              <app-feedback-states
+                [showIcon]="false"
+                titleKey=""
+                descriptionKey="availability.no_blocked_days"
+              />
+            }
 
             <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
               @for (item of blockedDatesArr(); track item.id) {
@@ -164,6 +203,7 @@ export class AvailabilityComponent {
   doctorsArr = signal<Doctor[]>([]);
   availabilityArr = signal<DoctorAvailability[]>([]);
   blockedDatesArr = signal<BlockedDate[]>([]);
+  editableAvailabilityArr = signal<DoctorAvailability[]>([]);
   newBlockedDate = signal<string>('');
 
   selectedDoctor = signal<Doctor | null>(null);
@@ -177,6 +217,8 @@ export class AvailabilityComponent {
   constructor() {
     this.loadDoctors();
   }
+
+  daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
   loadDoctors() {
     this.apiService.getDoctors().subscribe({
@@ -207,6 +249,7 @@ export class AvailabilityComponent {
       next: (resp) => {
         this.availabilityArr.set(resp);
         this.loadingAvailStatus.set(false);
+        this.editableAvailabilityArr.set([...resp]);
       },
       error: () => {
         this.availabilityArr.set([]);
@@ -290,6 +333,69 @@ export class AvailabilityComponent {
 
         this.toastService.error(
           this.translateService.instant('availability.create_blocked_date_failed'),
+        );
+      },
+    });
+  }
+
+  updateDay(index: number, day: string) {
+    this.editableAvailabilityArr.update((arr) => {
+      arr[index].dayOfWeek = day;
+      return [...arr];
+    });
+  }
+
+  updateStartTime(index: number, time: string) {
+    this.editableAvailabilityArr.update((arr) => {
+      arr[index].startTime = time;
+      return [...arr];
+    });
+  }
+
+  updateEndTime(index: number, time: string) {
+    this.editableAvailabilityArr.update((arr) => {
+      arr[index].endTime = time;
+      return [...arr];
+    });
+  }
+
+  removeAvailability(index: number) {
+    this.editableAvailabilityArr.update((arr) => arr.filter((_, i) => i !== index));
+  }
+
+  addAvailabilityRow() {
+    this.editableAvailabilityArr.update((arr) => [
+      ...arr,
+      {
+        id: 0,
+        dayOfWeek: 'Sunday',
+        startTime: '09:00',
+        endTime: '17:00',
+      },
+    ]);
+  }
+
+  saveAvailability() {
+    const doctor = this.selectedDoctor();
+
+    if (!doctor) return;
+
+    const payload = this.editableAvailabilityArr().map((item) => ({
+      dayOfWeek: item.dayOfWeek,
+      startTime: item.startTime,
+      endTime: item.endTime,
+    }));
+
+    this.apiService.setDoctorAvailability(doctor.id, payload).subscribe({
+      next: () => {
+        this.toastService.success(
+          this.translateService.instant('availability.availability_updated'),
+        );
+        this.loadAvailability(doctor.id);
+      },
+      error: () => {
+        this.toastService.error(
+          this.translateService.instant('availability.availability_update_failed'),
         );
       },
     });

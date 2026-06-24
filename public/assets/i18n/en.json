@@ -79,6 +79,10 @@
     "create_blocked_date_success": "Blocked date added successfully.",
     "create_blocked_date_failed": "Failed to add blocked date.",
     "date_already_blocked": "This date is already blocked.",
+    "add_day": "Add Day",
+    "save_changes": "Save Changes",
+    "availability_updated": "Availability updated successfully.",
+    "availability_update_failed": "Failed to update availability.",
     "delete_modal": {
       "title": "Delete Blocked Date",
       "message": "Are you sure you want to remove this blocked date?",
