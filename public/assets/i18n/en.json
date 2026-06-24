@@ -74,7 +74,15 @@
     "working_hours": "Working Hours",
     "blocked_days": "Blocked Days",
     "no_working_hours": "No available working hours.",
-    "no_blocked_days": "No blocked days."
+    "no_blocked_days": "No blocked days.",
+    "delete_modal": {
+      "title": "Delete Blocked Date",
+      "message": "Are you sure you want to remove this blocked date?",
+      "delete": "Delete",
+      "cancel": "Cancel",
+      "delete_success": "Blocked date removed successfully",
+      "delete_failed": "Failed to remove blocked date"
+    }
   },
   "feedback": {
     "no_data_title": "No Data",

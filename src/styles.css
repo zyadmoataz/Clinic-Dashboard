@@ -11,6 +11,10 @@
   --color-primary-ring: rgba(37, 99, 235, 0.3);
   --color-on-primary: #ffffff;
 
+  /* ── Secondary ── */
+  --color-secondary: #64748b;
+  --color-secondary-hover: #94a3b8;
+
   /* ── Surfaces & Backgrounds ── */
   --color-bg: #f8fafc;
   --color-surface: #ffffff;
@@ -31,6 +35,7 @@
   --color-warning: #f59e0b;
   --color-warning-soft: #fffbeb;
   --color-danger: #ef4444;
+  --color-danger-hover: #b91c1c;
   --color-danger-soft: #fef2f2;
 
   /* ── Shadows (Premium Depth) ── */

@@ -74,7 +74,15 @@
     "working_hours": "ساعات العمل",
     "blocked_days": "الأيام المحظورة",
     "no_working_hours": "لا توجد ساعات عمل متاحة.",
-    "no_blocked_days": "لا توجد أيام محظورة."
+    "no_blocked_days": "لا توجد أيام محظورة.",
+    "delete_modal": {
+      "title": "حذف اليوم المحظور",
+      "message": "هل أنت متأكد من إزالة هذا اليوم المحظور؟",
+      "delete": "حذف",
+      "cancel": "إلغاء",
+      "delete_success": "تم حذف اليوم المحظور بنجاح",
+      "delete_failed": "فشل حذف اليوم المحظور"
+    }
   },
 
   "feedback": {
