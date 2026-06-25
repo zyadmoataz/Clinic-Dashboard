@@ -14,14 +14,15 @@ import { CommonModule } from '@angular/common';
       <select
         class="text-text bg-surface focus:border-primary focus:ring-primary mb-5 flex h-10 w-full rounded-lg border px-3 py-2 text-sm focus:ring-1 focus:outline-none"
         [disabled]="disabled()"
+        [value]="selectedValue()"
         (change)="onChange($event)"
       >
-        <option value="" disabled selected>
+        <option value="" disabled>
           {{ placeholder() }}
         </option>
 
         @for (item of options(); track item[valueKey()]) {
-          <option [value]="item[valueKey()]">
+          <option [value]="item[valueKey()]" [selected]="item[valueKey()] === selectedValue()">
             {{ item[labelKey()] }}
           </option>
         }
@@ -37,6 +38,7 @@ export class SelectComponent {
   disabled = input<boolean>(false);
 
   valueChange = output<string>();
+  selectedValue = input<string>('');
 
   onChange(event: Event) {
     const value = (event.target as HTMLSelectElement).value;

@@ -68,6 +68,11 @@ export interface Service {
   doctorName: string;
 }
 
+export interface BlockedDate {
+  id: number;
+  date: string;
+}
+
 export interface Appointment {
   id: number;
   doctorId: number;

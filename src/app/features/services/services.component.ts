@@ -195,7 +195,7 @@ import { CommonModule } from '@angular/common';
             <app-button
               type="button"
               (clicked)="closeCreateModal()"
-              customClass="bg-slate-500 hover:bg-slate-400"
+              customClass="bg-secondary hover:bg-secondary-hover text-white h-10 px-4 py-2"
             >
               {{ 'services.create_modal.cancel' | translate }}
             </app-button>
@@ -229,14 +229,14 @@ import { CommonModule } from '@angular/common';
           <app-button
             type="button"
             (clicked)="closeDeleteModal()"
-            customClass="bg-surface-2 text-text border border-border hover:bg-slate-200"
+            customClass="bg-secondary hover:bg-secondary-hover text-white h-10 px-4 py-2"
           >
             {{ 'services.delete_modal.cancel' | translate }}
           </app-button>
 
           <app-button
             type="button"
-            customClass="bg-red-600 hover:bg-red-700 text-white"
+            customClass="bg-danger hover:bg-danger-hover text-white h-10 px-4 py-2"
             (clicked)="confirmDelete()"
           >
             {{ 'services.delete_modal.delete' | translate }}

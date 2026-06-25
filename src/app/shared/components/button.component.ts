@@ -12,7 +12,7 @@ import { CommonModule } from '@angular/common';
   template: `
     <button
       [disabled]="disabled()"
-      class="inline-flex h-10 px-4 py-2 items-center justify-center rounded-lg bg-primary text-sm font-medium text-white transition-colors hover:bg-blue-700 disabled:opacity-50 {{
+      class="inline-flex cursor-pointer items-center justify-center rounded-lg text-sm font-medium transition-all disabled:cursor-not-allowed disabled:opacity-50 {{
         customClass()
       }}"
       (click)="onClick($event)"
@@ -24,7 +24,7 @@ import { CommonModule } from '@angular/common';
 })
 export class ButtonComponent {
   disabled = input<boolean>(false);
-  customClass = input<string>('');
+  customClass = input<string>('bg-primary text-white hover:bg-primary-hover h-10 px-4 py-2');
   clicked = output<MouseEvent>();
   type = input<'button' | 'submit'>('button');
 

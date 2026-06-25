@@ -22,6 +22,7 @@ import {
   DashboardStats,
   getDoctorsParams,
   PaginatedDoctorsResponse,
+  BlockedDate,
 } from '../models';
 
 @Injectable({ providedIn: 'root' })
@@ -76,6 +77,18 @@ export class ApiService {
 
   setDoctorAvailability(id: string, data: Array<Omit<DoctorAvailability, 'id'>>): Observable<void> {
     return this.http.put<void>(`${this.baseUrl}/doctors/${id}/availability`, data);
+  }
+
+  getDoctorBlockedDates(id: string): Observable<BlockedDate[]> {
+    return this.http.get<BlockedDate[]>(`${this.baseUrl}/doctors/${id}/blocked-dates`);
+  }
+
+  createDoctorBlockedDate(id: string, data: Omit<BlockedDate, 'id'>): Observable<BlockedDate> {
+    return this.http.post<BlockedDate>(`${this.baseUrl}/doctors/${id}/blocked-dates`, data);
+  }
+
+  deleteDoctorBlockedDate(id: string, date: string): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/doctors/${id}/blocked-dates/${date}`);
   }
 
   // ── Services ──
