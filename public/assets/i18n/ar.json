@@ -94,6 +94,46 @@
     }
   },
 
+  "calendar": {
+    "subtitle": "المواعيد المجدولة لليوم المحدد.",
+    "pick_date": "اختر التاريخ",
+    "appointments": "موعد",
+    "new_walk_in": "حجز مباشر جديد",
+    "load_failed": "فشل تحميل المواعيد",
+    "empty_title": "لا توجد مواعيد",
+    "empty_description": "لا توجد مواعيد محجوزة لهذا اليوم.",
+    "unknown_patient": "مريض غير معروف",
+    "unknown_doctor": "طبيب غير معروف",
+    "unknown_service": "خدمة غير معروفة",
+    "status": {
+      "PendingPayment": "بانتظار الدفع",
+      "Confirmed": "مؤكد",
+      "Arrived": "حاضر",
+      "Completed": "مكتمل",
+      "NoShow": "لم يحضر",
+      "Cancelled": "ملغى"
+    }
+  },
+  "walk_in": {
+    "subtitle": "تسجيل حجز مباشر من مكتب الاستقبال.",
+    "patient_details": "بيانات المريض",
+    "booking_details": "تفاصيل الحجز",
+    "patient_name": "اسم المريض",
+    "patient_phone": "رقم الهاتف",
+    "doctor": "الطبيب",
+    "service": "الخدمة",
+    "date": "التاريخ",
+    "time_slot": "الوقت",
+    "select_doctor": "اختر طبيب",
+    "select_service": "اختر خدمة",
+    "pick_doctor_first": "اختر طبيباً وتاريخاً لعرض الأوقات المتاحة.",
+    "no_slots": "لا توجد أوقات متاحة لهذا الاختيار.",
+    "book": "تأكيد الحجز",
+    "saving": "جاري الحجز...",
+    "book_success": "تم الحجز المباشر بنجاح!",
+    "book_failed": "فشل الحجز المباشر.",
+    "load_doctors_failed": "فشل تحميل الأطباء."
+  },
   "feedback": {
     "no_data_title": "لا توجد بيانات",
     "no_data_description": "لا يوجد أي محتوى لعرضه حالياً."
