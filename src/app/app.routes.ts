@@ -27,6 +27,7 @@ export const routes: Routes = [
             loadComponent: () =>
               import('./features/staff/staff.component').then((m) => m.StaffComponent),
           },
+
           {
             path: 'services',
             loadComponent: () =>

@@ -2,7 +2,7 @@
 // OWNER: Omar, Helda
 // PURPOSE: Shared UI Component
 // ==========================================
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -19,4 +19,11 @@ import { CommonModule } from '@angular/common';
     </div>
   `,
 })
-export class SearchInputComponent {}
+export class SearchInputComponent {
+  @Output() search = new EventEmitter<string>();
+
+  onSearch(event: Event): void {
+    const value = (event.target as HTMLInputElement).value;
+    this.search.emit(value);
+  }
+}
