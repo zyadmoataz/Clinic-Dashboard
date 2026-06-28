@@ -6,14 +6,13 @@ export const authGuard: CanActivateFn = (route, state) => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
-  // STARTING TEMPLATE: We bypass the guard so you can see the dashboard UI.
-  // TODO (Zyad): Once login is implemented, change this back to check authService.isAuthenticated()
-  return true;
-
-  /*
   if (authService.isAuthenticated()) {
-    return true;
+    const user = authService.currentUser();
+    if (user && user.role.toLowerCase() !== 'patient') {
+      return true;
+    }
+    // If authenticated but it's a patient, log them out or just redirect to login
+    authService.logout();
   }
-  return router.createUrlTree(['/staff/auth']);
-  */
+  return router.createUrlTree(['/staff/login']);
 };

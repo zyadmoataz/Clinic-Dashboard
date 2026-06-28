@@ -8,8 +8,9 @@ export const routes: Routes = [
     path: 'staff',
     children: [
       {
-        path: 'auth',
-        loadComponent: () => import('./features/auth/auth.component').then((m) => m.AuthComponent),
+        path: 'login',
+        loadComponent: () =>
+          import('./features/login/login.component').then((m) => m.LoginComponent),
       },
       {
         path: '',
@@ -21,6 +22,11 @@ export const routes: Routes = [
             path: 'dashboard',
             loadComponent: () =>
               import('./features/dashboard/dashboard.component').then((m) => m.DashboardComponent),
+          },
+          {
+            path: 'schedule',
+            loadComponent: () =>
+              import('./features/schedule/schedule.component').then((m) => m.ScheduleComponent),
           },
           {
             path: 'staff',

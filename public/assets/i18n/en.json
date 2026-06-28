@@ -93,6 +93,46 @@
       "delete_failed": "Failed to remove blocked date"
     }
   },
+  "calendar": {
+    "subtitle": "Appointments scheduled for the selected day.",
+    "pick_date": "Select date",
+    "appointments": "appointments",
+    "new_walk_in": "New Walk-in",
+    "load_failed": "Failed to load appointments",
+    "empty_title": "No appointments",
+    "empty_description": "There are no appointments booked for this day.",
+    "unknown_patient": "Unknown patient",
+    "unknown_doctor": "Unknown doctor",
+    "unknown_service": "Unknown service",
+    "status": {
+      "PendingPayment": "Pending Payment",
+      "Confirmed": "Confirmed",
+      "Arrived": "Arrived",
+      "Completed": "Completed",
+      "NoShow": "No Show",
+      "Cancelled": "Cancelled"
+    }
+  },
+  "walk_in": {
+    "subtitle": "Register a front-desk walk-in booking.",
+    "patient_details": "Patient Details",
+    "booking_details": "Booking Details",
+    "patient_name": "Patient Name",
+    "patient_phone": "Phone Number",
+    "doctor": "Doctor",
+    "service": "Service",
+    "date": "Date",
+    "time_slot": "Time Slot",
+    "select_doctor": "Select Doctor",
+    "select_service": "Select Service",
+    "pick_doctor_first": "Select a doctor and date to view available slots.",
+    "no_slots": "No available slots for this selection.",
+    "book": "Book Walk-in",
+    "saving": "Booking...",
+    "book_success": "Walk-in booked successfully!",
+    "book_failed": "Failed to book walk-in.",
+    "load_doctors_failed": "Failed to load doctors."
+  },
   "feedback": {
     "no_data_title": "No Data",
     "no_data_description": "There is nothing to display here yet."
