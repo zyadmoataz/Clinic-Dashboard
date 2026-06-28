@@ -4,6 +4,9 @@
       <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Patients</h1>
       <p class="mt-1 text-sm text-gray-500">Register and search patients.</p>
     </div>
+    <app-button (clicked)="toggleForm()">
+      {{ showForm ? 'Cancel' : '+ Add patient' }}
+    </app-button>
   </div>
 
   <div class="mb-6">
