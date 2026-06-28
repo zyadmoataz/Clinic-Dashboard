@@ -23,6 +23,7 @@ import {
   getDoctorsParams,
   PaginatedDoctorsResponse,
   BlockedDate,
+  RegisterRequest,
 } from '../models';
 
 @Injectable({ providedIn: 'root' })
@@ -45,9 +46,6 @@ export class ApiService {
   }
 
   // ── Doctors ──
-  // getDoctors(params?: { search?: string; specialty?: string }): Observable<Doctor[]> {
-  //   return this.http.get<Doctor[]>(`${this.baseUrl}/doctors`, { params });
-  // }
 
   getDoctors(params?: getDoctorsParams): Observable<PaginatedDoctorsResponse> {
     return this.http.get<PaginatedDoctorsResponse>(`${this.baseUrl}/doctors`, {
@@ -63,17 +61,9 @@ export class ApiService {
     return this.http.get<Slot[]>(`${this.baseUrl}/doctors/${id}/slots`, { params });
   }
 
-  // getDoctorAvailability(id: number): Observable<DoctorAvailability[]> {
-  //   return this.http.get<DoctorAvailability[]>(`${this.baseUrl}/doctors/${id}/availability`);
-  // }
-
   getDoctorAvailability(id: string): Observable<DoctorAvailability[]> {
     return this.http.get<DoctorAvailability[]>(`${this.baseUrl}/doctors/${id}/availability`);
   }
-
-  // setDoctorAvailability(id: number, data: DoctorAvailability[]): Observable<void> {
-  //   return this.http.put<void>(`${this.baseUrl}/doctors/${id}/availability`, data);
-  // }
 
   setDoctorAvailability(id: string, data: Array<Omit<DoctorAvailability, 'id'>>): Observable<void> {
     return this.http.put<void>(`${this.baseUrl}/doctors/${id}/availability`, data);
@@ -96,17 +86,9 @@ export class ApiService {
     return this.http.get<Service[]>(`${this.baseUrl}/services`);
   }
 
-  // createService(data: Omit<Service, 'id'>): Observable<Service> {
-  //   return this.http.post<Service>(`${this.baseUrl}/services`, data);
-  // }
-
   createService(data: Omit<Service, 'id' | 'doctorName'>): Observable<Service> {
     return this.http.post<Service>(`${this.baseUrl}/services`, data);
   }
-
-  // updateService(id: number, data: Partial<Service>): Observable<Service> {
-  //   return this.http.put<Service>(`${this.baseUrl}/services/${id}`, data);
-  // }
 
   updateService(
     id: number,

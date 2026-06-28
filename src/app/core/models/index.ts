@@ -11,6 +11,13 @@ export interface LoginResponse {
   user: User;
 }
 
+export interface RegisterRequest {
+  displayName: string;
+  email: string;
+  phone: string;
+  password: string;
+}
+
 export interface PaginatedDoctorsResponse {
   items: Doctor[];
   page: number;
@@ -19,19 +26,15 @@ export interface PaginatedDoctorsResponse {
 }
 
 export interface Doctor {
-  // id: number;
   id: string;
   displayName: string;
-  // specialty: string;
   specialization: string;
-  // email: string;
   photoUrl: string | null;
   bio: string | null;
   services: Service[];
   rating: number;
   reviewCount: number;
   yearsExperience: number;
-  // isActive: boolean;
 }
 
 export interface getDoctorsParams {
@@ -51,8 +54,6 @@ export interface Slot {
 
 export interface DoctorAvailability {
   id: number;
-  // doctorId?: number;
-  // dayOfWeek: number; // 0 = Sunday, etc.
   dayOfWeek: string; // e.g. Sunday, etc.
   startTime: string; // e.g. "09:00"
   endTime: string; // e.g. "17:00"
@@ -63,7 +64,6 @@ export interface Service {
   name: string;
   durationMinutes: number;
   price: number;
-  // isActive: boolean;
   doctorId: string;
   doctorName: string;
 }

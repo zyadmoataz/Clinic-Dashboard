@@ -4,11 +4,11 @@
 @import 'ngx-toastr/toastr';
 
 @theme {
-  /* ── Primary (Medical Blue) ── */
-  --color-primary: #2563eb;
-  --color-primary-hover: #1d4ed8;
+  /* ── Primary (Vibrant Premium Blue) ── */
+  --color-primary: #3b82f6;
+  --color-primary-hover: #2563eb;
   --color-primary-soft: #eff6ff;
-  --color-primary-ring: rgba(37, 99, 235, 0.3);
+  --color-primary-ring: rgba(59, 130, 246, 0.3);
   --color-on-primary: #ffffff;
 
   /* ── Secondary ── */
@@ -40,9 +40,10 @@
 
   /* ── Shadows (Premium Depth) ── */
   --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.05), 0 1px 3px rgba(15, 23, 42, 0.06);
-  --shadow-md: 0 4px 14px rgba(15, 23, 42, 0.04), 0 2px 6px rgba(15, 23, 42, 0.02);
+  --shadow-md: 0 4px 14px rgba(15, 23, 42, 0.06), 0 2px 6px rgba(15, 23, 42, 0.04);
   --shadow-lg: 0 20px 40px rgba(15, 23, 42, 0.08), 0 8px 16px rgba(15, 23, 42, 0.04);
-  --shadow-glow: 0 0 20px rgba(37, 99, 235, 0.15);
+  --shadow-glow: 0 0 20px rgba(59, 130, 246, 0.25);
+  --shadow-glow-soft: 0 0 10px rgba(59, 130, 246, 0.15);
 
   /* ── Radii ── */
   --radius-sm: 8px;
@@ -66,6 +67,25 @@ html {
   scrollbar-gutter: stable;
 }
 
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-border-strong);
+  border-radius: var(--radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-muted);
+}
+
 .dark {
   --color-bg: #020617;
   --color-surface: #0f172a;
@@ -75,10 +95,18 @@ html {
   --color-text: #f8fafc;
   --color-muted: #94a3b8;
   --color-faint: #64748b;
-  --color-primary-soft: rgba(37, 99, 235, 0.15);
+  --color-primary-soft: rgba(59, 130, 246, 0.15);
   --color-success-soft: rgba(16, 185, 129, 0.15);
   --color-warning-soft: rgba(245, 158, 11, 0.15);
   --color-danger-soft: rgba(239, 68, 68, 0.15);
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: var(--color-border-strong);
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: var(--color-muted);
 }
 
 @utility container-main {
@@ -103,13 +131,27 @@ body {
 
 /* Glassmorphism Utilities */
 .glass {
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
 }
 
 .dark .glass {
-  background: rgba(15, 23, 42, 0.7);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Base interactive utilities */
+.interactive-hover {
+  transition: all var(--transition-fast) ease;
+}
+
+.interactive-hover:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+.interactive-hover:active {
+  transform: translateY(0);
 }

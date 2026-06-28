@@ -11,21 +11,31 @@ export interface User {
   providedIn: 'root',
 })
 export class AuthService {
-  // Simple signal-based state for authentication
   currentUser = signal<User | null>(null);
   isAuthenticated = signal<boolean>(false);
 
   constructor() {
-    // TODO: Check local storage for existing session
+    const token = localStorage.getItem('auth_token');
+    const userStr = localStorage.getItem('current_user');
+
+    if (token && userStr) {
+      this.isAuthenticated.set(true);
+      // We parse the 'userStr', NOT the 'token'
+      this.currentUser.set(JSON.parse(userStr));
+    }
   }
 
   setSession(_user: User, _token: string) {
-    // TODO: Save to localStorage and update signals
-    console.log('setSession called. Team needs to implement this.');
+    localStorage.setItem('auth_token', _token);
+    localStorage.setItem('current_user', JSON.stringify(_user));
+    this.isAuthenticated.set(true);
+    this.currentUser.set(_user);
   }
 
   logout() {
-    // TODO: Remove from localStorage and update signals
-    console.log('logout called. Team needs to implement this.');
+    localStorage.removeItem('auth_token');
+    localStorage.removeItem('current_user');
+    this.isAuthenticated.set(false);
+    this.currentUser.set(null);
   }
 }
