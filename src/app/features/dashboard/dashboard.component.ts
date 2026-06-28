@@ -8,7 +8,6 @@ import { ApiService } from '../../core/services/api.service';
 import { AuthService } from '../../core/services/auth.service';
 import { Appointment } from '../../core/models';
 
-// Real shape returned by GET /api/dashboard/stats
 interface DashboardStats {
   todaysAppointments: number;
   confirmed: number;
@@ -25,7 +24,6 @@ interface DashboardStats {
   standalone: true,
   imports: [CommonModule],
   templateUrl: './admin/admin-dashboard.component.html',
-  styleUrl: './admin/admin-dashboard.component.scss',
 })
 export class AdminDashboardComponent implements OnInit {
   private api = inject(ApiService);
@@ -67,7 +65,6 @@ export class AdminDashboardComponent implements OnInit {
   standalone: true,
   imports: [CommonModule, RouterModule],
   templateUrl: './receptionist/receptionist-dashboard.component.html',
-  styleUrl: './receptionist/receptionist-dashboard.component.scss',
 })
 export class ReceptionistDashboardComponent implements OnInit {
   private api = inject(ApiService);
@@ -184,23 +181,23 @@ export class ReceptionistDashboardComponent implements OnInit {
 
   statusClass(status: Appointment['status']): string {
     const map: Record<string, string> = {
-      Confirmed: 'badge-confirmed',
-      PendingPayment: 'badge-pending',
-      Arrived: 'badge-arrived',
-      Completed: 'badge-completed',
-      NoShow: 'badge-noshow',
-      Cancelled: 'badge-cancelled',
+      Confirmed: 'bg-[var(--color-success-soft)] text-[var(--color-success)]',
+      PendingPayment: 'bg-[var(--color-warning-soft)] text-[var(--color-warning)]',
+      Arrived: 'bg-[var(--color-primary-soft)] text-[var(--color-primary)]',
+      Completed: 'bg-[var(--color-surface-2)] text-[var(--color-muted)]',
+      NoShow: 'bg-[var(--color-danger-soft)] text-[var(--color-danger)]',
+      Cancelled: 'bg-[var(--color-surface-2)] text-[var(--color-faint)]',
     };
     return map[status] ?? '';
   }
 
   borderClass(status: Appointment['status']): string {
     const map: Record<string, string> = {
-      Confirmed: 'border-confirmed',
-      PendingPayment: 'border-pending',
-      Arrived: 'border-arrived',
+      Confirmed: 'bg-[var(--color-success)]',
+      PendingPayment: 'bg-[var(--color-warning)]',
+      Arrived: 'bg-[var(--color-primary)]',
     };
-    return map[status] ?? 'border-default';
+    return map[status] ?? 'bg-[var(--color-border-strong)]';
   }
 
   get awaitingPaymentCount(): number {
@@ -215,7 +212,6 @@ export class ReceptionistDashboardComponent implements OnInit {
   standalone: true,
   imports: [CommonModule, RouterModule],
   templateUrl: './doctor/doctor-dashboard.component.html',
-  styleUrl: './doctor/doctor-dashboard.component.scss',
 })
 export class DoctorDashboardComponent implements OnInit {
   private api = inject(ApiService);
@@ -299,12 +295,12 @@ export class DoctorDashboardComponent implements OnInit {
 
   statusClass(status: Appointment['status']): string {
     const map: Record<string, string> = {
-      Confirmed: 'badge-confirmed',
-      PendingPayment: 'badge-pending',
-      Arrived: 'badge-arrived',
-      Completed: 'badge-completed',
-      NoShow: 'badge-noshow',
-      Cancelled: 'badge-cancelled',
+      Confirmed: 'bg-[var(--color-success-soft)] text-[var(--color-success)]',
+      PendingPayment: 'bg-[var(--color-warning-soft)] text-[var(--color-warning)]',
+      Arrived: 'bg-[var(--color-primary-soft)] text-[var(--color-primary)]',
+      Completed: 'bg-[var(--color-surface-2)] text-[var(--color-muted)]',
+      NoShow: 'bg-[var(--color-danger-soft)] text-[var(--color-danger)]',
+      Cancelled: 'bg-[var(--color-surface-2)] text-[var(--color-faint)]',
     };
     return map[status] ?? '';
   }
@@ -327,7 +323,7 @@ export class DoctorDashboardComponent implements OnInit {
   }
 }
 
-// ─── Shell — routes by role ───────────────────────────────────────────────────
+// ─── Shell ────────────────────────────────────────────────────────────────────
 
 @Component({
   selector: 'app-dashboard',
@@ -343,22 +339,14 @@ export class DoctorDashboardComponent implements OnInit {
       <app-admin-dashboard *ngSwitchCase="'admin'" />
       <app-receptionist-dashboard *ngSwitchCase="'receptionist'" />
       <app-doctor-dashboard *ngSwitchCase="'doctor'" />
-      <div class="no-role" *ngSwitchDefault>No dashboard available for your role.</div>
+      <div
+        *ngSwitchDefault
+        class="flex h-full items-center justify-center p-12 text-sm text-slate-400"
+      >
+        No dashboard available for your role.
+      </div>
     </ng-container>
   `,
-  styles: [
-    `
-      .no-role {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        height: 100%;
-        padding: 3rem;
-        color: var(--color-muted);
-        font-size: 0.9rem;
-      }
-    `,
-  ],
 })
 export class DashboardComponent {
   private auth = inject(AuthService);

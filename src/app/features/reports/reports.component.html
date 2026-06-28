@@ -1,9 +1,11 @@
-<div class="page">
+<div class="mx-auto flex max-w-[var(--container)] flex-col gap-6 p-6">
   <!-- Header -->
-  <div class="page-header">
-    <h1 class="page-title">Reports</h1>
-    <div class="header-actions">
-      <div class="period-select">
+  <div class="flex flex-wrap items-center justify-between gap-3">
+    <h1 class="text-2xl font-bold tracking-tight text-[var(--color-text)]">Reports</h1>
+    <div class="flex items-center gap-2">
+      <div
+        class="flex cursor-pointer items-center gap-2 rounded-[var(--radius-sm)] border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm font-medium text-[var(--color-text)] shadow-[var(--shadow-sm)] transition-colors duration-[var(--transition-fast)] hover:bg-[var(--color-surface-2)]"
+      >
         <svg
           width="14"
           height="14"
@@ -17,7 +19,7 @@
           <line x1="8" y1="2" x2="8" y2="6" />
           <line x1="3" y1="10" x2="21" y2="10" />
         </svg>
-        <span>This month</span>
+        This month
         <svg
           width="12"
           height="12"
@@ -29,10 +31,14 @@
           <polyline points="6 9 12 15 18 9" />
         </svg>
       </div>
-      <button class="btn-export" (click)="exportCsv()" [disabled]="loading">
+      <button
+        (click)="exportCsv()"
+        [disabled]="loading"
+        class="flex items-center gap-2 rounded-[var(--radius-sm)] border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm font-semibold text-[var(--color-text)] shadow-[var(--shadow-sm)] transition-colors duration-[var(--transition-fast)] hover:bg-[var(--color-surface-2)] disabled:cursor-not-allowed disabled:opacity-50"
+      >
         <svg
-          width="15"
-          height="15"
+          width="14"
+          height="14"
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
@@ -50,14 +56,18 @@
   </div>
 
   <!-- Skeleton -->
-  <ng-container *ngIf="loading">
-    <div class="charts-grid">
-      <div class="skeleton-panel" *ngFor="let i of [1, 2, 3, 4]"></div>
-    </div>
-  </ng-container>
+  <div *ngIf="loading" class="grid grid-cols-1 gap-4 lg:grid-cols-2">
+    <div
+      *ngFor="let i of [1, 2, 3, 4]"
+      class="h-56 animate-pulse rounded-[var(--radius)] bg-[var(--color-surface-2)]"
+    ></div>
+  </div>
 
   <!-- Error -->
-  <div class="empty-state" *ngIf="error && !loading">
+  <div
+    *ngIf="error && !loading"
+    class="flex flex-col items-center gap-3 py-12 text-sm text-[var(--color-muted)]"
+  >
     <svg
       width="32"
       height="32"
@@ -74,138 +84,135 @@
   </div>
 
   <!-- Charts grid -->
-  <div class="charts-grid" *ngIf="!loading && !error && reports">
+  <div *ngIf="!loading && !error && reports" class="grid grid-cols-1 gap-4 lg:grid-cols-2">
     <!-- ① Status mix -->
-    <div class="panel">
-      <div class="panel-header">
-        <span class="panel-title">Status mix</span>
-        <span class="panel-meta">{{ reports.completedVisitsCount + 952 | number }} appts</span>
+    <div
+      class="flex flex-col gap-4 rounded-[var(--radius)] border border-[var(--color-border)] bg-[var(--color-surface)] p-5 shadow-[var(--shadow-sm)]"
+    >
+      <div class="flex items-baseline justify-between">
+        <span class="text-sm font-semibold text-[var(--color-text)]">Status mix</span>
+        <span class="text-xs text-[var(--color-muted)]"
+          >{{ reports.completedVisitsCount + 952 | number }} appts</span
+        >
       </div>
-
-      <div class="status-mix-body">
-        <!-- Donut -->
-        <div class="donut-wrap">
-          <svg viewBox="0 0 120 120" width="120" height="120">
-            <circle
-              cx="60"
-              cy="60"
-              r="48"
-              fill="none"
-              stroke="var(--color-border)"
-              stroke-width="14"
-            />
-            <ng-container *ngFor="let seg of donutSegments()">
-              <circle
-                cx="60"
-                cy="60"
-                r="48"
-                fill="none"
-                [attr.stroke]="seg.color"
-                stroke-width="14"
-                stroke-linecap="butt"
-                [attr.stroke-dasharray]="seg.dashArray"
-                [attr.stroke-dashoffset]="seg.dashOffset"
-                transform="rotate(-90 60 60)"
-              />
-            </ng-container>
-          </svg>
-          <div class="donut-center">
-            <span class="donut-num">{{ reports.completedVisitsCount + 952 | number }}</span>
-            <span class="donut-sub">appts</span>
+      <div class="flex items-center gap-6">
+        <div class="relative h-32 w-32 shrink-0">
+          <canvas #doughnutCanvas class="h-full w-full"></canvas>
+          <div
+            class="pointer-events-none absolute inset-0 flex flex-col items-center justify-center"
+          >
+            <span class="text-lg font-bold text-[var(--color-text)]">{{
+              reports.completedVisitsCount + 952 | number
+            }}</span>
+            <span class="text-xs text-[var(--color-muted)]">appts</span>
           </div>
         </div>
-
-        <!-- Legend -->
-        <div class="status-legend">
-          <div class="legend-row" *ngFor="let item of statusMix">
-            <span class="legend-dot" [style.background]="item.color"></span>
-            <span class="legend-label">{{ item.label }}</span>
-            <span class="legend-pct">{{ item.pct }}%</span>
+        <div class="flex flex-1 flex-col gap-2.5">
+          <div *ngFor="let item of statusMix" class="flex items-center gap-2">
+            <span class="h-2 w-2 shrink-0 rounded-full" [ngClass]="item.dot"></span>
+            <span class="flex-1 text-xs text-[var(--color-muted)]">{{ item.label }}</span>
+            <span class="text-xs font-semibold text-[var(--color-text)]">{{ item.pct }}%</span>
           </div>
         </div>
       </div>
     </div>
 
     <!-- ② Revenue by week -->
-    <div class="panel">
-      <div class="panel-header">
-        <span class="panel-title">Revenue by week</span>
-        <span class="panel-meta">EGP {{ reports.totalRevenue | number }} total</span>
+    <div
+      class="flex flex-col gap-4 rounded-[var(--radius)] border border-[var(--color-border)] bg-[var(--color-surface)] p-5 shadow-[var(--shadow-sm)]"
+    >
+      <div class="flex items-baseline justify-between">
+        <span class="text-sm font-semibold text-[var(--color-text)]">Revenue by week</span>
+        <span class="text-xs text-[var(--color-muted)]"
+          >EGP {{ reports.totalRevenue | number }} total</span
+        >
       </div>
-
-      <div class="bar-chart">
-        <div class="bars">
-          <div class="bar-col" *ngFor="let bar of weekBars">
-            <div class="bar-track">
-              <div
-                class="bar-fill"
-                [style.height.%]="bar.heightPct"
-                [title]="'EGP ' + (bar.value | number)"
-              ></div>
-            </div>
-            <span class="bar-label">{{ bar.label }}</span>
-          </div>
-        </div>
+      <div class="relative h-40">
+        <canvas #barCanvas class="h-full w-full"></canvas>
       </div>
     </div>
 
     <!-- ③ No-show rate -->
-    <div class="panel">
-      <div class="panel-header">
-        <span class="panel-title">No-show rate</span>
-        <span class="panel-meta">vs. clinic target {{ noShowTarget }}%</span>
+    <div
+      class="flex flex-col gap-4 rounded-[var(--radius)] border border-[var(--color-border)] bg-[var(--color-surface)] p-5 shadow-[var(--shadow-sm)]"
+    >
+      <div class="flex items-baseline justify-between">
+        <span class="text-sm font-semibold text-[var(--color-text)]">No-show rate</span>
+        <span class="text-xs text-[var(--color-muted)]">vs. clinic target {{ noShowTarget }}%</span>
       </div>
-
-      <div class="noshow-body">
-        <span class="noshow-big">{{ noShowThisMonth }}<span class="noshow-pct">%</span></span>
-
-        <div class="noshow-bars">
-          <div class="noshow-row">
-            <span class="noshow-label">This month</span>
-            <div class="noshow-track">
+      <div class="flex flex-col gap-5">
+        <span class="text-5xl leading-none font-extrabold tracking-tight text-[var(--color-text)]">
+          {{ noShowThisMonth
+          }}<span class="text-2xl font-semibold text-[var(--color-faint)]">%</span>
+        </span>
+        <div class="flex flex-col gap-3">
+          <div class="flex items-center gap-3">
+            <span class="w-24 text-xs text-[var(--color-muted)]">This month</span>
+            <div
+              class="h-2 flex-1 overflow-hidden rounded-[var(--radius-full)] bg-[var(--color-surface-2)]"
+            >
               <div
-                class="noshow-fill"
+                class="h-full rounded-[var(--radius-full)] bg-[var(--color-success)] transition-all duration-500"
                 [style.width.%]="(noShowThisMonth / noShowTarget) * 100"
               ></div>
             </div>
-            <span class="noshow-val">{{ noShowThisMonth }}%</span>
+            <span class="w-8 text-right text-xs font-semibold text-[var(--color-text)]"
+              >{{ noShowThisMonth }}%</span
+            >
           </div>
-          <div class="noshow-row">
-            <span class="noshow-label">Last month</span>
-            <div class="noshow-track">
+          <div class="flex items-center gap-3">
+            <span class="w-24 text-xs text-[var(--color-muted)]">Last month</span>
+            <div
+              class="h-2 flex-1 overflow-hidden rounded-[var(--radius-full)] bg-[var(--color-surface-2)]"
+            >
               <div
-                class="noshow-fill muted"
+                class="h-full rounded-[var(--radius-full)] bg-[var(--color-border-strong)] transition-all duration-500"
                 [style.width.%]="(noShowLastMonth / noShowTarget) * 100"
               ></div>
             </div>
-            <span class="noshow-val">{{ noShowLastMonth }}%</span>
+            <span class="w-8 text-right text-xs font-semibold text-[var(--color-text)]"
+              >{{ noShowLastMonth }}%</span
+            >
           </div>
         </div>
       </div>
     </div>
 
-    <!-- ④ Revenue by service (Doctor utilization proxy) -->
-    <div class="panel">
-      <div class="panel-header">
-        <span class="panel-title">Revenue by service</span>
-        <span class="panel-meta">EGP total</span>
+    <!-- ④ Revenue by service -->
+    <div
+      class="flex flex-col gap-4 rounded-[var(--radius)] border border-[var(--color-border)] bg-[var(--color-surface)] p-5 shadow-[var(--shadow-sm)]"
+    >
+      <div class="flex items-baseline justify-between">
+        <span class="text-sm font-semibold text-[var(--color-text)]">Revenue by service</span>
+        <span class="text-xs text-[var(--color-muted)]">EGP total</span>
       </div>
 
-      <div class="service-list" *ngIf="serviceBars.length > 0; else noServices">
-        <div class="service-row" *ngFor="let svc of serviceBars">
-          <div class="svc-avatar">{{ svc.name.slice(0, 2).toUpperCase() }}</div>
-          <div class="svc-info">
-            <span class="svc-name">{{ svc.name }}</span>
-            <div class="svc-track">
-              <div class="svc-fill" [style.width.%]="svc.pct"></div>
+      <div *ngIf="serviceBars.length > 0; else noServices" class="flex flex-col gap-4">
+        <div *ngFor="let svc of serviceBars" class="flex items-center gap-3">
+          <div
+            class="flex h-9 w-9 shrink-0 items-center justify-center rounded-[var(--radius-sm)] bg-[var(--color-primary-soft)] text-xs font-bold text-[var(--color-primary)]"
+          >
+            {{ svc.name.slice(0, 2).toUpperCase() }}
+          </div>
+          <div class="flex flex-1 flex-col gap-1">
+            <span class="text-xs font-medium text-[var(--color-text)]">{{ svc.name }}</span>
+            <div
+              class="h-1.5 overflow-hidden rounded-[var(--radius-full)] bg-[var(--color-surface-2)]"
+            >
+              <div
+                class="h-full rounded-[var(--radius-full)] bg-[var(--color-success)] transition-all duration-500"
+                [style.width.%]="svc.pct"
+              ></div>
             </div>
           </div>
-          <span class="svc-pct">EGP {{ svc.revenue | number }}</span>
+          <span class="w-24 text-right text-xs font-semibold text-[var(--color-text)]">
+            EGP {{ svc.revenue | number }}
+          </span>
         </div>
       </div>
 
       <ng-template #noServices>
-        <div class="empty-services">No service data available.</div>
+        <p class="text-sm text-[var(--color-muted)]">No service data available.</p>
       </ng-template>
     </div>
   </div>

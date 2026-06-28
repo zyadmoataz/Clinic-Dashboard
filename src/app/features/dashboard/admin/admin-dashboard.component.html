@@ -1,22 +1,26 @@
-<div class="page">
+<div class="mx-auto flex max-w-[var(--container)] flex-col gap-6 p-6">
   <!-- Header -->
-  <div class="page-header">
-    <div>
-      <h1 class="page-title">Dashboard</h1>
-      <p class="page-sub">{{ today }}</p>
-    </div>
+  <div>
+    <h1 class="text-2xl font-bold tracking-tight text-[var(--color-text)]">Dashboard</h1>
+    <p class="mt-1 text-sm text-[var(--color-muted)]">{{ today }}</p>
   </div>
 
   <!-- Skeleton -->
   <ng-container *ngIf="loading">
-    <div class="stats-grid">
-      <div class="skeleton-card" *ngFor="let i of [1, 2, 3, 4]"></div>
+    <div class="grid grid-cols-2 gap-4 lg:grid-cols-4">
+      <div
+        *ngFor="let i of [1, 2, 3, 4]"
+        class="h-24 animate-pulse rounded-[var(--radius)] bg-[var(--color-surface-2)]"
+      ></div>
     </div>
-    <div class="skeleton-body"></div>
+    <div class="h-32 animate-pulse rounded-[var(--radius)] bg-[var(--color-surface-2)]"></div>
   </ng-container>
 
   <!-- Error -->
-  <div class="empty-state" *ngIf="error && !loading">
+  <div
+    *ngIf="error && !loading"
+    class="flex flex-col items-center gap-3 py-12 text-sm text-[var(--color-muted)]"
+  >
     <svg
       width="32"
       height="32"
@@ -34,9 +38,14 @@
 
   <!-- Content -->
   <ng-container *ngIf="!loading && !error && stats">
-    <div class="stats-grid">
-      <div class="stat-card">
-        <div class="stat-icon-wrap" style="--icon-bg: var(--color-primary-soft)">
+    <!-- Stat cards -->
+    <div class="grid grid-cols-2 gap-4 lg:grid-cols-4">
+      <div
+        class="flex items-center gap-3 rounded-[var(--radius)] border border-[var(--color-border)] bg-[var(--color-surface)] p-4 shadow-[var(--shadow-sm)] transition-all duration-[var(--transition-fast)] hover:-translate-y-px hover:shadow-[var(--shadow-md)]"
+      >
+        <div
+          class="flex h-11 w-11 shrink-0 items-center justify-center rounded-[var(--radius-sm)] bg-[var(--color-primary-soft)]"
+        >
           <svg
             width="20"
             height="20"
@@ -53,14 +62,20 @@
             <line x1="3" y1="10" x2="21" y2="10" />
           </svg>
         </div>
-        <div class="stat-body">
-          <span class="stat-label">Appointments today</span>
-          <span class="stat-value">{{ stats.todaysAppointments }}</span>
+        <div class="flex flex-col gap-0.5">
+          <span class="text-xs font-medium text-[var(--color-muted)]">Appointments today</span>
+          <span class="text-3xl leading-tight font-bold tracking-tight text-[var(--color-text)]">{{
+            stats.todaysAppointments
+          }}</span>
         </div>
       </div>
 
-      <div class="stat-card">
-        <div class="stat-icon-wrap" style="--icon-bg: var(--color-success-soft)">
+      <div
+        class="flex items-center gap-3 rounded-[var(--radius)] border border-[var(--color-border)] bg-[var(--color-surface)] p-4 shadow-[var(--shadow-sm)] transition-all duration-[var(--transition-fast)] hover:-translate-y-px hover:shadow-[var(--shadow-md)]"
+      >
+        <div
+          class="flex h-11 w-11 shrink-0 items-center justify-center rounded-[var(--radius-sm)] bg-[var(--color-success-soft)]"
+        >
           <svg
             width="20"
             height="20"
@@ -74,20 +89,26 @@
             <polyline points="20 6 9 17 4 12" />
           </svg>
         </div>
-        <div class="stat-body">
-          <span class="stat-label">Confirmed</span>
-          <span class="stat-value">{{ stats.confirmed }}</span>
+        <div class="flex flex-col gap-0.5">
+          <span class="text-xs font-medium text-[var(--color-muted)]">Confirmed</span>
+          <span class="text-3xl leading-tight font-bold tracking-tight text-[var(--color-text)]">{{
+            stats.confirmed
+          }}</span>
         </div>
       </div>
 
-      <div class="stat-card">
-        <div class="stat-icon-wrap" style="--icon-bg: var(--color-warning-soft)">
+      <div
+        class="flex items-center gap-3 rounded-[var(--radius)] border border-[var(--color-border)] bg-[var(--color-surface)] p-4 shadow-[var(--shadow-sm)] transition-all duration-[var(--transition-fast)] hover:-translate-y-px hover:shadow-[var(--shadow-md)]"
+      >
+        <div
+          class="flex h-11 w-11 shrink-0 items-center justify-center rounded-[var(--radius-sm)] bg-[var(--color-primary-soft)]"
+        >
           <svg
             width="20"
             height="20"
             viewBox="0 0 24 24"
             fill="none"
-            stroke="var(--color-warning)"
+            stroke="var(--color-primary)"
             stroke-width="2"
             stroke-linecap="round"
             stroke-linejoin="round"
@@ -96,17 +117,23 @@
             <circle cx="12" cy="7" r="4" />
           </svg>
         </div>
-        <div class="stat-body">
-          <span class="stat-label">Arrived / Completed</span>
-          <span class="stat-value">
-            {{ stats.arrived }}
-            <span class="stat-frac">/ {{ stats.completed }}</span>
+        <div class="flex flex-col gap-0.5">
+          <span class="text-xs font-medium text-[var(--color-muted)]">Arrived / Completed</span>
+          <span class="text-3xl leading-tight font-bold tracking-tight text-[var(--color-text)]">
+            {{ stats.arrived
+            }}<span class="text-xl font-medium text-[var(--color-faint)]">
+              / {{ stats.completed }}</span
+            >
           </span>
         </div>
       </div>
 
-      <div class="stat-card">
-        <div class="stat-icon-wrap" style="--icon-bg: var(--color-success-soft)">
+      <div
+        class="flex items-center gap-3 rounded-[var(--radius)] border border-[var(--color-border)] bg-[var(--color-surface)] p-4 shadow-[var(--shadow-sm)] transition-all duration-[var(--transition-fast)] hover:-translate-y-px hover:shadow-[var(--shadow-md)]"
+      >
+        <div
+          class="flex h-11 w-11 shrink-0 items-center justify-center rounded-[var(--radius-sm)] bg-[var(--color-success-soft)]"
+        >
           <svg
             width="20"
             height="20"
@@ -121,50 +148,56 @@
             <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
           </svg>
         </div>
-        <div class="stat-body">
-          <span class="stat-label">Today's revenue</span>
-          <span class="stat-value revenue">EGP {{ stats.todaysRevenue | number: '1.0-0' }}</span>
+        <div class="flex flex-col gap-0.5">
+          <span class="text-xs font-medium text-[var(--color-muted)]">Today's revenue</span>
+          <span
+            class="text-xl leading-tight font-extrabold tracking-tight text-[var(--color-text)]"
+          >
+            EGP {{ stats.todaysRevenue | number: '1.0-0' }}
+          </span>
         </div>
       </div>
     </div>
 
-    <!-- Summary row -->
-    <div class="summary-card">
-      <div class="summary-header">
-        <span class="summary-title">Clinic overview</span>
-        <span class="live-badge"> <span class="live-dot"></span> Live </span>
+    <!-- Overview strip -->
+    <div
+      class="rounded-[var(--radius)] border border-[var(--color-border)] bg-[var(--color-surface)] p-5 shadow-[var(--shadow-sm)]"
+    >
+      <div class="mb-4 flex items-center justify-between">
+        <span class="text-sm font-semibold text-[var(--color-text)]">Clinic overview</span>
+        <span
+          class="flex items-center gap-1.5 rounded-[var(--radius-full)] bg-[var(--color-success-soft)] px-2.5 py-1 text-xs font-medium text-[var(--color-success)]"
+        >
+          <span class="h-1.5 w-1.5 animate-pulse rounded-full bg-[var(--color-success)]"></span>
+          Live
+        </span>
       </div>
-      <div class="overview-grid">
-        <div class="ov-item">
-          <span class="ov-label">Total today</span>
-          <span class="ov-value" style="color: var(--color-primary)">{{
+      <div class="grid grid-cols-3 divide-x divide-[var(--color-border)] lg:grid-cols-6">
+        <div class="flex flex-col items-center gap-1 px-3 py-2">
+          <span class="text-xs text-[var(--color-faint)]">Total today</span>
+          <span class="text-2xl font-bold text-[var(--color-primary)]">{{
             stats.todaysAppointments
           }}</span>
         </div>
-        <div class="ov-divider"></div>
-        <div class="ov-item">
-          <span class="ov-label">Confirmed</span>
-          <span class="ov-value" style="color: var(--color-success)">{{ stats.confirmed }}</span>
+        <div class="flex flex-col items-center gap-1 px-3 py-2">
+          <span class="text-xs text-[var(--color-faint)]">Confirmed</span>
+          <span class="text-2xl font-bold text-[var(--color-success)]">{{ stats.confirmed }}</span>
         </div>
-        <div class="ov-divider"></div>
-        <div class="ov-item">
-          <span class="ov-label">Arrived</span>
-          <span class="ov-value" style="color: var(--color-primary)">{{ stats.arrived }}</span>
+        <div class="flex flex-col items-center gap-1 px-3 py-2">
+          <span class="text-xs text-[var(--color-faint)]">Arrived</span>
+          <span class="text-2xl font-bold text-[var(--color-primary)]">{{ stats.arrived }}</span>
         </div>
-        <div class="ov-divider"></div>
-        <div class="ov-item">
-          <span class="ov-label">Completed</span>
-          <span class="ov-value" style="color: var(--color-success)">{{ stats.completed }}</span>
+        <div class="flex flex-col items-center gap-1 px-3 py-2">
+          <span class="text-xs text-[var(--color-faint)]">Completed</span>
+          <span class="text-2xl font-bold text-[var(--color-success)]">{{ stats.completed }}</span>
         </div>
-        <div class="ov-divider"></div>
-        <div class="ov-item">
-          <span class="ov-label">No-show</span>
-          <span class="ov-value" style="color: var(--color-danger)">{{ stats.noShow }}</span>
+        <div class="flex flex-col items-center gap-1 px-3 py-2">
+          <span class="text-xs text-[var(--color-faint)]">No-show</span>
+          <span class="text-2xl font-bold text-[var(--color-danger)]">{{ stats.noShow }}</span>
         </div>
-        <div class="ov-divider"></div>
-        <div class="ov-item">
-          <span class="ov-label">Revenue</span>
-          <span class="ov-value" style="color: var(--color-success)"
+        <div class="flex flex-col items-center gap-1 px-3 py-2">
+          <span class="text-xs text-[var(--color-faint)]">Revenue</span>
+          <span class="text-lg font-bold text-[var(--color-success)]"
             >EGP {{ stats.todaysRevenue | number: '1.0-0' }}</span
           >
         </div>

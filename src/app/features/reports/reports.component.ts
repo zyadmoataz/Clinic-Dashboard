@@ -1,57 +1,68 @@
 // ==========================================
 // OWNER: Othman
 // ==========================================
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ElementRef, ViewChild, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ApiService } from '../../core/services/api.service';
 import { ClinicReports } from '../../core/models';
+import {
+  Chart,
+  ArcElement,
+  BarElement,
+  CategoryScale,
+  LinearScale,
+  Tooltip,
+  Legend,
+  DoughnutController,
+  BarController,
+} from 'chart.js';
 
-export interface WeekBar {
-  label: string;
-  value: number;
-  heightPct: number;
-}
-
-export interface ServiceBar {
-  name: string;
-  revenue: number;
-  pct: number;
-}
+Chart.register(
+  ArcElement,
+  BarElement,
+  CategoryScale,
+  LinearScale,
+  Tooltip,
+  Legend,
+  DoughnutController,
+  BarController,
+);
 
 @Component({
   selector: 'app-reports',
   standalone: true,
   imports: [CommonModule],
   templateUrl: './reports.component.html',
-  styleUrl: './reports.component.scss',
 })
-export class ReportsComponent implements OnInit {
+export class ReportsComponent implements OnInit, AfterViewInit {
   private api = inject(ApiService);
+
+  @ViewChild('doughnutCanvas') doughnutCanvas!: ElementRef<HTMLCanvasElement>;
+  @ViewChild('barCanvas') barCanvas!: ElementRef<HTMLCanvasElement>;
+
+  private doughnutChart?: Chart;
+  private barChart?: Chart;
 
   reports: ClinicReports | null = null;
   loading = true;
   error = false;
 
-  weekBars: WeekBar[] = [];
-  serviceBars: ServiceBar[] = [];
-
-  statusMix = [
-    { label: 'Confirmed', pct: 61, color: 'var(--color-success)' },
-    { label: 'Completed', pct: 22, color: '#34d399' },
-    { label: 'Awaiting payment', pct: 10, color: 'var(--color-warning)' },
-    { label: 'No-show / cancelled', pct: 7, color: 'var(--color-danger)' },
-  ];
-
   noShowThisMonth = 6.2;
   noShowLastMonth = 7.6;
   noShowTarget = 8;
 
-  readonly RADIUS = 48;
-  readonly CX = 60;
-  readonly CY = 60;
-  readonly CIRCUMFERENCE = 2 * Math.PI * 48;
+  statusMix = [
+    { label: 'Confirmed', pct: 61, dot: 'bg-[#10b981]' },
+    { label: 'Completed', pct: 22, dot: 'bg-[#34d399]' },
+    { label: 'Awaiting payment', pct: 10, dot: 'bg-[#f59e0b]' },
+    { label: 'No-show / cancelled', pct: 7, dot: 'bg-[#ef4444]' },
+  ];
+
+  serviceBars: { name: string; revenue: number; pct: number }[] = [];
+  weekValues: number[] = [];
 
   ngOnInit(): void {
+    // TODO: remove mock when backend fixes /api/admin/reports
     const mock: ClinicReports = {
       totalRevenue: 248500,
       completedVisitsCount: 252,
@@ -63,33 +74,86 @@ export class ReportsComponent implements OnInit {
       ],
     };
     this.reports = mock;
-    this.buildWeekBars(mock);
+    this.weekValues = [0.22, 0.27, 0.24, 0.27].map((s) => Math.round(mock.totalRevenue * s));
     this.buildServiceBars(mock);
     this.loading = false;
 
     // this.api.getReports().subscribe({
     //   next: (data) => {
     //     this.reports = data;
-    //     this.buildWeekBars(data);
+    //     this.weekValues = [0.22, 0.27, 0.24, 0.27].map(s => Math.round(data.totalRevenue * s));
     //     this.buildServiceBars(data);
     //     this.loading = false;
+    //     setTimeout(() => this.initCharts(), 0);
     //   },
-    //   error: () => {
-    //     this.error = true;
-    //     this.loading = false;
-    //   },
+    //   error: () => { this.error = true; this.loading = false; },
     // });
   }
 
-  private buildWeekBars(data: ClinicReports): void {
-    const shares = [0.22, 0.27, 0.24, 0.27];
-    const values = shares.map((s) => Math.round(data.totalRevenue * s));
-    const max = Math.max(...values);
-    this.weekBars = values.map((v, i) => ({
-      label: `W${i + 1}`,
-      value: v,
-      heightPct: Math.round((v / max) * 100),
-    }));
+  ngAfterViewInit(): void {
+    // Slight delay to ensure canvas elements are in DOM
+    setTimeout(() => this.initCharts(), 0);
+  }
+
+  private initCharts(): void {
+    if (this.doughnutCanvas?.nativeElement) {
+      this.doughnutChart?.destroy();
+      this.doughnutChart = new Chart(this.doughnutCanvas.nativeElement, {
+        type: 'doughnut',
+        data: {
+          labels: ['Confirmed', 'Completed', 'Awaiting payment', 'No-show / cancelled'],
+          datasets: [
+            {
+              data: [61, 22, 10, 7],
+              backgroundColor: ['#10b981', '#34d399', '#f59e0b', '#ef4444'],
+              borderWidth: 0,
+              hoverOffset: 4,
+            },
+          ],
+        },
+        options: {
+          cutout: '72%',
+          plugins: {
+            legend: { display: false },
+            tooltip: { callbacks: { label: (ctx) => ` ${ctx.label}: ${ctx.parsed}%` } },
+          },
+        },
+      });
+    }
+
+    if (this.barCanvas?.nativeElement) {
+      this.barChart?.destroy();
+      this.barChart = new Chart(this.barCanvas.nativeElement, {
+        type: 'bar',
+        data: {
+          labels: ['W1', 'W2', 'W3', 'W4'],
+          datasets: [
+            {
+              data: this.weekValues,
+              backgroundColor: '#10b981',
+              borderRadius: 6,
+              borderSkipped: false,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: { callbacks: { label: (ctx) => ` EGP ${Number(ctx.raw).toLocaleString()}` } },
+          },
+          scales: {
+            x: { grid: { display: false }, border: { display: false } },
+            y: {
+              grid: { color: '#f1f5f9' },
+              border: { display: false },
+              ticks: { callback: (v) => `${Number(v) / 1000}k` },
+            },
+          },
+        },
+      });
+    }
   }
 
   private buildServiceBars(data: ClinicReports): void {
@@ -100,20 +164,6 @@ export class ReportsComponent implements OnInit {
       revenue: s.revenue,
       pct: Math.round((s.revenue / max) * 100),
     }));
-  }
-
-  donutSegments(): Array<{ color: string; dashArray: string; dashOffset: number }> {
-    let offset = 0;
-    return this.statusMix.map((item) => {
-      const length = (item.pct / 100) * this.CIRCUMFERENCE;
-      const segment = {
-        color: item.color,
-        dashArray: `${length} ${this.CIRCUMFERENCE - length}`,
-        dashOffset: -offset,
-      };
-      offset += length;
-      return segment;
-    });
   }
 
   exportCsv(): void {
