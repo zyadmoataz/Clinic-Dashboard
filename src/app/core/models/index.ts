@@ -107,9 +107,13 @@ export interface Staff {
 }
 
 export interface DoctorRegisterRequest {
-  displayName: string;
+  name: string;
   email: string;
-  specialty: string;
+  phone: string;
+  password: string;
+  specialization: string;
+  photoUrl?: string;
+  bio?: string;
   yearsExperience: number;
 }
 

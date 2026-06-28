@@ -27,6 +27,11 @@ export const routes: Routes = [
             loadComponent: () =>
               import('./features/staff/staff.component').then((m) => m.StaffComponent),
           },
+          {
+            path: 'add-doctor',
+            loadComponent: () =>
+              import('./features/staff/add-doctor/add-doctor').then((m) => m.AddDoctorComponent),
+          },
 
           {
             path: 'services',

@@ -3,7 +3,7 @@
 // ==========================================
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
+import { Router } from '@angular/router';
 import { ApiService } from '../../core/services/api.service';
 import { Staff } from '../../core/models';
 
@@ -13,7 +13,7 @@ import { SearchInputComponent } from '../../shared/components/search-input.compo
 @Component({
   selector: 'app-staff',
   standalone: true,
-  imports: [CommonModule, DataTableComponent, SearchInputComponent],
+  imports: [CommonModule, DataTableComponent],
   templateUrl: './staff.html',
   styleUrls: ['./staff.css'],
 })
@@ -28,7 +28,10 @@ export class StaffComponent implements OnInit {
     { key: 'isActive', label: 'Status' },
   ];
 
-  constructor(private apiService: ApiService) {}
+  constructor(
+    private apiService: ApiService,
+    private router: Router,
+  ) {}
 
   ngOnInit(): void {
     this.loadStaff();
@@ -47,5 +50,8 @@ export class StaffComponent implements OnInit {
         this.isLoading = false;
       },
     });
+  }
+  goToAddDoctor(): void {
+    this.router.navigate(['/staff/add-doctor']);
   }
 }
