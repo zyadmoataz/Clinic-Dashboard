@@ -17,5 +17,34 @@
     "confirmed": "مؤكد",
     "checked_in": "حاضر",
     "revenue_today": "إيرادات اليوم"
+  },
+  
+  "patients": {
+    "patients": "المرضى",
+    "subtitle":       "تسجيل المرضى والبحث عنهم.",
+    "name":           "الاسم",
+    "phone":          "الهاتف",
+    "email":          "البريد الإلكتروني",
+    "optional":       "اختياري",
+    "account":        "الحساب",
+    "add":            "+ إضافة مريض",
+    "cancel":         "إلغاء",
+    "create":         "إنشاء",
+    "creating":       "جاري الإنشاء...",
+    "name_required":  "الاسم مطلوب",
+    "phone_required": "الهاتف مطلوب",
+    "no_results":     "لا يوجد مرضى.",
+    "loading":        "جاري التحميل...",
+    "walk_in":        "حجز مباشر",
+    "registered":     "مسجل",
+     "fill_required": "يرجى ملء جميع الحقول المطلوبة.",
+    "created_success": "تم إضافة المريض بنجاح.",
+    "create_failed": "فشل في إضافة المريض.",
+    "load_failed": "فشل في تحميل المرضى."
+  },
+  "common": {
+    "success": "نجاح",
+    "error": "خطأ"
   }
 }
+

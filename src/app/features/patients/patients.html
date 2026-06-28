@@ -2,14 +2,19 @@
   <!-- Header -->
   <div class="mb-6 flex items-start justify-between">
     <div>
-      <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Patients</h1>
-      <p class="mt-1 text-sm text-gray-500">Register and search patients.</p>
+      <h1 class="text-3xl font-bold text-gray-900 dark:text-white">
+        {{ 'header.patients' | translate }}
+      </h1>
+      <p class="mt-1 text-sm text-gray-500">
+        {{ 'patients.subtitle' | translate }}
+      </p>
     </div>
     <app-button (clicked)="toggleForm()">
-      {{ showForm ? 'Cancel' : '+ Add patient' }}
+      {{ showForm ? ('patients.cancel' | translate) : ('patients.add' | translate) }}
     </app-button>
   </div>
 
+  <!-- Add Patient Form -->
   <div
     *ngIf="showForm"
     class="mb-6 rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-800"
@@ -18,7 +23,9 @@
       <div class="mb-4 grid grid-cols-2 gap-4">
         <!-- Name -->
         <div class="flex flex-col gap-1">
-          <label class="text-sm font-medium text-gray-700 dark:text-gray-300"> Name </label>
+          <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
+            {{ 'patients.name' | translate }}
+          </label>
           <input
             formControlName="name"
             type="text"
@@ -27,13 +34,15 @@
             [class.border-gray-300]="!(name?.invalid && name?.touched)"
           />
           <p *ngIf="name?.invalid && name?.touched" class="text-xs text-red-500">
-            Name is required
+            {{ 'patients.name_required' | translate }}
           </p>
         </div>
 
         <!-- Phone -->
         <div class="flex flex-col gap-1">
-          <label class="text-sm font-medium text-gray-700 dark:text-gray-300"> Phone </label>
+          <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
+            {{ 'patients.phone' | translate }}
+          </label>
           <input
             formControlName="phone"
             type="text"
@@ -42,7 +51,7 @@
             [class.border-gray-300]="!(phone?.invalid && phone?.touched)"
           />
           <p *ngIf="phone?.invalid && phone?.touched" class="text-xs text-red-500">
-            Phone is required
+            {{ 'patients.phone_required' | translate }}
           </p>
         </div>
       </div>
@@ -51,8 +60,8 @@
         <!-- Email -->
         <div class="flex flex-col gap-1">
           <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
-            Email
-            <span class="font-normal text-gray-400">(optional)</span>
+            {{ 'patients.email' | translate }}
+            <span class="font-normal text-gray-400">({{ 'patients.optional' | translate }})</span>
           </label>
           <input
             formControlName="email"
@@ -68,7 +77,7 @@
             [disabled]="isSubmitting"
             class="w-full rounded-lg bg-teal-600 py-2 text-sm font-semibold text-white transition hover:bg-teal-700 disabled:opacity-50"
           >
-            {{ isSubmitting ? 'Creating...' : 'Create' }}
+            {{ isSubmitting ? ('patients.creating' | translate) : ('patients.create' | translate) }}
           </button>
         </div>
       </div>
@@ -81,7 +90,9 @@
   </div>
 
   <!-- Loading -->
-  <div *ngIf="isLoading" class="py-10 text-center text-gray-400">Loading...</div>
+  <div *ngIf="isLoading" class="py-10 text-center text-gray-400">
+    {{ 'patients.loading' | translate }}
+  </div>
 
   <!-- Table -->
   <div
@@ -94,28 +105,30 @@
           <th
             class="px-6 py-3 text-left text-xs font-semibold tracking-wider text-gray-500 uppercase"
           >
-            Name
+            {{ 'patients.name' | translate }}
           </th>
           <th
             class="px-6 py-3 text-left text-xs font-semibold tracking-wider text-gray-500 uppercase"
           >
-            Phone
+            {{ 'patients.phone' | translate }}
           </th>
           <th
             class="px-6 py-3 text-left text-xs font-semibold tracking-wider text-gray-500 uppercase"
           >
-            Email
+            {{ 'patients.email' | translate }}
           </th>
           <th
             class="px-6 py-3 text-left text-xs font-semibold tracking-wider text-gray-500 uppercase"
           >
-            Account
+            {{ 'patients.account' | translate }}
           </th>
         </tr>
       </thead>
       <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
         <tr *ngIf="filteredPatients.length === 0">
-          <td colspan="4" class="py-10 text-center text-gray-400">No patients found.</td>
+          <td colspan="4" class="py-10 text-center text-gray-400">
+            {{ 'patients.no_results' | translate }}
+          </td>
         </tr>
 
         <tr
@@ -136,11 +149,11 @@
               *ngIf="patient.email?.includes('clinic.local'); else registered"
               class="rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-600"
             >
-              Walk-in
+              {{ 'patients.walk_in' | translate }}
             </span>
             <ng-template #registered>
               <span class="rounded-full bg-teal-50 px-3 py-1 text-xs font-medium text-teal-700">
-                Registered
+                {{ 'patients.registered' | translate }}
               </span>
             </ng-template>
           </td>

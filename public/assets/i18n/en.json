@@ -17,5 +17,36 @@
     "confirmed": "Confirmed",
     "checked_in": "Checked in",
     "revenue_today": "Today's revenue"
+  },
+ 
+  "patients": {
+  "subtitle":       "Register and search patients.",
+    "name":           "Name",
+    "phone":          "Phone",
+    "email":          "Email",
+    "optional":       "optional",
+    "account":        "Account",
+    "add":            "+ Add patient",
+    "cancel":         "Cancel",
+    "create":         "Create",
+    "creating":       "Creating...",
+    "name_required":  "Name is required",
+    "phone_required": "Phone is required",
+    "no_results":     "No patients found.",
+    "loading":        "Loading...",
+    "walk_in":        "Walk-in",
+    "registered":     "Registered",
+     "fill_required": "Please fill all required fields.",
+    "created_success": "Patient created successfully.",
+    "create_failed": "Failed to create patient.",
+    "load_failed": "Failed to load patients."
+  },
+  
+  "common": {
+    "success": "Success",
+    "error": "Error"
   }
 }
+
+
+
