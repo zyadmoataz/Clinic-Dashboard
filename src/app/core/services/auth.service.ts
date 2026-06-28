@@ -1,3 +1,6 @@
+// ==========================================
+// OWNER: Othman
+// ==========================================
 import { Injectable, signal } from '@angular/core';
 
 export interface User {
@@ -7,35 +10,48 @@ export interface User {
   role: 'admin' | 'receptionist' | 'doctor' | 'patient';
 }
 
-@Injectable({
-  providedIn: 'root',
-})
+const TOKEN_KEY = 'cc_token';
+const USER_KEY = 'cc_user';
+
+@Injectable({ providedIn: 'root' })
 export class AuthService {
   currentUser = signal<User | null>(null);
   isAuthenticated = signal<boolean>(false);
 
   constructor() {
-    const token = localStorage.getItem('auth_token');
-    const userStr = localStorage.getItem('current_user');
-
-    if (token && userStr) {
-      this.isAuthenticated.set(true);
-      // We parse the 'userStr', NOT the 'token'
-      this.currentUser.set(JSON.parse(userStr));
+    // Restore session on page reload
+    const token = localStorage.getItem(TOKEN_KEY);
+    const raw = localStorage.getItem(USER_KEY);
+    if (token && raw) {
+      try {
+        const user = JSON.parse(raw) as User;
+        this.currentUser.set(user);
+        this.isAuthenticated.set(true);
+      } catch {
+        this.clearStorage();
+      }
     }
   }
 
-  setSession(_user: User, _token: string) {
-    localStorage.setItem('auth_token', _token);
-    localStorage.setItem('current_user', JSON.stringify(_user));
+  setSession(user: User, token: string): void {
+    localStorage.setItem(TOKEN_KEY, token);
+    localStorage.setItem(USER_KEY, JSON.stringify(user));
+    this.currentUser.set(user);
     this.isAuthenticated.set(true);
-    this.currentUser.set(_user);
   }
 
-  logout() {
-    localStorage.removeItem('auth_token');
-    localStorage.removeItem('current_user');
-    this.isAuthenticated.set(false);
+  logout(): void {
+    this.clearStorage();
     this.currentUser.set(null);
+    this.isAuthenticated.set(false);
+  }
+
+  getToken(): string | null {
+    return localStorage.getItem(TOKEN_KEY);
+  }
+
+  private clearStorage(): void {
+    localStorage.removeItem(TOKEN_KEY);
+    localStorage.removeItem(USER_KEY);
   }
 }

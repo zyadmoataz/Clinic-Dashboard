@@ -34,7 +34,6 @@
 
   <!-- Content -->
   <ng-container *ngIf="!loading && !error && stats">
-    <!-- Stat cards -->
     <div class="stats-grid">
       <div class="stat-card">
         <div class="stat-icon-wrap" style="--icon-bg: var(--color-primary-soft)">
@@ -56,29 +55,7 @@
         </div>
         <div class="stat-body">
           <span class="stat-label">Appointments today</span>
-          <span class="stat-value">{{ stats.todayAppointmentsCount }}</span>
-        </div>
-      </div>
-
-      <div class="stat-card">
-        <div class="stat-icon-wrap" style="--icon-bg: var(--color-warning-soft)">
-          <svg
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="var(--color-warning)"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <circle cx="12" cy="12" r="10" />
-            <polyline points="12 6 12 12 16 14" />
-          </svg>
-        </div>
-        <div class="stat-body">
-          <span class="stat-label">Pending visits</span>
-          <span class="stat-value">{{ stats.pendingVisitsCount }}</span>
+          <span class="stat-value">{{ stats.todaysAppointments }}</span>
         </div>
       </div>
 
@@ -94,26 +71,23 @@
             stroke-linecap="round"
             stroke-linejoin="round"
           >
-            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-            <circle cx="9" cy="7" r="4" />
-            <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+            <polyline points="20 6 9 17 4 12" />
           </svg>
         </div>
         <div class="stat-body">
-          <span class="stat-label">Active doctors</span>
-          <span class="stat-value">{{ stats.activeDoctorsCount }}</span>
+          <span class="stat-label">Confirmed</span>
+          <span class="stat-value">{{ stats.confirmed }}</span>
         </div>
       </div>
 
       <div class="stat-card">
-        <div class="stat-icon-wrap" style="--icon-bg: var(--color-primary-soft)">
+        <div class="stat-icon-wrap" style="--icon-bg: var(--color-warning-soft)">
           <svg
             width="20"
             height="20"
             viewBox="0 0 24 24"
             fill="none"
-            stroke="var(--color-primary)"
+            stroke="var(--color-warning)"
             stroke-width="2"
             stroke-linecap="round"
             stroke-linejoin="round"
@@ -123,47 +97,76 @@
           </svg>
         </div>
         <div class="stat-body">
-          <span class="stat-label">Total patients</span>
-          <span class="stat-value">{{ stats.totalPatientsCount }}</span>
+          <span class="stat-label">Arrived / Completed</span>
+          <span class="stat-value">
+            {{ stats.arrived }}
+            <span class="stat-frac">/ {{ stats.completed }}</span>
+          </span>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon-wrap" style="--icon-bg: var(--color-success-soft)">
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="var(--color-success)"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <line x1="12" y1="1" x2="12" y2="23" />
+            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+          </svg>
+        </div>
+        <div class="stat-body">
+          <span class="stat-label">Today's revenue</span>
+          <span class="stat-value revenue">EGP {{ stats.todaysRevenue | number: '1.0-0' }}</span>
         </div>
       </div>
     </div>
 
     <!-- Summary row -->
-    <div class="summary-row">
-      <div class="summary-card">
-        <div class="summary-header">
-          <span class="summary-title">Clinic overview</span>
-          <span class="live-badge"> <span class="live-dot"></span> Live </span>
+    <div class="summary-card">
+      <div class="summary-header">
+        <span class="summary-title">Clinic overview</span>
+        <span class="live-badge"> <span class="live-dot"></span> Live </span>
+      </div>
+      <div class="overview-grid">
+        <div class="ov-item">
+          <span class="ov-label">Total today</span>
+          <span class="ov-value" style="color: var(--color-primary)">{{
+            stats.todaysAppointments
+          }}</span>
         </div>
-        <div class="overview-grid">
-          <div class="ov-item">
-            <span class="ov-label">Today's appointments</span>
-            <span class="ov-value" style="color: var(--color-primary)">{{
-              stats.todayAppointmentsCount
-            }}</span>
-          </div>
-          <div class="ov-divider"></div>
-          <div class="ov-item">
-            <span class="ov-label">Pending visits</span>
-            <span class="ov-value" style="color: var(--color-warning)">{{
-              stats.pendingVisitsCount
-            }}</span>
-          </div>
-          <div class="ov-divider"></div>
-          <div class="ov-item">
-            <span class="ov-label">Active doctors</span>
-            <span class="ov-value" style="color: var(--color-success)">{{
-              stats.activeDoctorsCount
-            }}</span>
-          </div>
-          <div class="ov-divider"></div>
-          <div class="ov-item">
-            <span class="ov-label">Total patients</span>
-            <span class="ov-value" style="color: var(--color-primary)">{{
-              stats.totalPatientsCount
-            }}</span>
-          </div>
+        <div class="ov-divider"></div>
+        <div class="ov-item">
+          <span class="ov-label">Confirmed</span>
+          <span class="ov-value" style="color: var(--color-success)">{{ stats.confirmed }}</span>
+        </div>
+        <div class="ov-divider"></div>
+        <div class="ov-item">
+          <span class="ov-label">Arrived</span>
+          <span class="ov-value" style="color: var(--color-primary)">{{ stats.arrived }}</span>
+        </div>
+        <div class="ov-divider"></div>
+        <div class="ov-item">
+          <span class="ov-label">Completed</span>
+          <span class="ov-value" style="color: var(--color-success)">{{ stats.completed }}</span>
+        </div>
+        <div class="ov-divider"></div>
+        <div class="ov-item">
+          <span class="ov-label">No-show</span>
+          <span class="ov-value" style="color: var(--color-danger)">{{ stats.noShow }}</span>
+        </div>
+        <div class="ov-divider"></div>
+        <div class="ov-item">
+          <span class="ov-label">Revenue</span>
+          <span class="ov-value" style="color: var(--color-success)"
+            >EGP {{ stats.todaysRevenue | number: '1.0-0' }}</span
+          >
         </div>
       </div>
     </div>

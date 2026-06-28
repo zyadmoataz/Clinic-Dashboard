@@ -1,5 +1,4 @@
 <div class="page">
-  <!-- Header -->
   <div class="page-header">
     <div>
       <h1 class="page-title">
@@ -8,7 +7,6 @@
     </div>
   </div>
 
-  <!-- Skeleton -->
   <ng-container *ngIf="loading">
     <div class="stats-grid">
       <div class="skeleton-card" *ngFor="let i of [1, 2, 3, 4]"></div>
@@ -16,7 +14,6 @@
     <div class="skeleton-body"></div>
   </ng-container>
 
-  <!-- Error -->
   <div class="empty-state" *ngIf="error && !loading">
     <svg
       width="32"
@@ -33,11 +30,8 @@
     <p>Could not load dashboard data. Please refresh.</p>
   </div>
 
-  <!-- Content -->
   <ng-container *ngIf="!loading && !error && stats">
-    <!-- Stat cards -->
     <div class="stats-grid">
-      <!-- Today's appointments -->
       <div class="stat-card">
         <div class="stat-icon-wrap" style="--icon-bg: var(--color-primary-soft)">
           <svg
@@ -58,24 +52,10 @@
         </div>
         <div class="stat-body">
           <span class="stat-label">Today's appointments</span>
-          <span class="stat-value">{{ stats.todayAppointmentsCount }}</span>
-          <span class="stat-sub success">
-            <svg
-              width="12"
-              height="12"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2.5"
-            >
-              <polyline points="18 15 12 9 6 15" />
-            </svg>
-            +12% vs last week
-          </span>
+          <span class="stat-value">{{ stats.todaysAppointments }}</span>
         </div>
       </div>
 
-      <!-- Confirmed -->
       <div class="stat-card">
         <div class="stat-icon-wrap" style="--icon-bg: var(--color-success-soft)">
           <svg
@@ -93,12 +73,11 @@
         </div>
         <div class="stat-body">
           <span class="stat-label">Confirmed</span>
-          <span class="stat-value">{{ confirmedCount }}</span>
+          <span class="stat-value">{{ stats.confirmed }}</span>
           <span class="stat-sub muted">{{ awaitingPaymentCount }} awaiting payment</span>
         </div>
       </div>
 
-      <!-- Arrived / completed -->
       <div class="stat-card">
         <div class="stat-icon-wrap" style="--icon-bg: var(--color-primary-soft)">
           <svg
@@ -116,16 +95,14 @@
           </svg>
         </div>
         <div class="stat-body">
-          <span class="stat-label">Arrived / completed</span>
+          <span class="stat-label">Arrived / Completed</span>
           <span class="stat-value">
-            {{ arrivedCount }}
-            <span class="stat-frac">/ {{ stats.pendingVisitsCount }}</span>
+            {{ stats.arrived }}
+            <span class="stat-frac">/ {{ stats.completed }}</span>
           </span>
-          <span class="stat-sub muted">on schedule</span>
         </div>
       </div>
 
-      <!-- Revenue -->
       <div class="stat-card">
         <div class="stat-icon-wrap" style="--icon-bg: var(--color-success-soft)">
           <svg
@@ -144,20 +121,7 @@
         </div>
         <div class="stat-body">
           <span class="stat-label">Today's revenue</span>
-          <span class="stat-value revenue">EGP {{ stats.totalPatientsCount | number }}</span>
-          <span class="stat-sub success">
-            <svg
-              width="12"
-              height="12"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2.5"
-            >
-              <polyline points="18 15 12 9 6 15" />
-            </svg>
-            +8%
-          </span>
+          <span class="stat-value revenue">EGP {{ stats.todaysRevenue | number: '1.0-0' }}</span>
         </div>
       </div>
     </div>

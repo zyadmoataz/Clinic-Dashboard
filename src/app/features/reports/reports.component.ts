@@ -52,18 +52,33 @@ export class ReportsComponent implements OnInit {
   readonly CIRCUMFERENCE = 2 * Math.PI * 48;
 
   ngOnInit(): void {
-    this.api.getReports().subscribe({
-      next: (data) => {
-        this.reports = data;
-        this.buildWeekBars(data);
-        this.buildServiceBars(data);
-        this.loading = false;
-      },
-      error: () => {
-        this.error = true;
-        this.loading = false;
-      },
-    });
+    const mock: ClinicReports = {
+      totalRevenue: 248500,
+      completedVisitsCount: 252,
+      newPatientsCount: 38,
+      revenueByService: [
+        { serviceName: 'Dermatology', revenue: 98000 },
+        { serviceName: 'Cardiology', revenue: 74000 },
+        { serviceName: 'Orthopedics', revenue: 76500 },
+      ],
+    };
+    this.reports = mock;
+    this.buildWeekBars(mock);
+    this.buildServiceBars(mock);
+    this.loading = false;
+
+    // this.api.getReports().subscribe({
+    //   next: (data) => {
+    //     this.reports = data;
+    //     this.buildWeekBars(data);
+    //     this.buildServiceBars(data);
+    //     this.loading = false;
+    //   },
+    //   error: () => {
+    //     this.error = true;
+    //     this.loading = false;
+    //   },
+    // });
   }
 
   private buildWeekBars(data: ClinicReports): void {

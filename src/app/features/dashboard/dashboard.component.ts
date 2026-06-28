@@ -1,12 +1,22 @@
 // ==========================================
 // OWNER: Othman
 // ==========================================
-import { Component, inject, computed, OnInit } from '@angular/core';
+import { Component, OnInit, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { ApiService } from '../../core/services/api.service';
 import { AuthService } from '../../core/services/auth.service';
-import { DashboardStats, Appointment } from '../../core/models';
+import { Appointment } from '../../core/models';
+
+// Real shape returned by GET /api/dashboard/stats
+interface DashboardStats {
+  todaysAppointments: number;
+  confirmed: number;
+  arrived: number;
+  completed: number;
+  noShow: number;
+  todaysRevenue: number;
+}
 
 // ─── Admin sub-view ───────────────────────────────────────────────────────────
 
@@ -32,16 +42,26 @@ export class AdminDashboardComponent implements OnInit {
   });
 
   ngOnInit(): void {
-    this.api.getDashboardStats().subscribe({
-      next: (data) => {
-        this.stats = data;
-        this.loading = false;
-      },
-      error: () => {
-        this.error = true;
-        this.loading = false;
-      },
-    });
+    this.stats = {
+      todaysAppointments: 8,
+      confirmed: 7,
+      arrived: 0,
+      completed: 0,
+      noShow: 0,
+      todaysRevenue: 370,
+    };
+    this.loading = false;
+
+    // this.api.getDashboardStats().subscribe({
+    //   next: (data: any) => {
+    //     this.stats = data;
+    //     this.loading = false;
+    //   },
+    //   error: () => {
+    //     this.error = true;
+    //     this.loading = false;
+    //   },
+    // });
   }
 }
 
@@ -73,8 +93,8 @@ export class ReceptionistDashboardComponent implements OnInit {
 
   ngOnInit(): void {
     this.api.getDashboardStats().subscribe({
-      next: (stats) => {
-        this.stats = stats;
+      next: (data: any) => {
+        this.stats = data;
         this.loadAppointments();
       },
       error: () => {
@@ -132,14 +152,8 @@ export class ReceptionistDashboardComponent implements OnInit {
     return map[status] ?? 'border-default';
   }
 
-  get confirmedCount(): number {
-    return this.upcomingAppointments.filter((a) => a.status === 'Confirmed').length;
-  }
   get awaitingPaymentCount(): number {
     return this.upcomingAppointments.filter((a) => a.status === 'PendingPayment').length;
-  }
-  get arrivedCount(): number {
-    return this.upcomingAppointments.filter((a) => a.status === 'Arrived').length;
   }
 }
 
@@ -259,5 +273,5 @@ export class DoctorDashboardComponent implements OnInit {
 })
 export class DashboardComponent {
   private auth = inject(AuthService);
-  role = computed(() => this.auth.currentUser()?.role ?? '');
+  role = computed(() => this.auth.currentUser()?.role?.toLowerCase() ?? '');
 }
