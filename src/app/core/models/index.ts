@@ -91,7 +91,7 @@ export interface Visit {
 
 export interface Patient {
   id: number;
-  displayName: string;
+  name: string;
   email: string;
   phone: string;
   gender?: string;
