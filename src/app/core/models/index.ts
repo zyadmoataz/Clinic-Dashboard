@@ -118,8 +118,10 @@ export interface DoctorRegisterRequest {
 }
 
 export interface ReceptionistRegisterRequest {
-  displayName: string;
+  name: string;
   email: string;
+  phone: number;
+  password: string;
 }
 
 export interface ClinicReports {

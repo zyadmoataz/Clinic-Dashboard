@@ -54,4 +54,7 @@ export class StaffComponent implements OnInit {
   goToAddDoctor(): void {
     this.router.navigate(['/staff/add-doctor']);
   }
+  goToAddreciptionist(): void {
+    this.router.navigate(['/staff/add-receptionist']);
+  }
 }

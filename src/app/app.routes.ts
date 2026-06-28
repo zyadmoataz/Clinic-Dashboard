@@ -32,7 +32,13 @@ export const routes: Routes = [
             loadComponent: () =>
               import('./features/staff/add-doctor/add-doctor').then((m) => m.AddDoctorComponent),
           },
-
+          {
+            path: 'add-receptionist',
+            loadComponent: () =>
+              import('./features/staff/add-receptionist/add-receptionist').then(
+                (m) => m.AddReceptionistComponent,
+              ),
+          },
           {
             path: 'services',
             loadComponent: () =>
