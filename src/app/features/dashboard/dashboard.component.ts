@@ -1,10 +1,263 @@
 // ==========================================
 // OWNER: Othman
 // ==========================================
-import { Component } from '@angular/core';
+import { Component, inject, computed, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+import { ApiService } from '../../core/services/api.service';
+import { AuthService } from '../../core/services/auth.service';
+import { DashboardStats, Appointment } from '../../core/models';
+
+// ─── Admin sub-view ───────────────────────────────────────────────────────────
+
+@Component({
+  selector: 'app-admin-dashboard',
+  standalone: true,
+  imports: [CommonModule],
+  templateUrl: './admin/admin-dashboard.component.html',
+  styleUrl: './admin/admin-dashboard.component.scss',
+})
+export class AdminDashboardComponent implements OnInit {
+  private api = inject(ApiService);
+
+  stats: DashboardStats | null = null;
+  loading = true;
+  error = false;
+
+  today = new Date().toLocaleDateString('en-GB', {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  });
+
+  ngOnInit(): void {
+    this.api.getDashboardStats().subscribe({
+      next: (data) => {
+        this.stats = data;
+        this.loading = false;
+      },
+      error: () => {
+        this.error = true;
+        this.loading = false;
+      },
+    });
+  }
+}
+
+// ─── Receptionist sub-view ────────────────────────────────────────────────────
+
+@Component({
+  selector: 'app-receptionist-dashboard',
+  standalone: true,
+  imports: [CommonModule, RouterModule],
+  templateUrl: './receptionist/receptionist-dashboard.component.html',
+  styleUrl: './receptionist/receptionist-dashboard.component.scss',
+})
+export class ReceptionistDashboardComponent implements OnInit {
+  private api = inject(ApiService);
+
+  stats: DashboardStats | null = null;
+  upcomingAppointments: Appointment[] = [];
+  loading = true;
+  error = false;
+
+  today = new Date().toLocaleDateString('en-GB', {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  });
+
+  todayIso = new Date().toISOString().split('T')[0];
+
+  ngOnInit(): void {
+    this.api.getDashboardStats().subscribe({
+      next: (stats) => {
+        this.stats = stats;
+        this.loadAppointments();
+      },
+      error: () => {
+        this.error = true;
+        this.loading = false;
+      },
+    });
+  }
+
+  private loadAppointments(): void {
+    this.api.getAppointments({ date: this.todayIso }).subscribe({
+      next: (appts) => {
+        this.upcomingAppointments = appts
+          .filter((a) => ['Confirmed', 'PendingPayment', 'Arrived'].includes(a.status))
+          .sort((a, b) => a.timeSlot.localeCompare(b.timeSlot))
+          .slice(0, 8);
+        this.loading = false;
+      },
+      error: () => {
+        this.loading = false;
+      },
+    });
+  }
+
+  statusLabel(status: Appointment['status']): string {
+    const map: Record<string, string> = {
+      Confirmed: 'Confirmed',
+      PendingPayment: 'Pending payment',
+      Arrived: 'Arrived',
+      Completed: 'Completed',
+      NoShow: 'No-show',
+      Cancelled: 'Cancelled',
+    };
+    return map[status] ?? status;
+  }
+
+  statusClass(status: Appointment['status']): string {
+    const map: Record<string, string> = {
+      Confirmed: 'badge-confirmed',
+      PendingPayment: 'badge-pending',
+      Arrived: 'badge-arrived',
+      Completed: 'badge-completed',
+      NoShow: 'badge-noshow',
+      Cancelled: 'badge-cancelled',
+    };
+    return map[status] ?? '';
+  }
+
+  borderClass(status: Appointment['status']): string {
+    const map: Record<string, string> = {
+      Confirmed: 'border-confirmed',
+      PendingPayment: 'border-pending',
+      Arrived: 'border-arrived',
+    };
+    return map[status] ?? 'border-default';
+  }
+
+  get confirmedCount(): number {
+    return this.upcomingAppointments.filter((a) => a.status === 'Confirmed').length;
+  }
+  get awaitingPaymentCount(): number {
+    return this.upcomingAppointments.filter((a) => a.status === 'PendingPayment').length;
+  }
+  get arrivedCount(): number {
+    return this.upcomingAppointments.filter((a) => a.status === 'Arrived').length;
+  }
+}
+
+// ─── Doctor sub-view ──────────────────────────────────────────────────────────
+
+@Component({
+  selector: 'app-doctor-dashboard',
+  standalone: true,
+  imports: [CommonModule, RouterModule],
+  templateUrl: './doctor/doctor-dashboard.component.html',
+  styleUrl: './doctor/doctor-dashboard.component.scss',
+})
+export class DoctorDashboardComponent implements OnInit {
+  private api = inject(ApiService);
+
+  appointments: Appointment[] = [];
+  loading = true;
+  error = false;
+
+  todayLabel = new Date().toLocaleDateString('en-GB', {
+    weekday: 'short',
+    day: 'numeric',
+    month: 'short',
+  });
+
+  ngOnInit(): void {
+    this.api.getDoctorSchedule().subscribe({
+      next: (appts) => {
+        this.appointments = appts.sort((a, b) => a.timeSlot.localeCompare(b.timeSlot));
+        this.loading = false;
+      },
+      error: () => {
+        this.error = true;
+        this.loading = false;
+      },
+    });
+  }
+
+  get patientCount(): number {
+    return this.appointments.length;
+  }
+
+  statusLabel(status: Appointment['status']): string {
+    const map: Record<string, string> = {
+      Confirmed: 'Confirmed',
+      PendingPayment: 'Pending payment',
+      Arrived: 'Arrived',
+      Completed: 'Completed',
+      NoShow: 'No-show',
+      Cancelled: 'Cancelled',
+    };
+    return map[status] ?? status;
+  }
+
+  statusClass(status: Appointment['status']): string {
+    const map: Record<string, string> = {
+      Confirmed: 'badge-confirmed',
+      PendingPayment: 'badge-pending',
+      Arrived: 'badge-arrived',
+      Completed: 'badge-completed',
+      NoShow: 'badge-noshow',
+      Cancelled: 'badge-cancelled',
+    };
+    return map[status] ?? '';
+  }
+
+  canStartVisit(status: Appointment['status']): boolean {
+    return status === 'Arrived';
+  }
+  canOpen(status: Appointment['status']): boolean {
+    return status === 'Confirmed';
+  }
+  canViewNotes(status: Appointment['status']): boolean {
+    return status === 'Completed';
+  }
+
+  startVisit(appt: Appointment): void {
+    console.log('Start visit', appt.id);
+  }
+  openAppointment(appt: Appointment): void {
+    console.log('Open appointment', appt.id);
+  }
+}
+
+// ─── Shell — routes by role ───────────────────────────────────────────────────
+
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  template: '<div>DashboardComponent Shell</div>',
+  imports: [
+    CommonModule,
+    AdminDashboardComponent,
+    ReceptionistDashboardComponent,
+    DoctorDashboardComponent,
+  ],
+  template: `
+    <ng-container [ngSwitch]="role()">
+      <app-admin-dashboard *ngSwitchCase="'admin'" />
+      <app-receptionist-dashboard *ngSwitchCase="'receptionist'" />
+      <app-doctor-dashboard *ngSwitchCase="'doctor'" />
+      <div class="no-role" *ngSwitchDefault>No dashboard available for your role.</div>
+    </ng-container>
+  `,
+  styles: [
+    `
+      .no-role {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        padding: 3rem;
+        color: var(--color-muted);
+        font-size: 0.9rem;
+      }
+    `,
+  ],
 })
-export class DashboardComponent {}
+export class DashboardComponent {
+  private auth = inject(AuthService);
+  role = computed(() => this.auth.currentUser()?.role ?? '');
+}

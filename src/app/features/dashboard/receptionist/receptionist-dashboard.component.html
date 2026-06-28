@@ -1,0 +1,208 @@
+<div class="page">
+  <!-- Header -->
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">
+        Today <span class="page-date">{{ today }}</span>
+      </h1>
+    </div>
+  </div>
+
+  <!-- Skeleton -->
+  <ng-container *ngIf="loading">
+    <div class="stats-grid">
+      <div class="skeleton-card" *ngFor="let i of [1, 2, 3, 4]"></div>
+    </div>
+    <div class="skeleton-body"></div>
+  </ng-container>
+
+  <!-- Error -->
+  <div class="empty-state" *ngIf="error && !loading">
+    <svg
+      width="32"
+      height="32"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="var(--color-danger)"
+      stroke-width="1.5"
+    >
+      <circle cx="12" cy="12" r="10" />
+      <line x1="12" y1="8" x2="12" y2="12" />
+      <line x1="12" y1="16" x2="12.01" y2="16" />
+    </svg>
+    <p>Could not load dashboard data. Please refresh.</p>
+  </div>
+
+  <!-- Content -->
+  <ng-container *ngIf="!loading && !error && stats">
+    <!-- Stat cards -->
+    <div class="stats-grid">
+      <!-- Today's appointments -->
+      <div class="stat-card">
+        <div class="stat-icon-wrap" style="--icon-bg: var(--color-primary-soft)">
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="var(--color-primary)"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <rect x="3" y="4" width="18" height="18" rx="2" />
+            <line x1="16" y1="2" x2="16" y2="6" />
+            <line x1="8" y1="2" x2="8" y2="6" />
+            <line x1="3" y1="10" x2="21" y2="10" />
+          </svg>
+        </div>
+        <div class="stat-body">
+          <span class="stat-label">Today's appointments</span>
+          <span class="stat-value">{{ stats.todayAppointmentsCount }}</span>
+          <span class="stat-sub success">
+            <svg
+              width="12"
+              height="12"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+            >
+              <polyline points="18 15 12 9 6 15" />
+            </svg>
+            +12% vs last week
+          </span>
+        </div>
+      </div>
+
+      <!-- Confirmed -->
+      <div class="stat-card">
+        <div class="stat-icon-wrap" style="--icon-bg: var(--color-success-soft)">
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="var(--color-success)"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <polyline points="20 6 9 17 4 12" />
+          </svg>
+        </div>
+        <div class="stat-body">
+          <span class="stat-label">Confirmed</span>
+          <span class="stat-value">{{ confirmedCount }}</span>
+          <span class="stat-sub muted">{{ awaitingPaymentCount }} awaiting payment</span>
+        </div>
+      </div>
+
+      <!-- Arrived / completed -->
+      <div class="stat-card">
+        <div class="stat-icon-wrap" style="--icon-bg: var(--color-primary-soft)">
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="var(--color-primary)"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+            <circle cx="12" cy="7" r="4" />
+          </svg>
+        </div>
+        <div class="stat-body">
+          <span class="stat-label">Arrived / completed</span>
+          <span class="stat-value">
+            {{ arrivedCount }}
+            <span class="stat-frac">/ {{ stats.pendingVisitsCount }}</span>
+          </span>
+          <span class="stat-sub muted">on schedule</span>
+        </div>
+      </div>
+
+      <!-- Revenue -->
+      <div class="stat-card">
+        <div class="stat-icon-wrap" style="--icon-bg: var(--color-success-soft)">
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="var(--color-success)"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <line x1="12" y1="1" x2="12" y2="23" />
+            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+          </svg>
+        </div>
+        <div class="stat-body">
+          <span class="stat-label">Today's revenue</span>
+          <span class="stat-value revenue">EGP {{ stats.totalPatientsCount | number }}</span>
+          <span class="stat-sub success">
+            <svg
+              width="12"
+              height="12"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+            >
+              <polyline points="18 15 12 9 6 15" />
+            </svg>
+            +8%
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Next up -->
+    <div class="next-card">
+      <div class="next-header">
+        <span class="next-title">Next up</span>
+        <a class="next-link" routerLink="/calendar">Open day calendar →</a>
+      </div>
+
+      <div class="appt-list">
+        <ng-container *ngIf="upcomingAppointments.length > 0; else noAppts">
+          <div class="appt-row" *ngFor="let appt of upcomingAppointments">
+            <span class="appt-time">{{ appt.timeSlot }}</span>
+            <div class="appt-border" [ngClass]="borderClass(appt.status)"></div>
+            <div class="appt-info">
+              <span class="appt-name">{{ appt.patientName }} · {{ appt.doctorName }}</span>
+              <span class="appt-meta">{{ appt.serviceName }}</span>
+            </div>
+            <span class="appt-badge" [ngClass]="statusClass(appt.status)">{{
+              statusLabel(appt.status)
+            }}</span>
+          </div>
+        </ng-container>
+
+        <ng-template #noAppts>
+          <div class="empty-appts">
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="var(--color-faint)"
+              stroke-width="1.5"
+            >
+              <rect x="3" y="4" width="18" height="18" rx="2" />
+              <line x1="16" y1="2" x2="16" y2="6" />
+              <line x1="8" y1="2" x2="8" y2="6" />
+              <line x1="3" y1="10" x2="21" y2="10" />
+            </svg>
+            <p>No upcoming appointments for today.</p>
+          </div>
+        </ng-template>
+      </div>
+    </div>
+  </ng-container>
+</div>

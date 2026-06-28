@@ -1,0 +1,212 @@
+<div class="page">
+  <!-- Header -->
+  <div class="page-header">
+    <h1 class="page-title">Reports</h1>
+    <div class="header-actions">
+      <div class="period-select">
+        <svg
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <rect x="3" y="4" width="18" height="18" rx="2" />
+          <line x1="16" y1="2" x2="16" y2="6" />
+          <line x1="8" y1="2" x2="8" y2="6" />
+          <line x1="3" y1="10" x2="21" y2="10" />
+        </svg>
+        <span>This month</span>
+        <svg
+          width="12"
+          height="12"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.5"
+        >
+          <polyline points="6 9 12 15 18 9" />
+        </svg>
+      </div>
+      <button class="btn-export" (click)="exportCsv()" [disabled]="loading">
+        <svg
+          width="15"
+          height="15"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+          <polyline points="7 10 12 15 17 10" />
+          <line x1="12" y1="15" x2="12" y2="3" />
+        </svg>
+        Export CSV
+      </button>
+    </div>
+  </div>
+
+  <!-- Skeleton -->
+  <ng-container *ngIf="loading">
+    <div class="charts-grid">
+      <div class="skeleton-panel" *ngFor="let i of [1, 2, 3, 4]"></div>
+    </div>
+  </ng-container>
+
+  <!-- Error -->
+  <div class="empty-state" *ngIf="error && !loading">
+    <svg
+      width="32"
+      height="32"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="var(--color-danger)"
+      stroke-width="1.5"
+    >
+      <circle cx="12" cy="12" r="10" />
+      <line x1="12" y1="8" x2="12" y2="12" />
+      <line x1="12" y1="16" x2="12.01" y2="16" />
+    </svg>
+    <p>Could not load reports. Please refresh.</p>
+  </div>
+
+  <!-- Charts grid -->
+  <div class="charts-grid" *ngIf="!loading && !error && reports">
+    <!-- ① Status mix -->
+    <div class="panel">
+      <div class="panel-header">
+        <span class="panel-title">Status mix</span>
+        <span class="panel-meta">{{ reports.completedVisitsCount + 952 | number }} appts</span>
+      </div>
+
+      <div class="status-mix-body">
+        <!-- Donut -->
+        <div class="donut-wrap">
+          <svg viewBox="0 0 120 120" width="120" height="120">
+            <circle
+              cx="60"
+              cy="60"
+              r="48"
+              fill="none"
+              stroke="var(--color-border)"
+              stroke-width="14"
+            />
+            <ng-container *ngFor="let seg of donutSegments()">
+              <circle
+                cx="60"
+                cy="60"
+                r="48"
+                fill="none"
+                [attr.stroke]="seg.color"
+                stroke-width="14"
+                stroke-linecap="butt"
+                [attr.stroke-dasharray]="seg.dashArray"
+                [attr.stroke-dashoffset]="seg.dashOffset"
+                transform="rotate(-90 60 60)"
+              />
+            </ng-container>
+          </svg>
+          <div class="donut-center">
+            <span class="donut-num">{{ reports.completedVisitsCount + 952 | number }}</span>
+            <span class="donut-sub">appts</span>
+          </div>
+        </div>
+
+        <!-- Legend -->
+        <div class="status-legend">
+          <div class="legend-row" *ngFor="let item of statusMix">
+            <span class="legend-dot" [style.background]="item.color"></span>
+            <span class="legend-label">{{ item.label }}</span>
+            <span class="legend-pct">{{ item.pct }}%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ② Revenue by week -->
+    <div class="panel">
+      <div class="panel-header">
+        <span class="panel-title">Revenue by week</span>
+        <span class="panel-meta">EGP {{ reports.totalRevenue | number }} total</span>
+      </div>
+
+      <div class="bar-chart">
+        <div class="bars">
+          <div class="bar-col" *ngFor="let bar of weekBars">
+            <div class="bar-track">
+              <div
+                class="bar-fill"
+                [style.height.%]="bar.heightPct"
+                [title]="'EGP ' + (bar.value | number)"
+              ></div>
+            </div>
+            <span class="bar-label">{{ bar.label }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ③ No-show rate -->
+    <div class="panel">
+      <div class="panel-header">
+        <span class="panel-title">No-show rate</span>
+        <span class="panel-meta">vs. clinic target {{ noShowTarget }}%</span>
+      </div>
+
+      <div class="noshow-body">
+        <span class="noshow-big">{{ noShowThisMonth }}<span class="noshow-pct">%</span></span>
+
+        <div class="noshow-bars">
+          <div class="noshow-row">
+            <span class="noshow-label">This month</span>
+            <div class="noshow-track">
+              <div
+                class="noshow-fill"
+                [style.width.%]="(noShowThisMonth / noShowTarget) * 100"
+              ></div>
+            </div>
+            <span class="noshow-val">{{ noShowThisMonth }}%</span>
+          </div>
+          <div class="noshow-row">
+            <span class="noshow-label">Last month</span>
+            <div class="noshow-track">
+              <div
+                class="noshow-fill muted"
+                [style.width.%]="(noShowLastMonth / noShowTarget) * 100"
+              ></div>
+            </div>
+            <span class="noshow-val">{{ noShowLastMonth }}%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ④ Revenue by service (Doctor utilization proxy) -->
+    <div class="panel">
+      <div class="panel-header">
+        <span class="panel-title">Revenue by service</span>
+        <span class="panel-meta">EGP total</span>
+      </div>
+
+      <div class="service-list" *ngIf="serviceBars.length > 0; else noServices">
+        <div class="service-row" *ngFor="let svc of serviceBars">
+          <div class="svc-avatar">{{ svc.name.slice(0, 2).toUpperCase() }}</div>
+          <div class="svc-info">
+            <span class="svc-name">{{ svc.name }}</span>
+            <div class="svc-track">
+              <div class="svc-fill" [style.width.%]="svc.pct"></div>
+            </div>
+          </div>
+          <span class="svc-pct">EGP {{ svc.revenue | number }}</span>
+        </div>
+      </div>
+
+      <ng-template #noServices>
+        <div class="empty-services">No service data available.</div>
+      </ng-template>
+    </div>
+  </div>
+</div>

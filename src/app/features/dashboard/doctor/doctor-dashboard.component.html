@@ -1,0 +1,92 @@
+<div class="page">
+  <!-- Header -->
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">My schedule</h1>
+      <p class="page-sub" *ngIf="!loading && !error">
+        {{ todayLabel }} · {{ patientCount }} patient{{ patientCount !== 1 ? 's' : '' }}
+      </p>
+    </div>
+  </div>
+
+  <!-- Skeleton -->
+  <ng-container *ngIf="loading">
+    <div class="skeleton-row" *ngFor="let i of [1, 2, 3]"></div>
+  </ng-container>
+
+  <!-- Error -->
+  <div class="empty-state" *ngIf="error && !loading">
+    <svg
+      width="32"
+      height="32"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="var(--color-danger)"
+      stroke-width="1.5"
+    >
+      <circle cx="12" cy="12" r="10" />
+      <line x1="12" y1="8" x2="12" y2="12" />
+      <line x1="12" y1="16" x2="12.01" y2="16" />
+    </svg>
+    <p>Could not load your schedule. Please refresh.</p>
+  </div>
+
+  <!-- Schedule list -->
+  <div class="schedule-card" *ngIf="!loading && !error">
+    <ng-container *ngIf="appointments.length > 0; else noSchedule">
+      <div class="schedule-row" *ngFor="let appt of appointments">
+        <span class="appt-time">{{ appt.timeSlot }}</span>
+
+        <div class="appt-main">
+          <span class="appt-name">{{ appt.patientName }}</span>
+          <span class="appt-meta">
+            {{ appt.serviceName }}
+            <ng-container *ngIf="appt.serviceName"> · </ng-container>
+            30 min
+          </span>
+        </div>
+
+        <div class="appt-actions">
+          <span class="appt-badge" [ngClass]="statusClass(appt.status)">{{
+            statusLabel(appt.status)
+          }}</span>
+
+          <button *ngIf="canStartVisit(appt.status)" class="btn-primary" (click)="startVisit(appt)">
+            Start visit
+          </button>
+
+          <button *ngIf="canOpen(appt.status)" class="btn-ghost" (click)="openAppointment(appt)">
+            Open
+          </button>
+
+          <a
+            *ngIf="canViewNotes(appt.status)"
+            class="btn-link"
+            routerLink="/visit-notes/{{ appt.id }}"
+          >
+            View notes
+          </a>
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-template #noSchedule>
+      <div class="empty-schedule">
+        <svg
+          width="28"
+          height="28"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="var(--color-faint)"
+          stroke-width="1.5"
+        >
+          <rect x="3" y="4" width="18" height="18" rx="2" />
+          <line x1="16" y1="2" x2="16" y2="6" />
+          <line x1="8" y1="2" x2="8" y2="6" />
+          <line x1="3" y1="10" x2="21" y2="10" />
+        </svg>
+        <p>No appointments scheduled for today.</p>
+      </div>
+    </ng-template>
+  </div>
+</div>
