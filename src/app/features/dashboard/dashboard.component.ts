@@ -42,25 +42,20 @@ export class AdminDashboardComponent implements OnInit {
   });
 
   ngOnInit(): void {
+    // TODO: remove mock when backend fixes /api/dashboard/stats
     this.stats = {
-      todaysAppointments: 8,
-      confirmed: 7,
-      arrived: 0,
-      completed: 0,
-      noShow: 0,
-      todaysRevenue: 370,
+      todaysAppointments: 24,
+      confirmed: 18,
+      arrived: 9,
+      completed: 5,
+      noShow: 1,
+      todaysRevenue: 4250,
     };
     this.loading = false;
 
     // this.api.getDashboardStats().subscribe({
-    //   next: (data: any) => {
-    //     this.stats = data;
-    //     this.loading = false;
-    //   },
-    //   error: () => {
-    //     this.error = true;
-    //     this.loading = false;
-    //   },
+    //   next: (data: any) => { this.stats = data; this.loading = false; },
+    //   error: () => { this.error = true; this.loading = false; },
     // });
   }
 }
@@ -92,31 +87,87 @@ export class ReceptionistDashboardComponent implements OnInit {
   todayIso = new Date().toISOString().split('T')[0];
 
   ngOnInit(): void {
-    this.api.getDashboardStats().subscribe({
-      next: (data: any) => {
-        this.stats = data;
-        this.loadAppointments();
-      },
-      error: () => {
-        this.error = true;
-        this.loading = false;
-      },
-    });
+    // TODO: remove mock when backend fixes /api/dashboard/stats
+    this.stats = {
+      todaysAppointments: 24,
+      confirmed: 18,
+      arrived: 9,
+      completed: 5,
+      noShow: 1,
+      todaysRevenue: 4250,
+    };
+    this.loadAppointments();
+
+    // this.api.getDashboardStats().subscribe({
+    //   next: (data: any) => { this.stats = data; this.loadAppointments(); },
+    //   error: () => { this.error = true; this.loading = false; },
+    // });
   }
 
   private loadAppointments(): void {
-    this.api.getAppointments({ date: this.todayIso }).subscribe({
-      next: (appts) => {
-        this.upcomingAppointments = appts
-          .filter((a) => ['Confirmed', 'PendingPayment', 'Arrived'].includes(a.status))
-          .sort((a, b) => a.timeSlot.localeCompare(b.timeSlot))
-          .slice(0, 8);
-        this.loading = false;
+    // TODO: remove mock when backend fixes /api/appointments
+    this.upcomingAppointments = [
+      {
+        id: 1,
+        doctorId: 1,
+        patientId: 1,
+        serviceId: 1,
+        patientName: 'Sara Al-Amri',
+        doctorName: 'Dr. Hassan',
+        serviceName: 'Dermatology · Room 4',
+        date: this.todayIso,
+        timeSlot: '09:30',
+        status: 'Confirmed' as Appointment['status'],
       },
-      error: () => {
-        this.loading = false;
+      {
+        id: 2,
+        doctorId: 2,
+        patientId: 2,
+        serviceId: 2,
+        patientName: 'Khalid Yusuf',
+        doctorName: 'Dr. Nasser',
+        serviceName: 'Cardiology · Room 2',
+        date: this.todayIso,
+        timeSlot: '10:30',
+        status: 'PendingPayment' as Appointment['status'],
       },
-    });
+      {
+        id: 3,
+        doctorId: 1,
+        patientId: 3,
+        serviceId: 1,
+        patientName: 'Mona Adel',
+        doctorName: 'Dr. Hassan',
+        serviceName: 'Dermatology · Room 4',
+        date: this.todayIso,
+        timeSlot: '11:00',
+        status: 'Arrived' as Appointment['status'],
+      },
+      {
+        id: 4,
+        doctorId: 3,
+        patientId: 4,
+        serviceId: 3,
+        patientName: 'Omar Farouk',
+        doctorName: 'Dr. Kamal',
+        serviceName: 'Orthopedics · Room 1',
+        date: this.todayIso,
+        timeSlot: '11:30',
+        status: 'Confirmed' as Appointment['status'],
+      },
+    ];
+    this.loading = false;
+
+    // this.api.getAppointments({ date: this.todayIso }).subscribe({
+    //   next: (appts) => {
+    //     this.upcomingAppointments = appts
+    //       .filter((a) => ['Confirmed', 'PendingPayment', 'Arrived'].includes(a.status))
+    //       .sort((a, b) => a.timeSlot.localeCompare(b.timeSlot))
+    //       .slice(0, 8);
+    //     this.loading = false;
+    //   },
+    //   error: () => { this.loading = false; },
+    // });
   }
 
   statusLabel(status: Appointment['status']): string {
@@ -180,16 +231,54 @@ export class DoctorDashboardComponent implements OnInit {
   });
 
   ngOnInit(): void {
-    this.api.getDoctorSchedule().subscribe({
-      next: (appts) => {
-        this.appointments = appts.sort((a, b) => a.timeSlot.localeCompare(b.timeSlot));
-        this.loading = false;
+    // TODO: remove mock when backend fixes /api/doctor/schedule
+    this.appointments = [
+      {
+        id: 1,
+        doctorId: 1,
+        patientId: 1,
+        serviceId: 1,
+        patientName: 'Sara Al-Amri',
+        doctorName: 'Dr. Hassan',
+        serviceName: 'Consultation · 30 min',
+        date: this.todayLabel,
+        timeSlot: '09:30',
+        status: 'Arrived' as Appointment['status'],
       },
-      error: () => {
-        this.error = true;
-        this.loading = false;
+      {
+        id: 2,
+        doctorId: 1,
+        patientId: 2,
+        serviceId: 2,
+        patientName: 'Mona Adel',
+        doctorName: 'Dr. Hassan',
+        serviceName: 'Follow-up · 15 min',
+        date: this.todayLabel,
+        timeSlot: '11:00',
+        status: 'Confirmed' as Appointment['status'],
       },
-    });
+      {
+        id: 3,
+        doctorId: 1,
+        patientId: 3,
+        serviceId: 1,
+        patientName: 'Hana Saeed',
+        doctorName: 'Dr. Hassan',
+        serviceName: 'Consultation · 30 min',
+        date: this.todayLabel,
+        timeSlot: '08:30',
+        status: 'Completed' as Appointment['status'],
+      },
+    ].sort((a, b) => a.timeSlot.localeCompare(b.timeSlot));
+    this.loading = false;
+
+    // this.api.getDoctorSchedule().subscribe({
+    //   next: (appts) => {
+    //     this.appointments = appts.sort((a, b) => a.timeSlot.localeCompare(b.timeSlot));
+    //     this.loading = false;
+    //   },
+    //   error: () => { this.error = true; this.loading = false; },
+    // });
   }
 
   get patientCount(): number {
