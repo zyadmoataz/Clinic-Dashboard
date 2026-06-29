@@ -3,7 +3,7 @@ import { CanActivateFn, Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 
 export function roleGuard(allowedRoles: string[]): CanActivateFn {
-  return (route, state) => {
+  return () => {
     const authService = inject(AuthService);
     const router = inject(Router);
 
