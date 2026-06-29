@@ -21,10 +21,10 @@ import { CommonModule } from '@angular/common';
   `,
 })
 export class SearchInputComponent {
-  @Output() search = new EventEmitter<string>();
+  @Output() searchChange = new EventEmitter<string>();
 
   onSearch(event: Event): void {
     const value = (event.target as HTMLInputElement).value;
-    this.search.emit(value);
+    this.searchChange.emit(value);
   }
 }

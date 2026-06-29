@@ -1,7 +1,7 @@
 // ==========================================
 // OWNER: Helda
 // ==========================================
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { ApiService } from '../../core/services/api.service';
@@ -14,11 +14,11 @@ import { SearchInputComponent } from '../../shared/components/search-input.compo
   selector: 'app-staff',
   standalone: true,
   imports: [CommonModule, DataTableComponent],
-  templateUrl: './staff.html',
-  styleUrls: ['./staff.css'],
+  templateUrl: './staff.component.html',
+  styleUrls: ['./staff.component.css'],
 })
 export class StaffComponent implements OnInit {
-  staffList: Staff[] = [];
+  staffList: { id: string; cells: any[] }[] = [];
   isLoading = false;
 
   columns = [
@@ -31,6 +31,7 @@ export class StaffComponent implements OnInit {
   constructor(
     private apiService: ApiService,
     private router: Router,
+    private cdr: ChangeDetectorRef,
   ) {}
 
   ngOnInit(): void {
@@ -42,12 +43,17 @@ export class StaffComponent implements OnInit {
 
     this.apiService.getStaff().subscribe({
       next: (data) => {
-        this.staffList = data;
+        this.staffList = data.map((staff) => ({
+          id: staff.id,
+          cells: [staff.name, staff.role, staff.specialization, staff.isActive],
+        })) as any;
         this.isLoading = false;
+        this.cdr.detectChanges();
       },
       error: (err) => {
         console.error(err);
         this.isLoading = false;
+        this.cdr.detectChanges();
       },
     });
   }

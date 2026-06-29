@@ -1,7 +1,7 @@
 // ==========================================
 // OWNER: Helda
 // ==========================================
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
@@ -21,7 +21,7 @@ import { ToastService } from '../../core/services/toast.service';
     ButtonComponent,
     TranslatePipe,
   ],
-  templateUrl: './patients.html',
+  templateUrl: './patients.component.html',
 })
 export class PatientsComponent implements OnInit {
   patients: Patient[] = [];
@@ -37,6 +37,7 @@ export class PatientsComponent implements OnInit {
     private fb: FormBuilder,
     public translate: TranslateService,
     private toast: ToastService,
+    private cdr: ChangeDetectorRef,
   ) {}
 
   ngOnInit(): void {
@@ -61,6 +62,7 @@ export class PatientsComponent implements OnInit {
         this.patients = data;
         this.filteredPatients = data;
         this.isLoading = false;
+        this.cdr.detectChanges();
       },
       error: (err: any) => {
         console.error(err);
@@ -69,6 +71,7 @@ export class PatientsComponent implements OnInit {
           this.translate.instant('common.error'),
         );
         this.isLoading = false;
+        this.cdr.detectChanges();
       },
     });
   }

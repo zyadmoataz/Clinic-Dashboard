@@ -57,7 +57,7 @@ export class ApiService {
     return this.http.get<Doctor>(`${this.baseUrl}/doctors/${id}`);
   }
 
-  getDoctorSlots(id: number, params?: { date?: string; serviceId?: number }): Observable<Slot[]> {
+  getDoctorSlots(id: string, params?: { date?: string; serviceId?: number }): Observable<Slot[]> {
     return this.http.get<Slot[]>(`${this.baseUrl}/doctors/${id}/slots`, { params });
   }
 
@@ -65,7 +65,7 @@ export class ApiService {
     return this.http.get<DoctorAvailability[]>(`${this.baseUrl}/doctors/${id}/availability`);
   }
 
-  setDoctorAvailability(id: number, data: any): Observable<void> {
+  setDoctorAvailability(id: string, data: any): Observable<void> {
     return this.http.put<void>(`${this.baseUrl}/doctors/${id}/availability`, data);
   }
 
@@ -173,11 +173,11 @@ export class ApiService {
     return this.http.post<Staff>(`${this.baseUrl}/admin/receptionists`, data);
   }
 
-  updateStaff(id: number, data: Partial<Staff>): Observable<Staff> {
+  updateStaff(id: string, data: Partial<Staff>): Observable<Staff> {
     return this.http.put<Staff>(`${this.baseUrl}/admin/staff/${id}`, data);
   }
 
-  toggleStaffActive(id: number, data: { isActive: boolean }): Observable<Staff> {
+  toggleStaffActive(id: string, data: { isActive: boolean }): Observable<Staff> {
     return this.http.put<Staff>(`${this.baseUrl}/admin/staff/${id}/active`, data);
   }
 

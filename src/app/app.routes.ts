@@ -36,12 +36,14 @@ export const routes: Routes = [
           {
             path: 'add-doctor',
             loadComponent: () =>
-              import('./features/staff/add-doctor/add-doctor').then((m) => m.AddDoctorComponent),
+              import('./features/staff/add-doctor/add-doctor.component').then(
+                (m) => m.AddDoctorComponent,
+              ),
           },
           {
             path: 'add-receptionist',
             loadComponent: () =>
-              import('./features/staff/add-receptionist/add-receptionist').then(
+              import('./features/staff/add-receptionist/add-receptionist.component').then(
                 (m) => m.AddReceptionistComponent,
               ),
           },

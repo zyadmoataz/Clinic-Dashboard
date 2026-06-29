@@ -3,35 +3,6 @@
   <div class="flex flex-wrap items-center justify-between gap-3">
     <h1 class="text-xl font-bold tracking-tight text-[var(--color-text)] sm:text-2xl">Reports</h1>
     <div class="flex flex-wrap items-center gap-2">
-      <div
-        class="flex cursor-pointer items-center gap-2 rounded-[var(--radius-sm)] border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm font-medium text-[var(--color-text)] shadow-[var(--shadow-sm)] transition-colors duration-[var(--transition-fast)] hover:bg-[var(--color-surface-2)]"
-      >
-        <svg
-          width="14"
-          height="14"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-        >
-          <rect x="3" y="4" width="18" height="18" rx="2" />
-          <line x1="16" y1="2" x2="16" y2="6" />
-          <line x1="8" y1="2" x2="8" y2="6" />
-          <line x1="3" y1="10" x2="21" y2="10" />
-        </svg>
-        <span class="hidden sm:inline">This month</span>
-        <span class="sm:hidden">Month</span>
-        <svg
-          width="12"
-          height="12"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2.5"
-        >
-          <polyline points="6 9 12 15 18 9" />
-        </svg>
-      </div>
       <button
         (click)="exportCsv()"
         [disabled]="loading"

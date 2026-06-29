@@ -122,18 +122,20 @@ export interface Visit {
 export interface Patient {
   id: number;
   name: string;
-  email: string;
+  email?: string | null;
   phone: string;
   gender?: string;
   dateOfBirth?: string;
 }
 
 export interface Staff {
-  id: number;
-  displayName: string;
+  id: string;
+  name: string;
   email: string;
+  phone: string;
   role: 'admin' | 'receptionist' | 'doctor';
   isActive: boolean;
+  specialization?: string;
 }
 
 export interface DoctorRegisterRequest {
@@ -144,7 +146,7 @@ export interface DoctorRegisterRequest {
   specialization: string;
   photoUrl?: string;
   bio?: string;
-  yearsExperience: number;
+  availability?: any[];
 }
 
 export interface ReceptionistRegisterRequest {
@@ -162,8 +164,10 @@ export interface ClinicReports {
 }
 
 export interface DashboardStats {
-  todayAppointmentsCount: number;
-  pendingVisitsCount: number;
-  activeDoctorsCount: number;
-  totalPatientsCount: number;
+  todaysAppointments: number;
+  confirmed: number;
+  arrived: number;
+  completed: number;
+  noShow: number;
+  todaysRevenue: number;
 }

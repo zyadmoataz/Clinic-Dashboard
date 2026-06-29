@@ -63,24 +63,23 @@ export class ReportsComponent implements OnInit {
   weekValues: number[] = [];
 
   ngOnInit(): void {
-    const mock: ClinicReports = {
-      totalRevenue: 248500,
-      completedVisitsCount: 252,
-      newPatientsCount: 38,
-      revenueByService: [
-        { serviceName: 'Dermatology', revenue: 98000 },
-        { serviceName: 'Cardiology', revenue: 74000 },
-        { serviceName: 'Orthopedics', revenue: 76500 },
-      ],
-    };
-    this.reports = mock;
-    this.weekValues = [0.22, 0.27, 0.24, 0.27].map((s) => Math.round(mock.totalRevenue * s));
-    this.buildServiceBars(mock);
-    this.loading = false;
-
-    // Run change detection so *ngIf renders the canvas elements, then init charts
-    this.cdr.detectChanges();
-    this.initCharts();
+    this.loading = true;
+    this.api.getReports().subscribe({
+      next: (data) => {
+        this.reports = data;
+        if (data) {
+          this.weekValues = [0.22, 0.27, 0.24, 0.27].map((s) => Math.round(data.totalRevenue * s));
+          this.buildServiceBars(data);
+        }
+        this.loading = false;
+        this.cdr.detectChanges();
+        this.initCharts();
+      },
+      error: () => {
+        this.error = true;
+        this.loading = false;
+      },
+    });
   }
 
   private initCharts(): void {

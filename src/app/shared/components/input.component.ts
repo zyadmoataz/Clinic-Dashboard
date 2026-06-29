@@ -27,8 +27,10 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
         [name]="name()"
         [placeholder]="placeholder()"
         [value]="value"
+        [disabled]="disabled"
         (input)="onInputChange($event)"
         (blur)="onTouched()"
+        [ngClass]="{ 'cursor-not-allowed bg-gray-50 opacity-50': disabled }"
         class="focus:border-primary focus:ring-primary flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus:ring-1 focus:outline-none"
       />
     </div>
@@ -41,6 +43,7 @@ export class InputComponent implements ControlValueAccessor {
   name = input<string>('');
 
   value: string = '';
+  disabled: boolean = false;
   onChange: (value: string) => void = () => {};
   onTouched: () => void = () => {};
 
@@ -60,5 +63,9 @@ export class InputComponent implements ControlValueAccessor {
 
   registerOnTouched(fn: () => void): void {
     this.onTouched = fn;
+  }
+
+  setDisabledState(isDisabled: boolean): void {
+    this.disabled = isDisabled;
   }
 }

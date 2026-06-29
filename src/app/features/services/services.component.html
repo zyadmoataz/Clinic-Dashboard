@@ -1,0 +1,212 @@
+<app-page-header
+  [title]="'header.services' | translate"
+  [description]="'services.subtitle' | translate"
+>
+  <app-button type="button" (clicked)="openCreateModal()">
+    + {{ 'services.add' | translate }}
+  </app-button>
+</app-page-header>
+
+@if (loadingStatus()) {
+  <app-loading />
+}
+
+@if (!loadingStatus() && servicesArr().length === 0) {
+  <app-feedback-states />
+}
+
+@if (errMsg()) {
+  <div
+    class="border-danger bg-danger-soft text-danger rounded-xl border p-4 text-center font-medium"
+  >
+    {{ errMsg() | translate }}
+  </div>
+}
+
+@if (!loadingStatus() && !errMsg() && servicesArr().length > 0) {
+  <app-data-table
+    [columns]="tableColumns"
+    [data]="tableData()"
+    (deleteClicked)="onDeleteClicked($event)"
+    (editClicked)="onEditClicked($event)"
+  />
+}
+
+@if (showCreateModal()) {
+  <app-modal>
+    <h2 class="text-text mb-4 text-xl font-bold">
+      {{
+        isEditMode()
+          ? ('services.edit_modal.title' | translate)
+          : ('services.create_modal.title' | translate)
+      }}
+    </h2>
+
+    <form [formGroup]="createServiceForm" (ngSubmit)="submitService()" class="space-y-4">
+      <div>
+        <label class="mb-1 block text-sm font-medium">
+          {{ 'services.create_modal.name' | translate }}
+        </label>
+
+        <input type="text" formControlName="name" class="w-full rounded-lg border p-2" />
+
+        @if (
+          createServiceForm.controls.name.touched &&
+          createServiceForm.controls.name.hasError('required')
+        ) {
+          <p class="text-danger mt-1 text-sm">
+            {{ 'services.create_modal.name_required' | translate }}
+          </p>
+        }
+
+        @if (
+          createServiceForm.controls.name.touched &&
+          createServiceForm.controls.name.hasError('minlength')
+        ) {
+          <p class="text-danger mt-1 text-sm">
+            {{ 'services.create_modal.name_min' | translate }}
+          </p>
+        }
+      </div>
+
+      <div>
+        <label class="mb-1 block text-sm font-medium">
+          {{ 'services.create_modal.duration' | translate }}
+        </label>
+
+        <input
+          type="number"
+          formControlName="durationMinutes"
+          class="w-full rounded-lg border p-2"
+        />
+
+        @if (
+          createServiceForm.controls.durationMinutes.touched &&
+          createServiceForm.controls.durationMinutes.hasError('required')
+        ) {
+          <p class="text-danger mt-1 text-sm">
+            {{ 'services.create_modal.duration_required' | translate }}
+          </p>
+        }
+
+        @if (
+          createServiceForm.controls.durationMinutes.touched &&
+          createServiceForm.controls.durationMinutes.hasError('min')
+        ) {
+          <p class="text-danger mt-1 text-sm">
+            {{ 'services.create_modal.duration_min' | translate }}
+          </p>
+        }
+      </div>
+
+      <div>
+        <label class="mb-1 block text-sm font-medium">
+          {{ 'services.create_modal.price' | translate }}
+        </label>
+
+        <input type="number" formControlName="price" class="w-full rounded-lg border p-2" />
+
+        @if (
+          createServiceForm.controls.price.touched &&
+          createServiceForm.controls.price.hasError('required')
+        ) {
+          <p class="text-danger mt-1 text-sm">
+            {{ 'services.create_modal.price_required' | translate }}
+          </p>
+        }
+
+        @if (
+          createServiceForm.controls.price.touched &&
+          createServiceForm.controls.price.hasError('min')
+        ) {
+          <p class="text-danger mt-1 text-sm">
+            {{ 'services.create_modal.price_min' | translate }}
+          </p>
+        }
+      </div>
+      <div>
+        <label class="mb-1 block text-sm font-medium">
+          {{ 'services.create_modal.doctor' | translate }}
+        </label>
+
+        <select
+          formControlName="doctorId"
+          class="bg-surface text-text w-full rounded-lg border p-2"
+          [ngClass]="{
+            'cursor-not-allowed opacity-70': isEditMode(),
+          }"
+        >
+          <option value="" disabled selected>
+            {{ 'services.create_modal.select_doctor' | translate }}
+          </option>
+
+          @for (doctor of doctorsArr(); track doctor.id) {
+            <option [value]="doctor.id">
+              {{ doctor.displayName }}
+            </option>
+          }
+        </select>
+
+        @if (
+          createServiceForm.controls.doctorId.touched &&
+          createServiceForm.controls.doctorId.hasError('required')
+        ) {
+          <p class="text-danger mt-1 text-sm">
+            {{ 'services.create_modal.doctor_required' | translate }}
+          </p>
+        }
+      </div>
+
+      <div class="flex justify-end gap-2 pt-4">
+        <app-button
+          type="button"
+          (clicked)="closeCreateModal()"
+          customClass="bg-secondary hover:bg-secondary-hover text-white h-10 px-4 py-2"
+        >
+          {{ 'services.create_modal.cancel' | translate }}
+        </app-button>
+
+        <app-button type="submit" [disabled]="createServiceLoading()">
+          {{
+            createServiceLoading()
+              ? ('services.load' | translate)
+              : isEditMode()
+                ? ('services.edit_modal.edit' | translate)
+                : ('services.create_modal.create' | translate)
+          }}
+        </app-button>
+      </div>
+    </form>
+  </app-modal>
+}
+
+@if (showDeleteModal()) {
+  <app-modal>
+    <h2 class="text-text mb-4 text-xl font-bold">
+      {{ 'services.delete_modal.title' | translate }}
+      <strong>"{{ selectedService()?.name }}"</strong>
+    </h2>
+
+    <p class="text-muted mb-6">
+      {{ 'services.delete_modal.message' | translate }}
+    </p>
+
+    <div class="flex justify-end gap-2">
+      <app-button
+        type="button"
+        (clicked)="closeDeleteModal()"
+        customClass="bg-secondary hover:bg-secondary-hover text-white h-10 px-4 py-2"
+      >
+        {{ 'services.delete_modal.cancel' | translate }}
+      </app-button>
+
+      <app-button
+        type="button"
+        customClass="bg-danger hover:bg-danger-hover text-white h-10 px-4 py-2"
+        (clicked)="confirmDelete()"
+      >
+        {{ 'services.delete_modal.delete' | translate }}
+      </app-button>
+    </div>
+  </app-modal>
+}

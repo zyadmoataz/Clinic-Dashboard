@@ -1,0 +1,107 @@
+<div class="bg-bg selection:bg-primary/20 flex min-h-screen">
+  <!-- Left: Decorative Branding Area -->
+  <div
+    class="relative hidden flex-col justify-between overflow-hidden p-12 text-white lg:flex lg:w-1/2"
+  >
+    <!-- Background Mesh Gradient -->
+    <div
+      class="from-primary via-primary-hover absolute inset-0 z-0 bg-gradient-to-br to-[#1e3a8a]"
+    ></div>
+    <div
+      class="pointer-events-none absolute -top-40 -left-40 z-10 h-[600px] w-[600px] rounded-full bg-white opacity-10 blur-[100px]"
+    ></div>
+    <div
+      class="pointer-events-none absolute -right-40 -bottom-40 z-10 h-[600px] w-[600px] rounded-full bg-teal-400 opacity-20 blur-[120px]"
+    ></div>
+
+    <div class="relative z-20 flex items-center gap-3">
+      <div
+        class="rounded-xl bg-white/20 p-2 text-2xl leading-none font-black text-white shadow-lg ring-1 ring-white/30 backdrop-blur-md"
+      >
+        ✦
+      </div>
+      <span class="text-2xl font-extrabold tracking-tight">Clarity Clinic</span>
+    </div>
+
+    <div class="relative z-20 mb-12 max-w-lg">
+      <h1 class="mb-6 text-5xl leading-tight font-bold tracking-tight">
+        Next-Generation <br />
+        <span class="text-white/80">Clinic Management.</span>
+      </h1>
+      <p class="text-lg leading-relaxed text-white/70">
+        Experience seamless scheduling, intelligent reporting, and effortless patient care. Welcome
+        to the future of healthcare administration.
+      </p>
+    </div>
+
+    <div class="relative z-20 text-sm text-white/50">
+      &copy; 2026 Clarity Clinic. All rights reserved.
+    </div>
+  </div>
+
+  <!-- Right: Form Area -->
+  <div class="relative flex flex-1 items-center justify-center overflow-hidden p-8 sm:p-12">
+    <!-- Mobile background glow -->
+    <div
+      class="bg-primary/10 pointer-events-none absolute top-0 right-0 z-0 h-[400px] w-[400px] rounded-full blur-[80px] lg:hidden"
+    ></div>
+
+    <div class="relative z-10 w-full max-w-md">
+      <div class="mb-10 text-center lg:text-left">
+        <h2 class="text-text mb-2 text-3xl font-extrabold tracking-tight">Welcome back</h2>
+        <p class="text-muted">Enter your credentials to access your dashboard.</p>
+      </div>
+
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="space-y-5">
+        <app-input
+          label="Email address"
+          type="email"
+          formControlName="email"
+          placeholder="name@clarityclinic.com"
+        ></app-input>
+
+        <div class="relative">
+          <div class="absolute top-0 right-0 z-10 flex h-6 items-center">
+            <a
+              href="#"
+              class="text-primary hover:text-primary-hover text-xs font-semibold transition-colors"
+              >Forgot password?</a
+            >
+          </div>
+          <app-input
+            label="Password"
+            type="password"
+            formControlName="password"
+            placeholder="••••••••"
+          ></app-input>
+        </div>
+
+        <div class="mt-2 flex items-center gap-2">
+          <input
+            type="checkbox"
+            id="remember"
+            class="border-border text-primary focus:ring-primary-ring h-4 w-4 rounded"
+          />
+          <label for="remember" class="text-muted text-sm">Remember me for 30 days</label>
+        </div>
+
+        <button
+          type="submit"
+          [disabled]="loginForm.invalid"
+          class="bg-primary shadow-primary/20 hover:bg-primary-hover mt-6 flex h-11 w-full items-center justify-center rounded-xl font-semibold text-white shadow-md transition-all hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-60 disabled:hover:translate-y-0"
+        >
+          Sign in to Dashboard
+        </button>
+      </form>
+
+      <p class="text-muted mt-8 text-center text-sm">
+        Don't have an account?
+        <a
+          routerLink="/staff/register"
+          class="text-primary hover:text-primary-hover font-semibold transition-colors"
+          >Request access</a
+        >
+      </p>
+    </div>
+  </div>
+</div>

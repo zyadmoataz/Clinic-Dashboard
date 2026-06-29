@@ -1,21 +1,12 @@
 // ==========================================
 // OWNER: Othman
 // ==========================================
-import { Component, OnInit, inject, computed } from '@angular/core';
+import { Component, OnInit, inject, computed, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { ApiService } from '../../core/services/api.service';
 import { AuthService } from '../../core/services/auth.service';
-import { Appointment } from '../../core/models';
-
-interface DashboardStats {
-  todaysAppointments: number;
-  confirmed: number;
-  arrived: number;
-  completed: number;
-  noShow: number;
-  todaysRevenue: number;
-}
+import { Appointment, DashboardStats } from '../../core/models';
 
 // ─── Admin sub-view ───────────────────────────────────────────────────────────
 
@@ -27,6 +18,7 @@ interface DashboardStats {
 })
 export class AdminDashboardComponent implements OnInit {
   private api = inject(ApiService);
+  private cdr = inject(ChangeDetectorRef);
 
   stats: DashboardStats | null = null;
   loading = true;
@@ -40,21 +32,18 @@ export class AdminDashboardComponent implements OnInit {
   });
 
   ngOnInit(): void {
-    // TODO: remove mock when backend fixes /api/dashboard/stats
-    this.stats = {
-      todaysAppointments: 24,
-      confirmed: 18,
-      arrived: 9,
-      completed: 5,
-      noShow: 1,
-      todaysRevenue: 4250,
-    };
-    this.loading = false;
-
-    // this.api.getDashboardStats().subscribe({
-    //   next: (data: any) => { this.stats = data; this.loading = false; },
-    //   error: () => { this.error = true; this.loading = false; },
-    // });
+    this.api.getDashboardStats().subscribe({
+      next: (data) => {
+        this.stats = data;
+        this.loading = false;
+        this.cdr.detectChanges();
+      },
+      error: () => {
+        this.error = true;
+        this.loading = false;
+        this.cdr.detectChanges();
+      },
+    });
   }
 }
 
@@ -68,6 +57,7 @@ export class AdminDashboardComponent implements OnInit {
 })
 export class ReceptionistDashboardComponent implements OnInit {
   private api = inject(ApiService);
+  private cdr = inject(ChangeDetectorRef);
 
   stats: DashboardStats | null = null;
   upcomingAppointments: Appointment[] = [];
@@ -84,87 +74,35 @@ export class ReceptionistDashboardComponent implements OnInit {
   todayIso = new Date().toISOString().split('T')[0];
 
   ngOnInit(): void {
-    // TODO: remove mock when backend fixes /api/dashboard/stats
-    this.stats = {
-      todaysAppointments: 24,
-      confirmed: 18,
-      arrived: 9,
-      completed: 5,
-      noShow: 1,
-      todaysRevenue: 4250,
-    };
-    this.loadAppointments();
-
-    // this.api.getDashboardStats().subscribe({
-    //   next: (data: any) => { this.stats = data; this.loadAppointments(); },
-    //   error: () => { this.error = true; this.loading = false; },
-    // });
+    this.api.getDashboardStats().subscribe({
+      next: (data) => {
+        this.stats = data;
+        this.loadAppointments();
+        this.cdr.detectChanges();
+      },
+      error: () => {
+        this.error = true;
+        this.loading = false;
+        this.cdr.detectChanges();
+      },
+    });
   }
 
   private loadAppointments(): void {
-    // TODO: remove mock when backend fixes /api/appointments
-    this.upcomingAppointments = [
-      {
-        id: 1,
-        doctorId: 1,
-        patientId: 1,
-        serviceId: 1,
-        patientName: 'Sara Al-Amri',
-        doctorName: 'Dr. Hassan',
-        serviceName: 'Dermatology · Room 4',
-        date: this.todayIso,
-        timeSlot: '09:30',
-        status: 'Confirmed' as Appointment['status'],
+    this.api.getAppointments({ date: this.todayIso }).subscribe({
+      next: (appts) => {
+        this.upcomingAppointments = appts
+          .filter((a) => ['Confirmed', 'PendingPayment', 'Arrived'].includes(a.status))
+          .sort((a, b) => (a.timeSlot || '').localeCompare(b.timeSlot || ''))
+          .slice(0, 8);
+        this.loading = false;
+        this.cdr.detectChanges();
       },
-      {
-        id: 2,
-        doctorId: 2,
-        patientId: 2,
-        serviceId: 2,
-        patientName: 'Khalid Yusuf',
-        doctorName: 'Dr. Nasser',
-        serviceName: 'Cardiology · Room 2',
-        date: this.todayIso,
-        timeSlot: '10:30',
-        status: 'PendingPayment' as Appointment['status'],
+      error: () => {
+        this.loading = false;
+        this.cdr.detectChanges();
       },
-      {
-        id: 3,
-        doctorId: 1,
-        patientId: 3,
-        serviceId: 1,
-        patientName: 'Mona Adel',
-        doctorName: 'Dr. Hassan',
-        serviceName: 'Dermatology · Room 4',
-        date: this.todayIso,
-        timeSlot: '11:00',
-        status: 'Arrived' as Appointment['status'],
-      },
-      {
-        id: 4,
-        doctorId: 3,
-        patientId: 4,
-        serviceId: 3,
-        patientName: 'Omar Farouk',
-        doctorName: 'Dr. Kamal',
-        serviceName: 'Orthopedics · Room 1',
-        date: this.todayIso,
-        timeSlot: '11:30',
-        status: 'Confirmed' as Appointment['status'],
-      },
-    ];
-    this.loading = false;
-
-    // this.api.getAppointments({ date: this.todayIso }).subscribe({
-    //   next: (appts) => {
-    //     this.upcomingAppointments = appts
-    //       .filter((a) => ['Confirmed', 'PendingPayment', 'Arrived'].includes(a.status))
-    //       .sort((a, b) => a.timeSlot.localeCompare(b.timeSlot))
-    //       .slice(0, 8);
-    //     this.loading = false;
-    //   },
-    //   error: () => { this.loading = false; },
-    // });
+    });
   }
 
   statusLabel(status: Appointment['status']): string {
@@ -215,6 +153,7 @@ export class ReceptionistDashboardComponent implements OnInit {
 })
 export class DoctorDashboardComponent implements OnInit {
   private api = inject(ApiService);
+  private cdr = inject(ChangeDetectorRef);
 
   appointments: Appointment[] = [];
   loading = true;
@@ -227,54 +166,20 @@ export class DoctorDashboardComponent implements OnInit {
   });
 
   ngOnInit(): void {
-    // TODO: remove mock when backend fixes /api/doctor/schedule
-    this.appointments = [
-      {
-        id: 1,
-        doctorId: 1,
-        patientId: 1,
-        serviceId: 1,
-        patientName: 'Sara Al-Amri',
-        doctorName: 'Dr. Hassan',
-        serviceName: 'Consultation · 30 min',
-        date: this.todayLabel,
-        timeSlot: '09:30',
-        status: 'Arrived' as Appointment['status'],
+    this.api.getDoctorSchedule().subscribe({
+      next: (appts) => {
+        this.appointments = appts.sort((a, b) =>
+          (a.timeSlot || '').localeCompare(b.timeSlot || ''),
+        );
+        this.loading = false;
+        this.cdr.detectChanges();
       },
-      {
-        id: 2,
-        doctorId: 1,
-        patientId: 2,
-        serviceId: 2,
-        patientName: 'Mona Adel',
-        doctorName: 'Dr. Hassan',
-        serviceName: 'Follow-up · 15 min',
-        date: this.todayLabel,
-        timeSlot: '11:00',
-        status: 'Confirmed' as Appointment['status'],
+      error: () => {
+        this.error = true;
+        this.loading = false;
+        this.cdr.detectChanges();
       },
-      {
-        id: 3,
-        doctorId: 1,
-        patientId: 3,
-        serviceId: 1,
-        patientName: 'Hana Saeed',
-        doctorName: 'Dr. Hassan',
-        serviceName: 'Consultation · 30 min',
-        date: this.todayLabel,
-        timeSlot: '08:30',
-        status: 'Completed' as Appointment['status'],
-      },
-    ].sort((a, b) => a.timeSlot.localeCompare(b.timeSlot));
-    this.loading = false;
-
-    // this.api.getDoctorSchedule().subscribe({
-    //   next: (appts) => {
-    //     this.appointments = appts.sort((a, b) => a.timeSlot.localeCompare(b.timeSlot));
-    //     this.loading = false;
-    //   },
-    //   error: () => { this.error = true; this.loading = false; },
-    // });
+    });
   }
 
   get patientCount(): number {
@@ -334,19 +239,7 @@ export class DoctorDashboardComponent implements OnInit {
     ReceptionistDashboardComponent,
     DoctorDashboardComponent,
   ],
-  template: `
-    <ng-container [ngSwitch]="role()">
-      <app-admin-dashboard *ngSwitchCase="'admin'" />
-      <app-receptionist-dashboard *ngSwitchCase="'receptionist'" />
-      <app-doctor-dashboard *ngSwitchCase="'doctor'" />
-      <div
-        *ngSwitchDefault
-        class="flex h-full items-center justify-center p-12 text-sm text-slate-400"
-      >
-        No dashboard available for your role.
-      </div>
-    </ng-container>
-  `,
+  templateUrl: './dashboard.component.html',
 })
 export class DashboardComponent {
   private auth = inject(AuthService);

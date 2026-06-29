@@ -2,13 +2,16 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
 import { ApiService } from '../../../core/services/api.service';
+import { ToastService } from '../../../core/services/toast.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-add-doctor',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
-  templateUrl: './add-doctor.html',
+  templateUrl: './add-doctor.component.html',
 })
 export class AddDoctorComponent implements OnInit {
   doctorForm!: FormGroup;
@@ -28,6 +31,8 @@ export class AddDoctorComponent implements OnInit {
     private fb: FormBuilder,
     private apiService: ApiService,
     private router: Router,
+    private toast: ToastService,
+    private translate: TranslateService,
   ) {}
 
   ngOnInit(): void {
@@ -98,36 +103,31 @@ export class AddDoctorComponent implements OnInit {
       phone: formValue.phone,
       password: formValue.password,
       specialization: formValue.specialty,
-      photoUrl: formValue.photoUrl,
-      bio: formValue.bio,
-      yearsExperience: 0,
+      photoUrl: formValue.photoUrl || undefined,
+      bio: formValue.bio || undefined,
+      availability: formValue.availability.map(
+        (a: { dayOfWeek: string; startTime: string; endTime: string }) => ({
+          dayOfWeek: a.dayOfWeek,
+          startTime: a.startTime,
+          endTime: a.endTime,
+        }),
+      ),
     };
 
     this.apiService.addDoctor(doctorData).subscribe({
-      next: (doctor) => {
-        this.apiService
-          .setDoctorAvailability(
-            doctor.id,
-            formValue.availability.map(
-              (a: { dayOfWeek: string; startTime: string; endTime: string }) => ({
-                dayOfWeek: a.dayOfWeek,
-                startTime: a.startTime,
-                endTime: a.endTime,
-              }),
-            ),
-          )
-          .subscribe({
-            next: () => {
-              this.isLoading = false;
-              this.router.navigate(['/staff']);
-            },
-            error: (err: Error) => {
-              console.error(err);
-              this.isLoading = false;
-            },
-          });
+      next: () => {
+        this.isLoading = false;
+        this.toast.success(this.translate.instant('common.success'));
+        this.router.navigate(['/staff']);
       },
-      error: (err: Error) => {
+      error: (err: HttpErrorResponse) => {
+        if (err.status === 409) {
+          this.toast.error(
+            this.translate.instant('validation.email_in_use') || 'That email is already in use.',
+          );
+        } else {
+          this.toast.error(this.translate.instant('common.error') || 'An error occurred.');
+        }
         console.error(err);
         this.isLoading = false;
       },
