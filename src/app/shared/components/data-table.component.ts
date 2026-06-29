@@ -4,6 +4,8 @@
 // ==========================================
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { TranslatePipe } from '@ngx-translate/core';
+import { TableActionsComponent } from './table-actions.component';
 
 @Component({
   selector: 'app-data-table',
@@ -100,7 +102,7 @@ import { CommonModule } from '@angular/common';
         </tbody>
       </table>
     </div>
-  `,
+  </div>`,
 })
 export class DataTableComponent {
   @Input() data: any[] = [];

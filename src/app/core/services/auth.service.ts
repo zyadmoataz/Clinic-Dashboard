@@ -1,3 +1,6 @@
+// ==========================================
+// OWNER: Othman
+// ==========================================
 import { Injectable, signal } from '@angular/core';
 
 export interface User {
@@ -7,25 +10,48 @@ export interface User {
   role: 'admin' | 'receptionist' | 'doctor' | 'patient';
 }
 
-@Injectable({
-  providedIn: 'root',
-})
+const TOKEN_KEY = 'cc_token';
+const USER_KEY = 'cc_user';
+
+@Injectable({ providedIn: 'root' })
 export class AuthService {
-  // Simple signal-based state for authentication
   currentUser = signal<User | null>(null);
   isAuthenticated = signal<boolean>(false);
 
   constructor() {
-    // TODO: Check local storage for existing session
+    // Restore session on page reload
+    const token = localStorage.getItem(TOKEN_KEY);
+    const raw = localStorage.getItem(USER_KEY);
+    if (token && raw) {
+      try {
+        const user = JSON.parse(raw) as User;
+        this.currentUser.set(user);
+        this.isAuthenticated.set(true);
+      } catch {
+        this.clearStorage();
+      }
+    }
   }
 
-  setSession(_user: User, _token: string) {
-    // TODO: Save to localStorage and update signals
-    console.log('setSession called. Team needs to implement this.');
+  setSession(user: User, token: string): void {
+    localStorage.setItem(TOKEN_KEY, token);
+    localStorage.setItem(USER_KEY, JSON.stringify(user));
+    this.currentUser.set(user);
+    this.isAuthenticated.set(true);
   }
 
-  logout() {
-    // TODO: Remove from localStorage and update signals
-    console.log('logout called. Team needs to implement this.');
+  logout(): void {
+    this.clearStorage();
+    this.currentUser.set(null);
+    this.isAuthenticated.set(false);
+  }
+
+  getToken(): string | null {
+    return localStorage.getItem(TOKEN_KEY);
+  }
+
+  private clearStorage(): void {
+    localStorage.removeItem(TOKEN_KEY);
+    localStorage.removeItem(USER_KEY);
   }
 }

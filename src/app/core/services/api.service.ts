@@ -20,6 +20,10 @@ import {
   ReceptionistRegisterRequest,
   ClinicReports,
   DashboardStats,
+  getDoctorsParams,
+  PaginatedDoctorsResponse,
+  BlockedDate,
+  RegisterRequest,
 } from '../models';
 
 @Injectable({ providedIn: 'root' })
@@ -42,8 +46,11 @@ export class ApiService {
   }
 
   // ── Doctors ──
-  getDoctors(params?: { search?: string; specialty?: string }): Observable<Doctor[]> {
-    return this.http.get<Doctor[]>(`${this.baseUrl}/doctors`, { params });
+
+  getDoctors(params?: getDoctorsParams): Observable<PaginatedDoctorsResponse> {
+    return this.http.get<PaginatedDoctorsResponse>(`${this.baseUrl}/doctors`, {
+      params: params as Record<string, string | number | boolean>,
+    });
   }
 
   getDoctorById(id: number): Observable<Doctor> {
@@ -54,7 +61,7 @@ export class ApiService {
     return this.http.get<Slot[]>(`${this.baseUrl}/doctors/${id}/slots`, { params });
   }
 
-  getDoctorAvailability(id: number): Observable<DoctorAvailability[]> {
+  getDoctorAvailability(id: string): Observable<DoctorAvailability[]> {
     return this.http.get<DoctorAvailability[]>(`${this.baseUrl}/doctors/${id}/availability`);
   }
 
@@ -62,16 +69,31 @@ export class ApiService {
     return this.http.put<void>(`${this.baseUrl}/doctors/${id}/availability`, data);
   }
 
+  getDoctorBlockedDates(id: string): Observable<BlockedDate[]> {
+    return this.http.get<BlockedDate[]>(`${this.baseUrl}/doctors/${id}/blocked-dates`);
+  }
+
+  createDoctorBlockedDate(id: string, data: Omit<BlockedDate, 'id'>): Observable<BlockedDate> {
+    return this.http.post<BlockedDate>(`${this.baseUrl}/doctors/${id}/blocked-dates`, data);
+  }
+
+  deleteDoctorBlockedDate(id: string, date: string): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/doctors/${id}/blocked-dates/${date}`);
+  }
+
   // ── Services ──
   getServices(): Observable<Service[]> {
     return this.http.get<Service[]>(`${this.baseUrl}/services`);
   }
 
-  createService(data: Omit<Service, 'id'>): Observable<Service> {
+  createService(data: Omit<Service, 'id' | 'doctorName'>): Observable<Service> {
     return this.http.post<Service>(`${this.baseUrl}/services`, data);
   }
 
-  updateService(id: number, data: Partial<Service>): Observable<Service> {
+  updateService(
+    id: number,
+    data: Omit<Service, 'id' | 'doctorName' | 'doctorId'>,
+  ): Observable<Service> {
     return this.http.put<Service>(`${this.baseUrl}/services/${id}`, data);
   }
 

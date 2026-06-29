@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { LucideAngularModule } from 'lucide-angular';
 import {
   ButtonComponent,
@@ -8,6 +8,8 @@ import {
   LanguageToggleComponent,
   ThemeToggleComponent,
 } from '../../../shared/components';
+import { AuthService } from '../../../core/services/auth.service';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'app-header',
@@ -23,31 +25,43 @@ import {
   ],
   template: `
     <header
-      class="bg-surface border-border sticky top-0 z-30 flex h-16 items-center justify-between border-b px-6"
+      class="bg-surface/70 border-border/50 glass sticky top-0 z-30 flex h-[72px] items-center justify-between border-b px-6 shadow-sm backdrop-blur-xl"
     >
       <div class="flex items-center">
         <!-- Optional mobile menu trigger could go here -->
       </div>
 
-      <div class="flex items-center gap-4">
-        <app-theme-toggle></app-theme-toggle>
+      <div class="flex items-center gap-5">
+        <div class="flex items-center gap-2">
+          <app-theme-toggle class="interactive-hover"></app-theme-toggle>
+          <app-language-toggle class="interactive-hover"></app-language-toggle>
+        </div>
 
-        <app-language-toggle></app-language-toggle>
+        <div class="bg-border-strong h-8 w-[1px] opacity-50"></div>
 
-        <div class="bg-border-strong mx-1 h-6 w-px"></div>
-
-        <div class="flex items-center gap-3 pl-1">
+        <div class="group flex cursor-pointer items-center gap-3 pl-1 transition-all">
           <div class="hidden text-right sm:block">
-            <p class="text-text text-sm leading-tight font-bold">Admin User</p>
-            <p class="text-muted text-xs leading-tight">Administrator</p>
+            <p
+              class="text-text group-hover:text-primary text-sm leading-tight font-bold transition-colors"
+            >
+              {{ currentUser?.displayName || 'Unknown User' }}
+            </p>
+            <p class="text-muted text-xs leading-tight capitalize">
+              {{ currentUser?.role || 'Guest' }}
+            </p>
           </div>
-          <app-avatar name="Admin User" size="sm"></app-avatar>
+          <div
+            class="ring-border group-hover:ring-primary/50 rounded-full transition-all duration-300 group-hover:ring-2"
+          >
+            <app-avatar [name]="currentUser?.displayName || 'Unknown'" size="sm"></app-avatar>
+          </div>
         </div>
 
         <app-button
           variant="ghost"
-          class="text-danger hover:bg-danger-soft hover:text-danger ml-2"
+          class="text-danger hover:bg-danger-soft/80 hover:text-danger interactive-hover ml-2 flex h-10 w-10 items-center justify-center rounded-full p-0"
           title="Sign out"
+          (clicked)="onSubmit()"
         >
           <lucide-icon name="log-out" class="h-5 w-5"></lucide-icon>
         </app-button>
@@ -55,4 +69,18 @@ import {
     </header>
   `,
 })
-export class HeaderComponent {}
+export class HeaderComponent {
+  authService = inject(AuthService);
+  private toastService = inject(ToastService);
+  router = inject(Router);
+
+  get currentUser() {
+    return this.authService.currentUser();
+  }
+
+  onSubmit() {
+    this.authService.logout();
+    this.toastService.success('Logout successful', 'You have been logged out');
+    this.router.navigate(['/staff/login']);
+  }
+}

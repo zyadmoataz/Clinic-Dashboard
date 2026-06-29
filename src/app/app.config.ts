@@ -14,6 +14,7 @@ import {
   LucideAngularModule,
   LayoutDashboard,
   Users,
+  User,
   Stethoscope,
   Clock,
   BarChart3,
@@ -29,6 +30,13 @@ import {
   Inbox,
   AlertCircle,
   FileSearch,
+  Eye,
+  Edit,
+  Trash,
+  Check,
+  TrendingUp,
+  Mail,
+  Lock,
 } from 'lucide-angular';
 
 import { routes } from './app.routes';
@@ -53,6 +61,7 @@ export const appConfig: ApplicationConfig = {
       LucideAngularModule.pick({
         LayoutDashboard,
         Users,
+        User,
         Stethoscope,
         Clock,
         BarChart3,
@@ -68,6 +77,13 @@ export const appConfig: ApplicationConfig = {
         Inbox,
         AlertCircle,
         FileSearch,
+        Eye,
+        Edit,
+        Trash,
+        Check,
+        TrendingUp,
+        Mail,
+        Lock,
       }),
     ),
   ],
