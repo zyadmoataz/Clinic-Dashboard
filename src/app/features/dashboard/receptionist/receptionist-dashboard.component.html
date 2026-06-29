@@ -1,0 +1,264 @@
+<div class="mx-auto flex max-w-[var(--container)] flex-col gap-4 p-4 sm:gap-6 sm:p-6">
+  <!-- Header -->
+  <div>
+    <h1
+      class="flex flex-wrap items-baseline gap-2 text-xl font-bold tracking-tight text-[var(--color-text)] sm:text-2xl"
+    >
+      Today
+      <span class="text-sm font-normal text-[var(--color-muted)]">{{ today }}</span>
+    </h1>
+  </div>
+
+  <!-- Skeleton -->
+  <ng-container *ngIf="loading">
+    <div class="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
+      <div
+        *ngFor="let i of [1, 2, 3, 4]"
+        class="h-28 animate-pulse rounded-[var(--radius)] bg-[var(--color-surface-2)]"
+      ></div>
+    </div>
+    <div class="h-64 animate-pulse rounded-[var(--radius)] bg-[var(--color-surface-2)]"></div>
+  </ng-container>
+
+  <!-- Error -->
+  <div
+    *ngIf="error && !loading"
+    class="flex flex-col items-center gap-3 py-12 text-center text-sm text-[var(--color-muted)]"
+  >
+    <svg
+      width="32"
+      height="32"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="var(--color-danger)"
+      stroke-width="1.5"
+    >
+      <circle cx="12" cy="12" r="10" />
+      <line x1="12" y1="8" x2="12" y2="12" />
+      <line x1="12" y1="16" x2="12.01" y2="16" />
+    </svg>
+    <p>Could not load dashboard data. Please refresh.</p>
+  </div>
+
+  <ng-container *ngIf="!loading && !error && stats">
+    <!-- Stat cards -->
+    <div class="grid grid-cols-1 gap-3 sm:gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div
+        class="flex items-start gap-3 rounded-[var(--radius)] border border-[var(--color-border)] bg-[var(--color-surface)] p-3 shadow-[var(--shadow-sm)] transition-all duration-[var(--transition-fast)] hover:-translate-y-px hover:shadow-[var(--shadow-md)] sm:p-4"
+      >
+        <div
+          class="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-[var(--radius-sm)] bg-[var(--color-primary-soft)]"
+        >
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="var(--color-primary)"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <rect x="3" y="4" width="18" height="18" rx="2" />
+            <line x1="16" y1="2" x2="16" y2="6" />
+            <line x1="8" y1="2" x2="8" y2="6" />
+            <line x1="3" y1="10" x2="21" y2="10" />
+          </svg>
+        </div>
+        <div class="flex min-w-0 flex-col gap-0.5">
+          <span class="truncate text-xs font-medium text-[var(--color-muted)]"
+            >Today's appointments</span
+          >
+          <span
+            class="text-2xl leading-tight font-bold tracking-tight text-[var(--color-text)] sm:text-3xl"
+            >{{ stats.todaysAppointments }}</span
+          >
+          <span class="flex items-center gap-0.5 text-xs text-[var(--color-success)]">
+            <svg
+              width="11"
+              height="11"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+            >
+              <polyline points="18 15 12 9 6 15" />
+            </svg>
+            +12% vs last week
+          </span>
+        </div>
+      </div>
+
+      <div
+        class="flex items-start gap-3 rounded-[var(--radius)] border border-[var(--color-border)] bg-[var(--color-surface)] p-3 shadow-[var(--shadow-sm)] transition-all duration-[var(--transition-fast)] hover:-translate-y-px hover:shadow-[var(--shadow-md)] sm:p-4"
+      >
+        <div
+          class="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-[var(--radius-sm)] bg-[var(--color-success-soft)]"
+        >
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="var(--color-success)"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <polyline points="20 6 9 17 4 12" />
+          </svg>
+        </div>
+        <div class="flex min-w-0 flex-col gap-0.5">
+          <span class="text-xs font-medium text-[var(--color-muted)]">Confirmed</span>
+          <span
+            class="text-2xl leading-tight font-bold tracking-tight text-[var(--color-text)] sm:text-3xl"
+            >{{ stats.confirmed }}</span
+          >
+          <span class="truncate text-xs text-[var(--color-muted)]"
+            >{{ awaitingPaymentCount }} awaiting payment</span
+          >
+        </div>
+      </div>
+
+      <div
+        class="flex items-start gap-3 rounded-[var(--radius)] border border-[var(--color-border)] bg-[var(--color-surface)] p-3 shadow-[var(--shadow-sm)] transition-all duration-[var(--transition-fast)] hover:-translate-y-px hover:shadow-[var(--shadow-md)] sm:p-4"
+      >
+        <div
+          class="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-[var(--radius-sm)] bg-[var(--color-primary-soft)]"
+        >
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="var(--color-primary)"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+            <circle cx="12" cy="7" r="4" />
+          </svg>
+        </div>
+        <div class="flex min-w-0 flex-col gap-0.5">
+          <span class="truncate text-xs font-medium text-[var(--color-muted)]"
+            >Arrived / Completed</span
+          >
+          <span
+            class="text-2xl leading-tight font-bold tracking-tight text-[var(--color-text)] sm:text-3xl"
+          >
+            {{ stats.arrived
+            }}<span class="text-lg font-medium text-[var(--color-faint)] sm:text-xl">
+              / {{ stats.completed }}</span
+            >
+          </span>
+          <span class="text-xs text-[var(--color-muted)]">on schedule</span>
+        </div>
+      </div>
+
+      <div
+        class="flex items-start gap-3 rounded-[var(--radius)] border border-[var(--color-border)] bg-[var(--color-surface)] p-3 shadow-[var(--shadow-sm)] transition-all duration-[var(--transition-fast)] hover:-translate-y-px hover:shadow-[var(--shadow-md)] sm:p-4"
+      >
+        <div
+          class="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-[var(--radius-sm)] bg-[var(--color-success-soft)]"
+        >
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="var(--color-success)"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <line x1="12" y1="1" x2="12" y2="23" />
+            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+          </svg>
+        </div>
+        <div class="flex min-w-0 flex-col gap-0.5">
+          <span class="text-xs font-medium text-[var(--color-muted)]">Today's revenue</span>
+          <span
+            class="text-lg leading-tight font-extrabold tracking-tight text-[var(--color-text)] sm:text-xl"
+            >EGP {{ stats.todaysRevenue | number: '1.0-0' }}</span
+          >
+          <span class="flex items-center gap-0.5 text-xs text-[var(--color-success)]">
+            <svg
+              width="11"
+              height="11"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+            >
+              <polyline points="18 15 12 9 6 15" />
+            </svg>
+            +8%
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Next up -->
+    <div
+      class="overflow-auto rounded-[var(--radius)] border border-[var(--color-border)] bg-[var(--color-surface)] shadow-[var(--shadow-sm)]"
+    >
+      <div
+        class="flex items-center justify-between border-b border-[var(--color-border)] px-4 py-3.5 sm:px-5"
+      >
+        <span class="text-sm font-semibold text-[var(--color-text)]">Next up</span>
+        <a
+          routerLink="/calendar"
+          class="text-xs font-medium text-[var(--color-primary)] transition-colors duration-[var(--transition-fast)] hover:text-[var(--color-primary-hover)]"
+        >
+          Open day calendar →
+        </a>
+      </div>
+
+      <div class="divide-y divide-[var(--color-border)]">
+        <ng-container *ngIf="upcomingAppointments.length > 0; else noAppts">
+          <div
+            *ngFor="let appt of upcomingAppointments"
+            class="flex items-center gap-3 px-4 py-3 transition-colors duration-[var(--transition-fast)] hover:bg-[var(--color-bg)] sm:gap-4 sm:px-5 sm:py-3.5"
+          >
+            <span class="w-11 shrink-0 text-sm font-semibold text-[var(--color-text)]">{{
+              appt.timeSlot
+            }}</span>
+            <div class="h-9 w-0.5 shrink-0 rounded-full" [ngClass]="borderClass(appt.status)"></div>
+            <div class="min-w-0 flex-1">
+              <p class="truncate text-sm font-semibold text-[var(--color-text)]">
+                {{ appt.patientName }} · {{ appt.doctorName }}
+              </p>
+              <p class="truncate text-xs text-[var(--color-muted)]">{{ appt.serviceName }}</p>
+            </div>
+            <span
+              class="shrink-0 rounded-[var(--radius-full)] px-2 py-1 text-xs font-semibold whitespace-nowrap sm:px-2.5"
+              [ngClass]="statusClass(appt.status)"
+            >
+              {{ statusLabel(appt.status) }}
+            </span>
+          </div>
+        </ng-container>
+
+        <ng-template #noAppts>
+          <div class="flex flex-col items-center gap-2 py-10 text-sm text-[var(--color-faint)]">
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+            >
+              <rect x="3" y="4" width="18" height="18" rx="2" />
+              <line x1="16" y1="2" x2="16" y2="6" />
+              <line x1="8" y1="2" x2="8" y2="6" />
+              <line x1="3" y1="10" x2="21" y2="10" />
+            </svg>
+            <p>No upcoming appointments for today.</p>
+          </div>
+        </ng-template>
+      </div>
+    </div>
+  </ng-container>
+</div>

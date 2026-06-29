@@ -1,0 +1,228 @@
+<div class="mx-auto flex max-w-[var(--container)] flex-col gap-4 p-4 sm:gap-6 sm:p-6">
+  <!-- Header -->
+  <div>
+    <h1 class="text-xl font-bold tracking-tight text-[var(--color-text)] sm:text-2xl">Dashboard</h1>
+    <p class="mt-1 text-sm text-[var(--color-muted)]">{{ today }}</p>
+  </div>
+
+  <!-- Skeleton -->
+  <ng-container *ngIf="loading">
+    <div class="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
+      <div
+        *ngFor="let i of [1, 2, 3, 4]"
+        class="h-24 animate-pulse rounded-[var(--radius)] bg-[var(--color-surface-2)]"
+      ></div>
+    </div>
+    <div class="h-32 animate-pulse rounded-[var(--radius)] bg-[var(--color-surface-2)]"></div>
+  </ng-container>
+
+  <!-- Error -->
+  <div
+    *ngIf="error && !loading"
+    class="flex flex-col items-center gap-3 py-12 text-center text-sm text-[var(--color-muted)]"
+  >
+    <svg
+      width="32"
+      height="32"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="var(--color-danger)"
+      stroke-width="1.5"
+    >
+      <circle cx="12" cy="12" r="10" />
+      <line x1="12" y1="8" x2="12" y2="12" />
+      <line x1="12" y1="16" x2="12.01" y2="16" />
+    </svg>
+    <p>Could not load dashboard data. Please refresh.</p>
+  </div>
+
+  <!-- Content -->
+  <ng-container *ngIf="!loading && !error && stats">
+    <!-- Stat cards -->
+    <div class="grid grid-cols-1 gap-3 sm:gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div
+        class="flex items-center gap-3 rounded-[var(--radius)] border border-[var(--color-border)] bg-[var(--color-surface)] p-3 shadow-[var(--shadow-sm)] transition-all duration-[var(--transition-fast)] hover:-translate-y-px hover:shadow-[var(--shadow-md)] sm:p-4"
+      >
+        <div
+          class="flex h-10 w-10 shrink-0 items-center justify-center rounded-[var(--radius-sm)] bg-[var(--color-primary-soft)] sm:h-11 sm:w-11"
+        >
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="var(--color-primary)"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <rect x="3" y="4" width="18" height="18" rx="2" />
+            <line x1="16" y1="2" x2="16" y2="6" />
+            <line x1="8" y1="2" x2="8" y2="6" />
+            <line x1="3" y1="10" x2="21" y2="10" />
+          </svg>
+        </div>
+        <div class="flex min-w-0 flex-col gap-0.5">
+          <span class="truncate text-xs font-medium text-[var(--color-muted)]"
+            >Appointments today</span
+          >
+          <span
+            class="text-2xl leading-tight font-bold tracking-tight text-[var(--color-text)] sm:text-3xl"
+            >{{ stats.todaysAppointments }}</span
+          >
+        </div>
+      </div>
+
+      <div
+        class="flex items-center gap-3 rounded-[var(--radius)] border border-[var(--color-border)] bg-[var(--color-surface)] p-3 shadow-[var(--shadow-sm)] transition-all duration-[var(--transition-fast)] hover:-translate-y-px hover:shadow-[var(--shadow-md)] sm:p-4"
+      >
+        <div
+          class="flex h-10 w-10 shrink-0 items-center justify-center rounded-[var(--radius-sm)] bg-[var(--color-success-soft)] sm:h-11 sm:w-11"
+        >
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="var(--color-success)"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <polyline points="20 6 9 17 4 12" />
+          </svg>
+        </div>
+        <div class="flex min-w-0 flex-col gap-0.5">
+          <span class="truncate text-xs font-medium text-[var(--color-muted)]">Confirmed</span>
+          <span
+            class="text-2xl leading-tight font-bold tracking-tight text-[var(--color-text)] sm:text-3xl"
+            >{{ stats.confirmed }}</span
+          >
+        </div>
+      </div>
+
+      <div
+        class="flex items-center gap-3 rounded-[var(--radius)] border border-[var(--color-border)] bg-[var(--color-surface)] p-3 shadow-[var(--shadow-sm)] transition-all duration-[var(--transition-fast)] hover:-translate-y-px hover:shadow-[var(--shadow-md)] sm:p-4"
+      >
+        <div
+          class="flex h-10 w-10 shrink-0 items-center justify-center rounded-[var(--radius-sm)] bg-[var(--color-primary-soft)] sm:h-11 sm:w-11"
+        >
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="var(--color-primary)"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+            <circle cx="12" cy="7" r="4" />
+          </svg>
+        </div>
+        <div class="flex min-w-0 flex-col gap-0.5">
+          <span class="truncate text-xs font-medium text-[var(--color-muted)]"
+            >Arrived / Completed</span
+          >
+          <span
+            class="text-2xl leading-tight font-bold tracking-tight text-[var(--color-text)] sm:text-3xl"
+          >
+            {{ stats.arrived
+            }}<span class="text-lg font-medium text-[var(--color-faint)] sm:text-xl">
+              / {{ stats.completed }}</span
+            >
+          </span>
+        </div>
+      </div>
+
+      <div
+        class="flex items-center gap-3 rounded-[var(--radius)] border border-[var(--color-border)] bg-[var(--color-surface)] p-3 shadow-[var(--shadow-sm)] transition-all duration-[var(--transition-fast)] hover:-translate-y-px hover:shadow-[var(--shadow-md)] sm:p-4"
+      >
+        <div
+          class="flex h-10 w-10 shrink-0 items-center justify-center rounded-[var(--radius-sm)] bg-[var(--color-success-soft)] sm:h-11 sm:w-11"
+        >
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="var(--color-success)"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <line x1="12" y1="1" x2="12" y2="23" />
+            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+          </svg>
+        </div>
+        <div class="flex min-w-0 flex-col gap-0.5">
+          <span class="truncate text-xs font-medium text-[var(--color-muted)]"
+            >Today's revenue</span
+          >
+          <span
+            class="text-lg leading-tight font-extrabold tracking-tight text-[var(--color-text)] sm:text-xl"
+          >
+            EGP {{ stats.todaysRevenue | number: '1.0-0' }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Overview strip -->
+    <div
+      class="rounded-[var(--radius)] border border-[var(--color-border)] bg-[var(--color-surface)] p-4 shadow-[var(--shadow-sm)] sm:p-5"
+    >
+      <div class="mb-4 flex items-center justify-between">
+        <span class="text-sm font-semibold text-[var(--color-text)]">Clinic overview</span>
+        <span
+          class="flex items-center gap-1.5 rounded-[var(--radius-full)] bg-[var(--color-success-soft)] px-2.5 py-1 text-xs font-medium text-[var(--color-success)]"
+        >
+          <span class="h-1.5 w-1.5 animate-pulse rounded-full bg-[var(--color-success)]"></span>
+          Live
+        </span>
+      </div>
+
+      <div
+        class="grid grid-cols-1 gap-y-4 md:grid-cols-2 lg:grid-cols-6 lg:divide-x lg:divide-[var(--color-border)]"
+      >
+        <div class="flex flex-col items-center gap-1 px-2 py-2 sm:px-3">
+          <span class="text-center text-xs text-[var(--color-faint)]">Total today</span>
+          <span class="text-xl font-bold text-[var(--color-primary)] sm:text-2xl">{{
+            stats.todaysAppointments
+          }}</span>
+        </div>
+        <div class="flex flex-col items-center gap-1 px-2 py-2 sm:px-3">
+          <span class="text-center text-xs text-[var(--color-faint)]">Confirmed</span>
+          <span class="text-xl font-bold text-[var(--color-success)] sm:text-2xl">{{
+            stats.confirmed
+          }}</span>
+        </div>
+        <div class="flex flex-col items-center gap-1 px-2 py-2 sm:px-3">
+          <span class="text-center text-xs text-[var(--color-faint)]">Arrived</span>
+          <span class="text-xl font-bold text-[var(--color-primary)] sm:text-2xl">{{
+            stats.arrived
+          }}</span>
+        </div>
+        <div class="flex flex-col items-center gap-1 px-2 py-2 sm:px-3">
+          <span class="text-center text-xs text-[var(--color-faint)]">Completed</span>
+          <span class="text-xl font-bold text-[var(--color-success)] sm:text-2xl">{{
+            stats.completed
+          }}</span>
+        </div>
+        <div class="flex flex-col items-center gap-1 px-2 py-2 sm:px-3">
+          <span class="text-center text-xs text-[var(--color-faint)]">No-show</span>
+          <span class="text-xl font-bold text-[var(--color-danger)] sm:text-2xl">{{
+            stats.noShow
+          }}</span>
+        </div>
+        <div class="flex flex-col items-center gap-1 px-2 py-2 sm:px-3">
+          <span class="text-center text-xs text-[var(--color-faint)]">Revenue</span>
+          <span class="text-base font-bold text-[var(--color-success)] sm:text-lg"
+            >EGP {{ stats.todaysRevenue | number: '1.0-0' }}</span
+          >
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>
