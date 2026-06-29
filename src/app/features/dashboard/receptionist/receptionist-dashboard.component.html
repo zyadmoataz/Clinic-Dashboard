@@ -1,17 +1,17 @@
-<div class="mx-auto flex max-w-[var(--container)] flex-col gap-6 p-6">
+<div class="mx-auto flex max-w-[var(--container)] flex-col gap-4 p-4 sm:gap-6 sm:p-6">
   <!-- Header -->
   <div>
     <h1
-      class="flex items-baseline gap-2 text-2xl font-bold tracking-tight text-[var(--color-text)]"
+      class="flex flex-wrap items-baseline gap-2 text-xl font-bold tracking-tight text-[var(--color-text)] sm:text-2xl"
     >
       Today
-      <span class="text-base font-normal text-[var(--color-muted)]">{{ today }}</span>
+      <span class="text-sm font-normal text-[var(--color-muted)]">{{ today }}</span>
     </h1>
   </div>
 
   <!-- Skeleton -->
   <ng-container *ngIf="loading">
-    <div class="grid grid-cols-2 gap-4 lg:grid-cols-4">
+    <div class="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
       <div
         *ngFor="let i of [1, 2, 3, 4]"
         class="h-28 animate-pulse rounded-[var(--radius)] bg-[var(--color-surface-2)]"
@@ -23,7 +23,7 @@
   <!-- Error -->
   <div
     *ngIf="error && !loading"
-    class="flex flex-col items-center gap-3 py-12 text-sm text-[var(--color-muted)]"
+    class="flex flex-col items-center gap-3 py-12 text-center text-sm text-[var(--color-muted)]"
   >
     <svg
       width="32"
@@ -42,9 +42,9 @@
 
   <ng-container *ngIf="!loading && !error && stats">
     <!-- Stat cards -->
-    <div class="grid grid-cols-2 gap-4 lg:grid-cols-4">
+    <div class="grid grid-cols-1 gap-3 sm:gap-4 md:grid-cols-2 lg:grid-cols-4">
       <div
-        class="flex items-start gap-3 rounded-[var(--radius)] border border-[var(--color-border)] bg-[var(--color-surface)] p-4 shadow-[var(--shadow-sm)] transition-all duration-[var(--transition-fast)] hover:-translate-y-px hover:shadow-[var(--shadow-md)]"
+        class="flex items-start gap-3 rounded-[var(--radius)] border border-[var(--color-border)] bg-[var(--color-surface)] p-3 shadow-[var(--shadow-sm)] transition-all duration-[var(--transition-fast)] hover:-translate-y-px hover:shadow-[var(--shadow-md)] sm:p-4"
       >
         <div
           class="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-[var(--radius-sm)] bg-[var(--color-primary-soft)]"
@@ -65,11 +65,14 @@
             <line x1="3" y1="10" x2="21" y2="10" />
           </svg>
         </div>
-        <div class="flex flex-col gap-0.5">
-          <span class="text-xs font-medium text-[var(--color-muted)]">Today's appointments</span>
-          <span class="text-3xl leading-tight font-bold tracking-tight text-[var(--color-text)]">{{
-            stats.todaysAppointments
-          }}</span>
+        <div class="flex min-w-0 flex-col gap-0.5">
+          <span class="truncate text-xs font-medium text-[var(--color-muted)]"
+            >Today's appointments</span
+          >
+          <span
+            class="text-2xl leading-tight font-bold tracking-tight text-[var(--color-text)] sm:text-3xl"
+            >{{ stats.todaysAppointments }}</span
+          >
           <span class="flex items-center gap-0.5 text-xs text-[var(--color-success)]">
             <svg
               width="11"
@@ -87,7 +90,7 @@
       </div>
 
       <div
-        class="flex items-start gap-3 rounded-[var(--radius)] border border-[var(--color-border)] bg-[var(--color-surface)] p-4 shadow-[var(--shadow-sm)] transition-all duration-[var(--transition-fast)] hover:-translate-y-px hover:shadow-[var(--shadow-md)]"
+        class="flex items-start gap-3 rounded-[var(--radius)] border border-[var(--color-border)] bg-[var(--color-surface)] p-3 shadow-[var(--shadow-sm)] transition-all duration-[var(--transition-fast)] hover:-translate-y-px hover:shadow-[var(--shadow-md)] sm:p-4"
       >
         <div
           class="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-[var(--radius-sm)] bg-[var(--color-success-soft)]"
@@ -105,19 +108,20 @@
             <polyline points="20 6 9 17 4 12" />
           </svg>
         </div>
-        <div class="flex flex-col gap-0.5">
+        <div class="flex min-w-0 flex-col gap-0.5">
           <span class="text-xs font-medium text-[var(--color-muted)]">Confirmed</span>
-          <span class="text-3xl leading-tight font-bold tracking-tight text-[var(--color-text)]">{{
-            stats.confirmed
-          }}</span>
-          <span class="text-xs text-[var(--color-muted)]"
+          <span
+            class="text-2xl leading-tight font-bold tracking-tight text-[var(--color-text)] sm:text-3xl"
+            >{{ stats.confirmed }}</span
+          >
+          <span class="truncate text-xs text-[var(--color-muted)]"
             >{{ awaitingPaymentCount }} awaiting payment</span
           >
         </div>
       </div>
 
       <div
-        class="flex items-start gap-3 rounded-[var(--radius)] border border-[var(--color-border)] bg-[var(--color-surface)] p-4 shadow-[var(--shadow-sm)] transition-all duration-[var(--transition-fast)] hover:-translate-y-px hover:shadow-[var(--shadow-md)]"
+        class="flex items-start gap-3 rounded-[var(--radius)] border border-[var(--color-border)] bg-[var(--color-surface)] p-3 shadow-[var(--shadow-sm)] transition-all duration-[var(--transition-fast)] hover:-translate-y-px hover:shadow-[var(--shadow-md)] sm:p-4"
       >
         <div
           class="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-[var(--radius-sm)] bg-[var(--color-primary-soft)]"
@@ -136,11 +140,15 @@
             <circle cx="12" cy="7" r="4" />
           </svg>
         </div>
-        <div class="flex flex-col gap-0.5">
-          <span class="text-xs font-medium text-[var(--color-muted)]">Arrived / Completed</span>
-          <span class="text-3xl leading-tight font-bold tracking-tight text-[var(--color-text)]">
+        <div class="flex min-w-0 flex-col gap-0.5">
+          <span class="truncate text-xs font-medium text-[var(--color-muted)]"
+            >Arrived / Completed</span
+          >
+          <span
+            class="text-2xl leading-tight font-bold tracking-tight text-[var(--color-text)] sm:text-3xl"
+          >
             {{ stats.arrived
-            }}<span class="text-xl font-medium text-[var(--color-faint)]">
+            }}<span class="text-lg font-medium text-[var(--color-faint)] sm:text-xl">
               / {{ stats.completed }}</span
             >
           </span>
@@ -149,7 +157,7 @@
       </div>
 
       <div
-        class="flex items-start gap-3 rounded-[var(--radius)] border border-[var(--color-border)] bg-[var(--color-surface)] p-4 shadow-[var(--shadow-sm)] transition-all duration-[var(--transition-fast)] hover:-translate-y-px hover:shadow-[var(--shadow-md)]"
+        class="flex items-start gap-3 rounded-[var(--radius)] border border-[var(--color-border)] bg-[var(--color-surface)] p-3 shadow-[var(--shadow-sm)] transition-all duration-[var(--transition-fast)] hover:-translate-y-px hover:shadow-[var(--shadow-md)] sm:p-4"
       >
         <div
           class="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-[var(--radius-sm)] bg-[var(--color-success-soft)]"
@@ -168,9 +176,10 @@
             <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
           </svg>
         </div>
-        <div class="flex flex-col gap-0.5">
+        <div class="flex min-w-0 flex-col gap-0.5">
           <span class="text-xs font-medium text-[var(--color-muted)]">Today's revenue</span>
-          <span class="text-xl leading-tight font-extrabold tracking-tight text-[var(--color-text)]"
+          <span
+            class="text-lg leading-tight font-extrabold tracking-tight text-[var(--color-text)] sm:text-xl"
             >EGP {{ stats.todaysRevenue | number: '1.0-0' }}</span
           >
           <span class="flex items-center gap-0.5 text-xs text-[var(--color-success)]">
@@ -192,10 +201,10 @@
 
     <!-- Next up -->
     <div
-      class="overflow-hidden rounded-[var(--radius)] border border-[var(--color-border)] bg-[var(--color-surface)] shadow-[var(--shadow-sm)]"
+      class="overflow-auto rounded-[var(--radius)] border border-[var(--color-border)] bg-[var(--color-surface)] shadow-[var(--shadow-sm)]"
     >
       <div
-        class="flex items-center justify-between border-b border-[var(--color-border)] px-5 py-3.5"
+        class="flex items-center justify-between border-b border-[var(--color-border)] px-4 py-3.5 sm:px-5"
       >
         <span class="text-sm font-semibold text-[var(--color-text)]">Next up</span>
         <a
@@ -210,9 +219,9 @@
         <ng-container *ngIf="upcomingAppointments.length > 0; else noAppts">
           <div
             *ngFor="let appt of upcomingAppointments"
-            class="flex items-center gap-4 px-5 py-3.5 transition-colors duration-[var(--transition-fast)] hover:bg-[var(--color-bg)]"
+            class="flex items-center gap-3 px-4 py-3 transition-colors duration-[var(--transition-fast)] hover:bg-[var(--color-bg)] sm:gap-4 sm:px-5 sm:py-3.5"
           >
-            <span class="w-12 shrink-0 text-sm font-semibold text-[var(--color-text)]">{{
+            <span class="w-11 shrink-0 text-sm font-semibold text-[var(--color-text)]">{{
               appt.timeSlot
             }}</span>
             <div class="h-9 w-0.5 shrink-0 rounded-full" [ngClass]="borderClass(appt.status)"></div>
@@ -223,7 +232,7 @@
               <p class="truncate text-xs text-[var(--color-muted)]">{{ appt.serviceName }}</p>
             </div>
             <span
-              class="shrink-0 rounded-[var(--radius-full)] px-2.5 py-1 text-xs font-semibold"
+              class="shrink-0 rounded-[var(--radius-full)] px-2 py-1 text-xs font-semibold whitespace-nowrap sm:px-2.5"
               [ngClass]="statusClass(appt.status)"
             >
               {{ statusLabel(appt.status) }}

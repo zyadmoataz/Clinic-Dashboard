@@ -1,7 +1,7 @@
 // ==========================================
 // OWNER: Othman
 // ==========================================
-import { Component, OnInit, AfterViewInit, ElementRef, ViewChild, inject } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ApiService } from '../../core/services/api.service';
 import { ClinicReports } from '../../core/models';
@@ -34,8 +34,9 @@ Chart.register(
   imports: [CommonModule],
   templateUrl: './reports.component.html',
 })
-export class ReportsComponent implements OnInit, AfterViewInit {
+export class ReportsComponent implements OnInit {
   private api = inject(ApiService);
+  private cdr = inject(ChangeDetectorRef);
 
   @ViewChild('doughnutCanvas') doughnutCanvas!: ElementRef<HTMLCanvasElement>;
   @ViewChild('barCanvas') barCanvas!: ElementRef<HTMLCanvasElement>;
@@ -62,7 +63,6 @@ export class ReportsComponent implements OnInit, AfterViewInit {
   weekValues: number[] = [];
 
   ngOnInit(): void {
-    // TODO: remove mock when backend fixes /api/admin/reports
     const mock: ClinicReports = {
       totalRevenue: 248500,
       completedVisitsCount: 252,
@@ -78,21 +78,9 @@ export class ReportsComponent implements OnInit, AfterViewInit {
     this.buildServiceBars(mock);
     this.loading = false;
 
-    // this.api.getReports().subscribe({
-    //   next: (data) => {
-    //     this.reports = data;
-    //     this.weekValues = [0.22, 0.27, 0.24, 0.27].map(s => Math.round(data.totalRevenue * s));
-    //     this.buildServiceBars(data);
-    //     this.loading = false;
-    //     setTimeout(() => this.initCharts(), 0);
-    //   },
-    //   error: () => { this.error = true; this.loading = false; },
-    // });
-  }
-
-  ngAfterViewInit(): void {
-    // Slight delay to ensure canvas elements are in DOM
-    setTimeout(() => this.initCharts(), 0);
+    // Run change detection so *ngIf renders the canvas elements, then init charts
+    this.cdr.detectChanges();
+    this.initCharts();
   }
 
   private initCharts(): void {
@@ -112,6 +100,8 @@ export class ReportsComponent implements OnInit, AfterViewInit {
           ],
         },
         options: {
+          responsive: true,
+          maintainAspectRatio: true,
           cutout: '72%',
           plugins: {
             legend: { display: false },
@@ -146,6 +136,7 @@ export class ReportsComponent implements OnInit, AfterViewInit {
           scales: {
             x: { grid: { display: false }, border: { display: false } },
             y: {
+              min: 0,
               grid: { color: '#f1f5f9' },
               border: { display: false },
               ticks: { callback: (v) => `${Number(v) / 1000}k` },
