@@ -14,12 +14,13 @@
 
       <app-button
         (clicked)="goToAddreciptionist()"
-        customClass="border border-slate-200 bg-white px-5 py-2.5 transition hover:bg-slate-50 text-[var(--color-text)] dark:border-slate-700 dark:bg-slate-800 dark:hover:bg-slate-700"
+        customClass="border border-[var(--color-border)] bg-[var(--color-surface)] px-5 py-2.5 transition hover:bg-[var(--color-surface-2)] text-[var(--color-text)]"
       >
         {{ 'staff.add_receptionist' | translate }}
       </app-button>
     </div>
   </div>
 
-  <app-data-table [data]="staffList" [columns]="columns" [isLoading]="isLoading"> </app-data-table>
+  <app-data-table [data]="staffList()" [columns]="columns" [isLoading]="isLoading()">
+  </app-data-table>
 </div>

@@ -11,11 +11,18 @@ import { ApiService } from '../../core/services/api.service';
 import { ToastService } from '../../core/services/toast.service';
 import { AuthService } from '../../core/services/auth.service';
 import { InputComponent } from '../../shared/components/input.component';
+import { ButtonComponent } from '../../shared/components/button.component';
 import { TranslateService } from '@ngx-translate/core';
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [RouterModule, LucideAngularModule, ReactiveFormsModule, InputComponent],
+  imports: [
+    RouterModule,
+    LucideAngularModule,
+    ReactiveFormsModule,
+    InputComponent,
+    ButtonComponent,
+  ],
   templateUrl: './login.component.html',
 })
 export class LoginComponent {
@@ -40,22 +47,22 @@ export class LoginComponent {
     this.loginError.set(null);
     if (this.loginForm.valid) {
       this.apiService.login(this.loginForm.value.email!, this.loginForm.value.password!).subscribe({
-        next: (res) => {
-          if (res.user.role.toLowerCase() === 'patient') {
+        next: (authResponse) => {
+          if (authResponse.user.role.toLowerCase() === 'patient') {
             this.toastService.error(
               this.translate.instant('login.access_denied'),
               this.translate.instant('login.patients_no_access'),
             );
             return;
           }
-          this.authService.setSession(res.user, res.token);
+          this.authService.setSession(authResponse.user, authResponse.token);
           this.router.navigate(['/staff/dashboard']);
           this.toastService.success(
             this.translate.instant('login.success'),
             this.translate.instant('login.welcome_back'),
           );
         },
-        error: (err) => {
+        error: () => {
           this.loginError.set(this.translate.instant('login.invalid_credentials'));
         },
       });

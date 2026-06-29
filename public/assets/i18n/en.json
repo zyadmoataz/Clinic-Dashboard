@@ -90,7 +90,7 @@
   },
   "services": {
     "subtitle": "Manage clinic services and pricing.",
-    "add": "+ Add Service",
+    "add": "Add Service",
     "columns": {
       "name": "Service Name",
       "doctor": "Doctor",

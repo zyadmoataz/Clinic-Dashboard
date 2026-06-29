@@ -7,10 +7,10 @@ import { ToastrService } from 'ngx-toastr';
 export class GlobalErrorHandler implements ErrorHandler {
   private toastr = inject(ToastrService);
 
-  handleError(error: any): void {
+  handleError(error: unknown): void {
     console.error('Application Crash Caught:', error);
 
-    const message = error?.message ?? '';
+    const message = (error as Error)?.message ?? '';
 
     if (message.includes('ExpressionChangedAfterItHasBeenCheckedError')) {
       return;

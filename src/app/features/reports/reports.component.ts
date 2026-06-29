@@ -1,32 +1,11 @@
 // ==========================================
 // OWNER: Othman
 // ==========================================
-import { Component, OnInit, ElementRef, viewChild, inject, ChangeDetectorRef } from '@angular/core';
+import { Component, ElementRef, viewChild, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ApiService } from '../../core/services/api.service';
 import { ClinicReports } from '../../core/models';
-import {
-  Chart,
-  ArcElement,
-  BarElement,
-  CategoryScale,
-  LinearScale,
-  Tooltip,
-  Legend,
-  DoughnutController,
-  BarController,
-} from 'chart.js';
-
-Chart.register(
-  ArcElement,
-  BarElement,
-  CategoryScale,
-  LinearScale,
-  Tooltip,
-  Legend,
-  DoughnutController,
-  BarController,
-);
+import type { Chart } from 'chart.js';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 @Component({
@@ -35,9 +14,8 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
   imports: [CommonModule, TranslatePipe],
   templateUrl: './reports.component.html',
 })
-export class ReportsComponent implements OnInit {
+export class ReportsComponent {
   private api = inject(ApiService);
-  private cdr = inject(ChangeDetectorRef);
   private translate = inject(TranslateService);
 
   readonly doughnutCanvas = viewChild<ElementRef<HTMLCanvasElement>>('doughnutCanvas');
@@ -46,9 +24,9 @@ export class ReportsComponent implements OnInit {
   private doughnutChart?: Chart;
   private barChart?: Chart;
 
-  reports: ClinicReports | null = null;
-  loading = true;
-  error = false;
+  reports = signal<ClinicReports | null>(null);
+  loading = signal(true);
+  error = signal(false);
 
   noShowThisMonth = 6.2;
   noShowLastMonth = 7.6;
@@ -61,30 +39,53 @@ export class ReportsComponent implements OnInit {
     { key: 'no_show', pct: 7, dot: 'bg-[#ef4444]' },
   ];
 
-  serviceBars: { name: string; revenue: number; pct: number }[] = [];
-  weekValues: number[] = [];
+  serviceBars = signal<{ name: string; revenue: number; pct: number }[]>([]);
+  weekValues = signal<number[]>([]);
 
-  ngOnInit(): void {
-    this.loading = true;
+  constructor() {
     this.api.getReports().subscribe({
-      next: (data) => {
-        this.reports = data;
-        if (data) {
-          this.weekValues = [0.22, 0.27, 0.24, 0.27].map((s) => Math.round(data.totalRevenue * s));
-          this.buildServiceBars(data);
+      next: (clinicReports) => {
+        this.reports.set(clinicReports);
+        if (clinicReports) {
+          this.weekValues.set(
+            [0.22, 0.27, 0.24, 0.27].map((s) => Math.round(clinicReports.totalRevenue * s)),
+          );
+          this.buildServiceBars(clinicReports);
         }
-        this.loading = false;
-        this.cdr.detectChanges();
+        this.loading.set(false);
         this.initCharts();
       },
       error: () => {
-        this.error = true;
-        this.loading = false;
+        this.error.set(true);
+        this.loading.set(false);
       },
     });
   }
 
-  private initCharts(): void {
+  private async initCharts(): Promise<void> {
+    const {
+      Chart,
+      ArcElement,
+      BarElement,
+      CategoryScale,
+      LinearScale,
+      Tooltip,
+      Legend,
+      DoughnutController,
+      BarController,
+    } = await import('chart.js');
+
+    Chart.register(
+      ArcElement,
+      BarElement,
+      CategoryScale,
+      LinearScale,
+      Tooltip,
+      Legend,
+      DoughnutController,
+      BarController,
+    );
+
     if (this.doughnutCanvas()?.nativeElement) {
       this.doughnutChart?.destroy();
       this.doughnutChart = new Chart(this.doughnutCanvas()!.nativeElement, {
@@ -125,7 +126,7 @@ export class ReportsComponent implements OnInit {
           labels: ['W1', 'W2', 'W3', 'W4'],
           datasets: [
             {
-              data: this.weekValues,
+              data: this.weekValues(),
               backgroundColor: '#10b981',
               borderRadius: 6,
               borderSkipped: false,
@@ -156,21 +157,24 @@ export class ReportsComponent implements OnInit {
   private buildServiceBars(data: ClinicReports): void {
     if (!data.revenueByService?.length) return;
     const max = Math.max(...data.revenueByService.map((s) => s.revenue));
-    this.serviceBars = data.revenueByService.map((s) => ({
-      name: s.serviceName,
-      revenue: s.revenue,
-      pct: Math.round((s.revenue / max) * 100),
-    }));
+    this.serviceBars.set(
+      data.revenueByService.map((s) => ({
+        name: s.serviceName,
+        revenue: s.revenue,
+        pct: Math.round((s.revenue / max) * 100),
+      })),
+    );
   }
 
   exportCsv(): void {
-    if (!this.reports) return;
+    const currentReports = this.reports();
+    if (!currentReports) return;
     const rows = [
       ['Metric', 'Value'],
-      ['Total Revenue', this.reports.totalRevenue],
-      ['Completed Visits', this.reports.completedVisitsCount],
-      ['New Patients', this.reports.newPatientsCount],
-      ...this.reports.revenueByService.map((s) => [s.serviceName, s.revenue]),
+      ['Total Revenue', currentReports.totalRevenue],
+      ['Completed Visits', currentReports.completedVisitsCount],
+      ['New Patients', currentReports.newPatientsCount],
+      ...currentReports.revenueByService.map((s) => [s.serviceName, s.revenue]),
     ];
     const csv = rows.map((r) => r.join(',')).join('\n');
     const blob = new Blob([csv], { type: 'text/csv' });

@@ -1,14 +1,12 @@
 // ==========================================
 // OWNER: Helda
 // ==========================================
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 
 import { Router } from '@angular/router';
 import { ApiService } from '../../core/services/api.service';
-import { Staff } from '../../core/models';
 
 import { DataTableComponent } from '../../shared/components/data-table.component';
-import { SearchInputComponent } from '../../shared/components/search-input.component';
 import { ButtonComponent } from '../../shared/components/button.component';
 import { TranslatePipe } from '@ngx-translate/core';
 
@@ -18,9 +16,9 @@ import { TranslatePipe } from '@ngx-translate/core';
   imports: [DataTableComponent, ButtonComponent, TranslatePipe],
   templateUrl: './staff.component.html',
 })
-export class StaffComponent implements OnInit {
-  staffList: { id: string; cells: any[] }[] = [];
-  isLoading = false;
+export class StaffComponent {
+  staffList = signal<{ id: string; cells: (string | number | boolean | null | undefined)[] }[]>([]);
+  isLoading = signal(false);
 
   columns = [
     { key: 'name', label: 'staff.columns.name' },
@@ -29,32 +27,29 @@ export class StaffComponent implements OnInit {
     { key: 'isActive', label: 'staff.columns.status' },
   ];
 
-  constructor(
-    private apiService: ApiService,
-    private router: Router,
-    private cdr: ChangeDetectorRef,
-  ) {}
+  private apiService = inject(ApiService);
+  private router = inject(Router);
 
-  ngOnInit(): void {
+  constructor() {
     this.loadStaff();
   }
 
   loadStaff(): void {
-    this.isLoading = true;
+    this.isLoading.set(true);
 
     this.apiService.getStaff().subscribe({
-      next: (data) => {
-        this.staffList = data.map((staff) => ({
-          id: staff.id,
-          cells: [staff.name, staff.role, staff.specialization, staff.isActive],
-        })) as any;
-        this.isLoading = false;
-        this.cdr.detectChanges();
+      next: (staffListResponse) => {
+        this.staffList.set(
+          staffListResponse.map((staff) => ({
+            id: staff.id,
+            cells: [staff.name, staff.role, staff.specialization, staff.isActive],
+          })),
+        );
+        this.isLoading.set(false);
       },
       error: (err) => {
         console.error(err);
-        this.isLoading = false;
-        this.cdr.detectChanges();
+        this.isLoading.set(false);
       },
     });
   }

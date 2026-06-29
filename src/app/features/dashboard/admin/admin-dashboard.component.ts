@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ApiService } from '../../../core/services/api.service';
 import { DashboardStats } from '../../../core/models';
@@ -11,16 +11,15 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
   imports: [CommonModule, TranslatePipe],
   templateUrl: './admin-dashboard.component.html',
 })
-export class AdminDashboardComponent implements OnInit {
+export class AdminDashboardComponent {
   private api = inject(ApiService);
-  private cdr = inject(ChangeDetectorRef);
   private translate = inject(TranslateService);
 
-  stats: DashboardStats | null = null;
-  loading = true;
-  error = false;
+  stats = signal<DashboardStats | null>(null);
+  loading = signal(true);
+  error = signal(false);
 
-  today = this.getFormattedDate(this.translate.currentLang() || 'en');
+  today = signal(this.getFormattedDate(this.translate.currentLang() || 'en'));
 
   private getFormattedDate(lang: string): string {
     return new Date().toLocaleDateString(lang === 'ar' ? 'ar-EG' : 'en-GB', {
@@ -31,21 +30,18 @@ export class AdminDashboardComponent implements OnInit {
     });
   }
 
-  ngOnInit(): void {
+  constructor() {
     this.translate.onLangChange.subscribe((event) => {
-      this.today = this.getFormattedDate(event.lang);
-      this.cdr.detectChanges();
+      this.today.set(this.getFormattedDate(event.lang));
     });
     this.api.getDashboardStats().subscribe({
-      next: (data) => {
-        this.stats = data;
-        this.loading = false;
-        this.cdr.detectChanges();
+      next: (dashboardStats) => {
+        this.stats.set(dashboardStats);
+        this.loading.set(false);
       },
       error: () => {
-        this.error = true;
-        this.loading = false;
-        this.cdr.detectChanges();
+        this.error.set(true);
+        this.loading.set(false);
       },
     });
   }

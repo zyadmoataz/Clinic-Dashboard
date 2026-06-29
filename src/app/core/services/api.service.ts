@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
@@ -23,14 +23,12 @@ import {
   getDoctorsParams,
   PaginatedDoctorsResponse,
   BlockedDate,
-  RegisterRequest,
 } from '../models';
 
 @Injectable({ providedIn: 'root' })
 export class ApiService {
   private baseUrl = environment.apiUrl;
-
-  constructor(private http: HttpClient) {}
+  private http = inject(HttpClient);
 
   // ── Auth ──
   login(email: string, password: string): Observable<LoginResponse> {
@@ -65,7 +63,7 @@ export class ApiService {
     return this.http.get<DoctorAvailability[]>(`${this.baseUrl}/doctors/${id}/availability`);
   }
 
-  setDoctorAvailability(id: string, data: any): Observable<void> {
+  setDoctorAvailability(id: string, data: Omit<DoctorAvailability, 'id'>[]): Observable<void> {
     return this.http.put<void>(`${this.baseUrl}/doctors/${id}/availability`, data);
   }
 

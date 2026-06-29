@@ -59,13 +59,12 @@
 
       <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div class="flex flex-col gap-1">
-          <label class="text-muted text-sm font-medium">
+          <label for="walkin-doctor" class="text-muted text-sm font-medium">
             {{ 'walk_in.doctor' | translate }}
           </label>
           <app-select
-            [options]="doctorsArr()"
-            labelKey="displayName"
-            valueKey="id"
+            id="walkin-doctor"
+            [options]="doctorsSelectOptions()"
             [selectedValue]="selectedDoctorId()"
             [placeholder]="'walk_in.select_doctor' | translate"
             (valueChange)="onDoctorSelect($event)"
@@ -73,13 +72,12 @@
         </div>
 
         <div class="flex flex-col gap-1">
-          <label class="text-muted text-sm font-medium">
+          <label for="walkin-service" class="text-muted text-sm font-medium">
             {{ 'walk_in.service' | translate }}
           </label>
           <app-select
-            [options]="serviceOptions()"
-            labelKey="name"
-            valueKey="id"
+            id="walkin-service"
+            [options]="servicesSelectOptions()"
             [selectedValue]="selectedServiceId()"
             [placeholder]="'walk_in.select_service' | translate"
             [disabled]="!selectedDoctorId()"
@@ -102,7 +100,7 @@
 
       <!-- Slots -->
       <div class="flex flex-col gap-2">
-        <label class="text-muted text-sm font-medium">
+        <label for="walkin-slot-0" class="text-muted text-sm font-medium">
           {{ 'walk_in.time_slot' | translate }}
         </label>
 
@@ -110,12 +108,16 @@
           <app-loading />
         } @else if (!canLoadSlots()) {
           <p class="text-muted text-sm">{{ 'walk_in.pick_doctor_first' | translate }}</p>
-        } @else if (slotsArr().length === 0) {
+        } @else if (availableSlots().length === 0) {
           <app-feedback-states [showIcon]="false" titleKey="" descriptionKey="walk_in.no_slots" />
         } @else {
           <div class="flex flex-wrap gap-2">
-            @for (slot of slotsArr(); track slot.time) {
+            @for (slot of availableSlots(); track slot.time) {
+              <label [for]="'walkin-slot-' + $index" class="sr-only">
+                {{ slot.time }}
+              </label>
               <button
+                [id]="'walkin-slot-' + $index"
                 type="button"
                 [disabled]="!slot.isAvailable"
                 (click)="selectedSlot.set(slot.time)"

@@ -9,21 +9,15 @@
 
 @if (loadingStatus()) {
   <app-loading />
-}
-
-@if (!loadingStatus() && servicesArr().length === 0) {
-  <app-feedback-states />
-}
-
-@if (errMsg()) {
+} @else if (errMsg()) {
   <div
     class="border-danger bg-danger-soft text-danger rounded-xl border p-4 text-center font-medium"
   >
     {{ errMsg() | translate }}
   </div>
-}
-
-@if (!loadingStatus() && !errMsg() && servicesArr().length > 0) {
+} @else if (servicesList().length === 0) {
+  <app-feedback-states />
+} @else {
   <app-data-table
     [columns]="tableColumns"
     [data]="tableData()"
@@ -95,27 +89,16 @@
         ></app-input>
       </div>
       <div>
-        <label class="mb-1 block text-sm font-medium">
+        <label for="service-doctor" class="mb-1 block text-sm font-medium">
           {{ 'services.create_modal.doctor' | translate }}
         </label>
 
-        <select
+        <app-select
+          id="service-doctor"
           formControlName="doctorId"
-          class="w-full rounded-[var(--radius-sm)] border border-[var(--color-border)] bg-[var(--color-surface)] p-2 text-[var(--color-text)] transition focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)] focus:outline-none"
-          [ngClass]="{
-            'cursor-not-allowed opacity-70': isEditMode(),
-          }"
-        >
-          <option value="" disabled selected>
-            {{ 'services.create_modal.select_doctor' | translate }}
-          </option>
-
-          @for (doctor of doctorsArr(); track doctor.id) {
-            <option [value]="doctor.id">
-              {{ doctor.displayName }}
-            </option>
-          }
-        </select>
+          [placeholder]="'services.create_modal.select_doctor' | translate"
+          [options]="doctorsList().map((d) => ({ value: d.id, label: d.displayName }))"
+        ></app-select>
 
         @if (
           createServiceForm.controls.doctorId.touched &&

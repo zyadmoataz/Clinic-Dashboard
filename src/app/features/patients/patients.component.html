@@ -10,12 +10,12 @@
       </p>
     </div>
     <app-button (clicked)="toggleForm()">
-      {{ showForm ? ('patients.cancel' | translate) : ('patients.add' | translate) }}
+      {{ showForm() ? ('patients.cancel' | translate) : ('patients.add' | translate) }}
     </app-button>
   </div>
 
   <!-- Add Patient Form -->
-  @if (showForm) {
+  @if (showForm()) {
     <div
       class="mb-6 rounded-[var(--radius)] border border-[var(--color-border)] bg-[var(--color-surface)] p-6 shadow-[var(--shadow-sm)]"
     >
@@ -47,9 +47,9 @@
           ></app-input>
           <!-- Submit -->
           <div class="mb-3 flex items-end">
-            <app-button type="submit" [disabled]="isSubmitting" customClass="w-full">
+            <app-button type="submit" [disabled]="isSubmitting()" customClass="w-full">
               {{
-                isSubmitting ? ('patients.creating' | translate) : ('patients.create' | translate)
+                isSubmitting() ? ('patients.creating' | translate) : ('patients.create' | translate)
               }}
             </app-button>
           </div>
@@ -64,18 +64,18 @@
   </div>
 
   <!-- Loading -->
-  @if (isLoading) {
+  @if (isLoading()) {
     <div class="py-10 text-center text-[var(--color-muted)]">
       {{ 'patients.loading' | translate }}
     </div>
   }
 
   <!-- Table -->
-  @if (!isLoading) {
+  @if (!isLoading()) {
     <app-data-table
       [data]="tableData"
       [columns]="tableColumns"
-      [isLoading]="isLoading"
+      [isLoading]="isLoading()"
     ></app-data-table>
   }
 </div>

@@ -39,12 +39,12 @@ export class CalendarComponent {
   translateService = inject(TranslateService);
 
   selectedDate = signal<string>(new Date().toISOString().split('T')[0]);
-  appointmentsArr = signal<Appointment[]>([]);
+  appointmentsList = signal<Appointment[]>([]);
   loadingStatus = signal<boolean>(false);
 
   // Slots rendered chronologically by time slot.
   sortedAppointments = computed(() =>
-    [...this.appointmentsArr()].sort((a, b) => (a.timeSlot || '').localeCompare(b.timeSlot || '')),
+    [...this.appointmentsList()].sort((a, b) => (a.timeSlot || '').localeCompare(b.timeSlot || '')),
   );
 
   constructor() {
@@ -63,12 +63,12 @@ export class CalendarComponent {
     this.loadingStatus.set(true);
 
     this.apiService.getAppointments({ date }).subscribe({
-      next: (resp) => {
-        this.appointmentsArr.set(resp ?? []);
+      next: (appointmentsResponse) => {
+        this.appointmentsList.set(appointmentsResponse ?? []);
         this.loadingStatus.set(false);
       },
       error: () => {
-        this.appointmentsArr.set([]);
+        this.appointmentsList.set([]);
         this.loadingStatus.set(false);
         this.toastService.error(this.translateService.instant('calendar.load_failed'));
       },

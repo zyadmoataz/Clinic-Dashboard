@@ -7,7 +7,7 @@
     <div class="flex flex-wrap items-center gap-2">
       <button
         (click)="exportCsv()"
-        [disabled]="loading"
+        [disabled]="loading()"
         class="flex items-center gap-2 rounded-[var(--radius-sm)] border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm font-semibold text-[var(--color-text)] shadow-[var(--shadow-sm)] transition-colors duration-[var(--transition-fast)] hover:bg-[var(--color-surface-2)] disabled:cursor-not-allowed disabled:opacity-50"
       >
         <svg
@@ -31,16 +31,13 @@
   </div>
 
   <!-- Skeleton -->
-  @if (loading) {
+  @if (loading()) {
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
       @for (i of [1, 2, 3, 4]; track i) {
         <div class="h-56 animate-pulse rounded-[var(--radius)] bg-[var(--color-surface-2)]"></div>
       }
     </div>
-  }
-
-  <!-- Error -->
-  @if (error && !loading) {
+  } @else if (error()) {
     <div
       class="flex flex-col items-center gap-3 py-12 text-center text-sm text-[var(--color-muted)]"
     >
@@ -58,10 +55,7 @@
       </svg>
       <p>{{ 'reports.load_failed' | translate }}</p>
     </div>
-  }
-
-  <!-- Charts grid -->
-  @if (!loading && !error && reports) {
+  } @else if (reports()) {
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
       <!-- ① Status mix -->
       <div
@@ -72,7 +66,7 @@
             'reports.status_mix' | translate
           }}</span>
           <span class="text-xs text-[var(--color-muted)]"
-            >{{ reports.completedVisitsCount + 952 | number }}
+            >{{ reports()!.completedVisitsCount + 952 | number }}
             {{ 'reports.appts' | translate }}</span
           >
         </div>
@@ -84,7 +78,7 @@
               class="pointer-events-none absolute inset-0 flex flex-col items-center justify-center"
             >
               <span class="text-base font-bold text-[var(--color-text)]">{{
-                reports.completedVisitsCount + 952 | number
+                reports()!.completedVisitsCount + 952 | number
               }}</span>
               <span class="text-xs text-[var(--color-muted)]">{{
                 'reports.appts' | translate
@@ -114,7 +108,7 @@
             'reports.revenue_week' | translate
           }}</span>
           <span class="text-xs text-[var(--color-muted)]"
-            >EGP {{ reports.totalRevenue | number }} {{ 'reports.total' | translate }}</span
+            >EGP {{ reports()!.totalRevenue | number }} {{ 'reports.total' | translate }}</span
           >
         </div>
         <div class="relative h-40 w-full sm:h-48">
@@ -188,9 +182,9 @@
             >EGP {{ 'reports.total' | translate }}</span
           >
         </div>
-        @if (serviceBars.length > 0) {
+        @if (serviceBars().length > 0) {
           <div class="flex flex-col gap-4">
-            @for (svc of serviceBars; track svc) {
+            @for (svc of serviceBars(); track svc) {
               <div class="flex items-center gap-3">
                 <div
                   class="flex h-9 w-9 shrink-0 items-center justify-center rounded-[var(--radius-sm)] bg-[var(--color-primary-soft)] text-xs font-bold text-[var(--color-primary)]"

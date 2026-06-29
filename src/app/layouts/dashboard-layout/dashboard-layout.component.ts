@@ -23,6 +23,10 @@ import { HeaderComponent } from './header/header.component';
         <div
           class="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm md:hidden"
           (click)="showMobileSidebar = false"
+          (keydown.enter)="showMobileSidebar = false"
+          tabindex="0"
+          role="button"
+          aria-label="Close sidebar"
         ></div>
       }
 

@@ -9,7 +9,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const token = inject(AuthService).getToken();
   const router = inject(Router);
 
-  const headersConfig: { [name: string]: string | string[] } = {};
+  const headersConfig: Record<string, string | string[]> = {};
 
   if (!(req.body instanceof FormData)) {
     headersConfig['Content-Type'] = 'application/json';

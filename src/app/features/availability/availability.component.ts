@@ -1,7 +1,7 @@
 // ==========================================
 // OWNER: Doaa
 // ==========================================
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import {
   ButtonComponent,
   FeedbackStatesComponent,
@@ -35,14 +35,18 @@ export class AvailabilityComponent {
   toastService = inject(ToastService);
   translateService = inject(TranslateService);
 
-  doctorsArr = signal<Doctor[]>([]);
-  availabilityArr = signal<DoctorAvailability[]>([]);
-  blockedDatesArr = signal<BlockedDate[]>([]);
-  editableAvailabilityArr = signal<DoctorAvailability[]>([]);
+  doctorsList = signal<Doctor[]>([]);
+  availabilities = signal<DoctorAvailability[]>([]);
+  blockedDates = signal<BlockedDate[]>([]);
+  editableAvailabilities = signal<DoctorAvailability[]>([]);
   newBlockedDate = signal<string>('');
 
   selectedDoctor = signal<Doctor | null>(null);
   selectedBlockedDate = signal<BlockedDate | null>(null);
+
+  doctorsSelectOptions = computed(() =>
+    this.doctorsList().map((d) => ({ value: d.id, label: d.displayName })),
+  );
 
   loadingAvailStatus = signal<boolean>(false);
   loadingBlockedStatus = signal<boolean>(false);
@@ -62,14 +66,14 @@ export class AvailabilityComponent {
 
   loadDoctors() {
     this.apiService.getDoctors().subscribe({
-      next: (resp) => {
-        this.doctorsArr.set(resp.items);
+      next: (doctorsResponse) => {
+        this.doctorsList.set(doctorsResponse.items);
       },
     });
   }
 
   onDoctorSelect(id: string) {
-    const doctor = this.doctorsArr().find((d) => d.id === id) ?? null;
+    const doctor = this.doctorsList().find((d) => d.id === id) ?? null;
 
     this.selectedDoctor.set(doctor);
 
@@ -77,8 +81,8 @@ export class AvailabilityComponent {
       this.loadAvailability(doctor.id);
       this.loadBlockedDates(doctor.id);
     } else {
-      this.availabilityArr.set([]);
-      this.blockedDatesArr.set([]);
+      this.availabilities.set([]);
+      this.blockedDates.set([]);
     }
   }
 
@@ -86,13 +90,13 @@ export class AvailabilityComponent {
     this.loadingAvailStatus.set(true);
 
     this.apiService.getDoctorAvailability(doctorId).subscribe({
-      next: (resp) => {
-        this.availabilityArr.set(resp);
+      next: (availabilitiesResponse) => {
+        this.availabilities.set(availabilitiesResponse);
         this.loadingAvailStatus.set(false);
-        this.editableAvailabilityArr.set([...resp]);
+        this.editableAvailabilities.set([...availabilitiesResponse]);
       },
       error: () => {
-        this.availabilityArr.set([]);
+        this.availabilities.set([]);
         this.loadingAvailStatus.set(false);
       },
     });
@@ -102,12 +106,12 @@ export class AvailabilityComponent {
     this.loadingBlockedStatus.set(true);
 
     this.apiService.getDoctorBlockedDates(doctorId).subscribe({
-      next: (resp) => {
-        this.blockedDatesArr.set(resp);
+      next: (blockedDatesResponse) => {
+        this.blockedDates.set(blockedDatesResponse);
         this.loadingBlockedStatus.set(false);
       },
       error: () => {
-        this.blockedDatesArr.set([]);
+        this.blockedDates.set([]);
         this.loadingBlockedStatus.set(false);
       },
     });
@@ -131,7 +135,7 @@ export class AvailabilityComponent {
 
     this.apiService.deleteDoctorBlockedDate(doctor.id, blockedDate.date).subscribe({
       next: () => {
-        this.blockedDatesArr.update((arr) => arr.filter((item) => item.id !== blockedDate.id));
+        this.blockedDates.update((arr) => arr.filter((item) => item.id !== blockedDate.id));
 
         this.toastService.success(
           this.translateService.instant('availability.delete_modal.delete_success'),
@@ -154,8 +158,8 @@ export class AvailabilityComponent {
     if (!doctor || !date) return;
 
     this.apiService.createDoctorBlockedDate(doctor.id, { date }).subscribe({
-      next: (resp) => {
-        this.blockedDatesArr.update((arr) => [...arr, resp]);
+      next: (newBlockedDateResponse) => {
+        this.blockedDates.update((arr) => [...arr, newBlockedDateResponse]);
 
         this.newBlockedDate.set('');
 
@@ -179,32 +183,32 @@ export class AvailabilityComponent {
   }
 
   updateDay(index: number, day: string) {
-    this.editableAvailabilityArr.update((arr) => {
+    this.editableAvailabilities.update((arr) => {
       arr[index].dayOfWeek = day;
       return [...arr];
     });
   }
 
   updateStartTime(index: number, time: string) {
-    this.editableAvailabilityArr.update((arr) => {
+    this.editableAvailabilities.update((arr) => {
       arr[index].startTime = time;
       return [...arr];
     });
   }
 
   updateEndTime(index: number, time: string) {
-    this.editableAvailabilityArr.update((arr) => {
+    this.editableAvailabilities.update((arr) => {
       arr[index].endTime = time;
       return [...arr];
     });
   }
 
   removeAvailability(index: number) {
-    this.editableAvailabilityArr.update((arr) => arr.filter((_, i) => i !== index));
+    this.editableAvailabilities.update((arr) => arr.filter((_, i) => i !== index));
   }
 
   addAvailabilityRow() {
-    this.editableAvailabilityArr.update((arr) => [
+    this.editableAvailabilities.update((arr) => [
       ...arr,
       {
         id: 0,
@@ -220,7 +224,7 @@ export class AvailabilityComponent {
 
     if (!doctor) return;
 
-    const payload = this.editableAvailabilityArr().map((item) => ({
+    const payload = this.editableAvailabilities().map((item) => ({
       dayOfWeek: item.dayOfWeek,
       startTime: item.startTime,
       endTime: item.endTime,

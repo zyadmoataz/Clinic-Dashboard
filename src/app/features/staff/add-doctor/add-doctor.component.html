@@ -150,8 +150,8 @@
     </div>
 
     <div class="mt-4 flex justify-end">
-      <app-button type="submit" [disabled]="isLoading">
-        {{ isLoading ? ('add_doctor.creating' | translate) : ('add_doctor.create' | translate) }}
+      <app-button type="submit" [disabled]="isLoading()">
+        {{ isLoading() ? ('add_doctor.creating' | translate) : ('add_doctor.create' | translate) }}
       </app-button>
     </div>
   </form>

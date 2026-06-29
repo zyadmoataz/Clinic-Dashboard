@@ -43,8 +43,8 @@ export class WalkInComponent {
 
   today = new Date().toISOString().split('T')[0];
 
-  doctorsArr = signal<Doctor[]>([]);
-  slotsArr = signal<Slot[]>([]);
+  doctors = signal<Doctor[]>([]);
+  availableSlots = signal<Slot[]>([]);
 
   selectedDoctorId = signal<string>('');
   selectedServiceId = signal<string>('');
@@ -59,9 +59,17 @@ export class WalkInComponent {
 
   // Services are scoped to the chosen doctor (provided by Doaa's catalog on the Doctor model).
   serviceOptions = computed<Service[]>(() => {
-    const doctor = this.doctorsArr().find((d) => d.id === this.selectedDoctorId());
+    const doctor = this.doctors().find((d) => d.id === this.selectedDoctorId());
     return doctor?.services ?? [];
   });
+
+  doctorsSelectOptions = computed(() =>
+    this.doctors().map((d) => ({ value: d.id, label: d.displayName })),
+  );
+
+  servicesSelectOptions = computed(() =>
+    this.serviceOptions().map((s) => ({ value: s.id.toString(), label: s.name })),
+  );
 
   canLoadSlots = computed(() => !!this.selectedDoctorId() && !!this.selectedDate());
 
@@ -81,7 +89,7 @@ export class WalkInComponent {
 
   loadDoctors() {
     this.apiService.getDoctors().subscribe({
-      next: (resp) => this.doctorsArr.set(resp.items ?? []),
+      next: (doctorsList) => this.doctors.set(doctorsList.items ?? []),
       error: () =>
         this.toastService.error(this.translateService.instant('walk_in.load_doctors_failed')),
     });
@@ -108,7 +116,7 @@ export class WalkInComponent {
 
   loadSlots() {
     if (!this.canLoadSlots()) {
-      this.slotsArr.set([]);
+      this.availableSlots.set([]);
       return;
     }
 
@@ -118,12 +126,12 @@ export class WalkInComponent {
     const serviceId = this.selectedServiceId() ? Number(this.selectedServiceId()) : undefined;
 
     this.apiService.getDoctorSlots(doctorId, { date: this.selectedDate(), serviceId }).subscribe({
-      next: (resp) => {
-        this.slotsArr.set(resp ?? []);
+      next: (slotsResponse) => {
+        this.availableSlots.set(slotsResponse ?? []);
         this.loadingSlots.set(false);
       },
       error: () => {
-        this.slotsArr.set([]);
+        this.availableSlots.set([]);
         this.loadingSlots.set(false);
       },
     });
@@ -163,6 +171,6 @@ export class WalkInComponent {
     this.selectedServiceId.set('');
     this.selectedDate.set(this.today);
     this.selectedSlot.set('');
-    this.slotsArr.set([]);
+    this.availableSlots.set([]);
   }
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { ApiService } from '../../../core/services/api.service';
@@ -10,13 +10,12 @@ import { Appointment } from '../../../core/models';
   imports: [CommonModule, RouterModule],
   templateUrl: './doctor-dashboard.component.html',
 })
-export class DoctorDashboardComponent implements OnInit {
+export class DoctorDashboardComponent {
   private api = inject(ApiService);
-  private cdr = inject(ChangeDetectorRef);
 
-  appointments: Appointment[] = [];
-  loading = true;
-  error = false;
+  appointments = signal<Appointment[]>([]);
+  loading = signal(true);
+  error = signal(false);
 
   todayLabel = new Date().toLocaleDateString('en-GB', {
     weekday: 'short',
@@ -24,25 +23,23 @@ export class DoctorDashboardComponent implements OnInit {
     month: 'short',
   });
 
-  ngOnInit(): void {
+  constructor() {
     this.api.getDoctorSchedule().subscribe({
       next: (appts) => {
-        this.appointments = appts.sort((a, b) =>
-          (a.timeSlot || '').localeCompare(b.timeSlot || ''),
+        this.appointments.set(
+          appts.sort((a, b) => (a.timeSlot || '').localeCompare(b.timeSlot || '')),
         );
-        this.loading = false;
-        this.cdr.detectChanges();
+        this.loading.set(false);
       },
       error: () => {
-        this.error = true;
-        this.loading = false;
-        this.cdr.detectChanges();
+        this.error.set(true);
+        this.loading.set(false);
       },
     });
   }
 
   get patientCount(): number {
-    return this.appointments.length;
+    return this.appointments().length;
   }
 
   statusLabel(status: Appointment['status']): string {

@@ -60,9 +60,11 @@
     ></app-input>
 
     <div class="mt-4 flex justify-end">
-      <app-button type="submit" [disabled]="isLoading">
+      <app-button type="submit" [disabled]="isLoading()">
         {{
-          isLoading ? ('add_doctor.creating' | translate) : ('add_receptionist.create' | translate)
+          isLoading()
+            ? ('add_receptionist.creating' | translate)
+            : ('add_receptionist.create' | translate)
         }}
       </app-button>
     </div>

@@ -21,12 +21,15 @@ import { TranslatePipe } from '@ngx-translate/core';
   template: `
     <div class="mb-4 w-full">
       @if (label()) {
-        <label class="mb-1.5 block text-sm font-semibold tracking-wide text-[var(--color-text)]">{{
-          label() | translate
-        }}</label>
+        <label
+          [for]="inputId"
+          class="mb-1.5 block text-sm font-semibold tracking-wide text-[var(--color-text)]"
+          >{{ label() | translate }}</label
+        >
       }
       <div class="relative">
         <input
+          [id]="inputId"
           [type]="type()"
           [name]="name()"
           [placeholder]="placeholder() | translate"
@@ -74,10 +77,16 @@ export class InputComponent implements ControlValueAccessor {
   min = input<string>();
   error = input<string | null | false>(null);
 
-  value: string = '';
-  disabled: boolean = false;
-  onChange: (value: string) => void = () => {};
-  onTouched: () => void = () => {};
+  value = '';
+  disabled = false;
+  onChange: (value: string) => void = () => {
+    // no-op
+  };
+  onTouched: () => void = () => {
+    // no-op
+  };
+
+  readonly inputId = 'input-' + Math.random().toString(36).substring(2, 9);
 
   onInputChange(event: Event): void {
     const val = (event.target as HTMLInputElement).value;

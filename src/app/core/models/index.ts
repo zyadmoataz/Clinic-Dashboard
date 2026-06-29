@@ -6,6 +6,11 @@ export interface User {
   role: 'admin' | 'receptionist' | 'doctor' | 'patient';
 }
 
+export interface SelectOption {
+  value: string | number;
+  label: string;
+}
+
 export interface LoginResponse {
   token: string;
   user: User;
@@ -146,7 +151,7 @@ export interface DoctorRegisterRequest {
   specialization: string;
   photoUrl?: string;
   bio?: string;
-  availability?: any[];
+  availability?: Omit<DoctorAvailability, 'id'>[];
 }
 
 export interface ReceptionistRegisterRequest {

@@ -2,11 +2,10 @@
 // OWNER: Zyad, Othman, Omar, Helda
 // PURPOSE: Shared UI Component
 // ==========================================
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 
 import { TranslateService } from '@ngx-translate/core';
 import { LucideAngularModule } from 'lucide-angular';
-import { ButtonComponent } from './button.component';
 
 @Component({
   selector: 'app-language-toggle',
@@ -26,7 +25,9 @@ import { ButtonComponent } from './button.component';
 export class LanguageToggleComponent {
   currentLang = 'en';
 
-  constructor(private translate: TranslateService) {
+  private translate = inject(TranslateService);
+
+  constructor() {
     this.translate.use('en');
   }
 

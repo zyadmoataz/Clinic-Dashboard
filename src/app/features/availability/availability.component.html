@@ -5,15 +5,14 @@
 
 <div class="mb-6">
   <app-select
-    [options]="doctorsArr()"
-    labelKey="displayName"
-    valueKey="id"
+    [options]="doctorsSelectOptions()"
+    [selectedValue]="selectedDoctor()?.id || ''"
     [placeholder]="'availability.select_doctor' | translate"
     (valueChange)="onDoctorSelect($event)"
   ></app-select>
 </div>
 
-@if ((!selectedDoctor() || doctorsArr().length === 0) && !loadingAvailStatus()) {
+@if ((!selectedDoctor() || doctorsList().length === 0) && !loadingAvailStatus()) {
   <app-feedback-states />
 }
 
@@ -21,7 +20,7 @@
   <div class="flex flex-col gap-6 lg:flex-row lg:items-start">
     <!-- Working Hours Section -->
     <section
-      class="flex-1 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800"
+      class="flex-1 rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 shadow-sm"
     >
       <div class="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <h2 class="text-lg font-bold text-[var(--color-text)]">
@@ -36,9 +35,9 @@
       @if (loadingAvailStatus()) {
         <app-loading />
       } @else {
-        @for (item of editableAvailabilityArr(); track $index) {
+        @for (item of editableAvailabilities(); track $index) {
           <div
-            class="mb-4 flex flex-col gap-3 rounded-xl border border-slate-100 bg-slate-50/50 p-4 sm:flex-row sm:items-center dark:border-slate-700 dark:bg-slate-800/50"
+            class="mb-4 flex flex-col gap-3 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-2)] p-4 sm:flex-row sm:items-center"
           >
             <div class="flex-1">
               <app-select
@@ -56,7 +55,7 @@
                 type="time"
                 [value]="item.startTime"
                 (input)="updateStartTime($index, $any($event.target).value)"
-                class="h-11 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm shadow-sm transition-colors hover:border-slate-300 focus:border-[var(--color-primary)] focus:ring-4 focus:ring-[var(--color-primary)]/10 focus:outline-none dark:border-slate-700 dark:bg-slate-800"
+                class="h-11 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm shadow-sm transition-colors hover:border-[var(--color-border-strong)] focus:border-[var(--color-primary)] focus:ring-4 focus:ring-[var(--color-primary)]/10 focus:outline-none"
               />
 
               <span class="text-muted text-xs font-medium">→</span>
@@ -65,21 +64,21 @@
                 type="time"
                 [value]="item.endTime"
                 (input)="updateEndTime($index, $any($event.target).value)"
-                class="h-11 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm shadow-sm transition-colors hover:border-slate-300 focus:border-[var(--color-primary)] focus:ring-4 focus:ring-[var(--color-primary)]/10 focus:outline-none dark:border-slate-700 dark:bg-slate-800"
+                class="h-11 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm shadow-sm transition-colors hover:border-[var(--color-border-strong)] focus:border-[var(--color-primary)] focus:ring-4 focus:ring-[var(--color-primary)]/10 focus:outline-none"
               />
             </div>
 
             <button
               type="button"
               (click)="removeAvailability($index)"
-              class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-rose-500 transition-colors hover:bg-rose-50 dark:hover:bg-rose-900/20"
+              class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-[var(--color-danger)] transition-colors hover:bg-[var(--color-danger-soft)]"
             >
               <lucide-icon name="trash" class="h-4 w-4"></lucide-icon>
             </button>
           </div>
         }
 
-        @if (availabilityArr().length === 0 && editableAvailabilityArr().length === 0) {
+        @if (availabilities().length === 0 && editableAvailabilities().length === 0) {
           <app-feedback-states
             [showIcon]="false"
             titleKey=""
@@ -97,7 +96,7 @@
 
     <!-- Blocked Dates Section -->
     <section
-      class="flex-1 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800"
+      class="flex-1 rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 shadow-sm"
     >
       <h2 class="mb-6 text-lg font-bold text-[var(--color-text)]">
         {{ 'availability.blocked_days' | translate }}
@@ -111,7 +110,7 @@
             type="date"
             [value]="newBlockedDate()"
             (input)="newBlockedDate.set($any($event.target).value)"
-            class="h-11 flex-1 rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm shadow-sm transition-colors hover:border-slate-300 focus:border-[var(--color-primary)] focus:ring-4 focus:ring-[var(--color-primary)]/10 focus:outline-none dark:border-slate-700 dark:bg-slate-800"
+            class="h-11 flex-1 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-2 text-sm shadow-sm transition-colors hover:border-[var(--color-border-strong)] focus:border-[var(--color-primary)] focus:ring-4 focus:ring-[var(--color-primary)]/10 focus:outline-none"
           />
 
           <app-button (clicked)="createBlockedDate()" [disabled]="!newBlockedDate()">
@@ -119,7 +118,7 @@
           </app-button>
         </div>
 
-        @if (blockedDatesArr().length === 0) {
+        @if (blockedDates().length === 0) {
           <app-feedback-states
             [showIcon]="false"
             titleKey=""
@@ -128,13 +127,12 @@
         }
 
         <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          @for (item of blockedDatesArr(); track item.id) {
+          @for (item of blockedDates(); track item.id) {
             <div
-              class="group relative flex flex-col items-center rounded-xl border border-slate-200 bg-slate-50/50 p-5 transition-all hover:border-slate-300 hover:shadow-sm dark:border-slate-700 dark:bg-slate-800/50"
+              class="group relative flex flex-col items-center rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-2)] p-5 transition-all hover:border-[var(--color-border-strong)] hover:shadow-sm"
             >
               <app-button
-                type="button"
-                customClass="rounded-lg transition-all text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-900/20 absolute top-3 inset-e-3 p-1.5 opacity-0 group-hover:opacity-100"
+                customClass="rounded-lg transition-all text-[var(--color-danger)] hover:bg-[var(--color-danger-soft)] absolute top-3 inset-e-3 p-1.5 opacity-0 group-hover:opacity-100"
                 (clicked)="openDeleteModal(item)"
               >
                 <lucide-icon name="trash" class="h-4 w-4"></lucide-icon>
@@ -170,14 +168,14 @@
       <app-button
         type="button"
         (clicked)="closeDeleteModal()"
-        customClass="border border-slate-200 bg-white hover:bg-slate-50 text-[var(--color-text)] h-10 px-4 py-2 dark:border-slate-700 dark:bg-slate-800"
+        customClass="border border-[var(--color-border)] bg-[var(--color-surface)] hover:bg-[var(--color-surface-2)] text-[var(--color-text)] h-10 px-4 py-2"
       >
         {{ 'availability.delete_modal.cancel' | translate }}
       </app-button>
 
       <app-button
         type="button"
-        customClass="bg-rose-600 hover:bg-rose-700 text-white h-10 px-4 py-2"
+        customClass="bg-danger hover:bg-danger-hover text-white h-10 px-4 py-2"
         (clicked)="confirmDeleteBlockedDate()"
       >
         {{ 'availability.delete_modal.delete' | translate }}

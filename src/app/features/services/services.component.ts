@@ -11,6 +11,7 @@ import {
   ModalComponent,
   PageHeaderComponent,
   InputComponent,
+  SelectComponent,
 } from '../../shared/components';
 import { LoadingComponent } from '../../shared/components/loading.component';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
@@ -32,6 +33,7 @@ import { CommonModule } from '@angular/common';
     CommonModule,
     PageHeaderComponent,
     InputComponent,
+    SelectComponent,
   ],
   templateUrl: './services.component.html',
 })
@@ -40,8 +42,8 @@ export class ServicesComponent {
   toastService = inject(ToastService);
   translateService = inject(TranslateService);
 
-  servicesArr = signal<Service[]>([]);
-  doctorsArr = signal<Doctor[]>([]);
+  servicesList = signal<Service[]>([]);
+  doctorsList = signal<Doctor[]>([]);
 
   loadingStatus = signal<boolean>(true);
   errMsg = signal<string | null>(null);
@@ -72,7 +74,7 @@ export class ServicesComponent {
   ];
 
   tableData = computed(() =>
-    this.servicesArr().map((ser) => ({
+    this.servicesList().map((ser) => ({
       id: ser.id,
       cells: [ser.name, ser.doctorName, `${ser.durationMinutes} min`, `${ser.price} EGP`],
     })),
@@ -88,8 +90,8 @@ export class ServicesComponent {
     this.errMsg.set(null);
 
     this.apiService.getServices().subscribe({
-      next: (resp) => {
-        this.servicesArr.set(resp);
+      next: (servicesResponse) => {
+        this.servicesList.set(servicesResponse);
         this.loadingStatus.set(false);
       },
       error: () => {
@@ -101,8 +103,8 @@ export class ServicesComponent {
 
   loadDoctors() {
     this.apiService.getDoctors().subscribe({
-      next: (resp) => {
-        this.doctorsArr.set(resp.items);
+      next: (doctorsResponse) => {
+        this.doctorsList.set(doctorsResponse.items);
       },
     });
   }
@@ -148,7 +150,7 @@ export class ServicesComponent {
 
     this.apiService.deleteService(currentService.id).subscribe({
       next: () => {
-        this.servicesArr.update((servArr) => servArr.filter((s) => s.id !== currentService.id));
+        this.servicesList.update((arr) => arr.filter((s) => s.id !== currentService.id));
         this.toastService.success(
           this.translateService.instant('services.delete_modal.delete_success'),
         );
@@ -162,14 +164,14 @@ export class ServicesComponent {
     });
   }
 
-  onDeleteClicked(id: number) {
-    const service = this.servicesArr().find((s) => s.id === id) ?? null;
+  onDeleteClicked(id: string | number) {
+    const service = this.servicesList().find((s) => s.id === Number(id)) ?? null;
     if (!service) return;
     this.openDeleteModal(service);
   }
 
-  onEditClicked(id: number) {
-    const service = this.servicesArr().find((s) => s.id === id);
+  onEditClicked(id: string | number) {
+    const service = this.servicesList().find((s) => s.id === Number(id));
     if (!service) return;
 
     this.openEditModal(service);
@@ -199,12 +201,14 @@ export class ServicesComponent {
         });
 
     request.subscribe({
-      next: (resp) => {
+      next: (serviceResponse) => {
         if (this.isEditMode()) {
-          this.servicesArr.update((arr) => arr.map((s) => (s.id === resp.id ? resp : s)));
+          this.servicesList.update((arr) =>
+            arr.map((s) => (s.id === serviceResponse.id ? serviceResponse : s)),
+          );
           this.toastService.success(this.translateService.instant('services.update_success'));
         } else {
-          this.servicesArr.update((arr) => [...arr, resp]);
+          this.servicesList.update((arr) => [...arr, serviceResponse]);
           this.toastService.success(this.translateService.instant('services.create_success'));
         }
 

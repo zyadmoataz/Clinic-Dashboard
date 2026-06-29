@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { ApiService } from '../../../core/services/api.service';
@@ -10,14 +10,13 @@ import { Appointment, DashboardStats } from '../../../core/models';
   imports: [CommonModule, RouterModule],
   templateUrl: './receptionist-dashboard.component.html',
 })
-export class ReceptionistDashboardComponent implements OnInit {
+export class ReceptionistDashboardComponent {
   private api = inject(ApiService);
-  private cdr = inject(ChangeDetectorRef);
 
-  stats: DashboardStats | null = null;
-  upcomingAppointments: Appointment[] = [];
-  loading = true;
-  error = false;
+  stats = signal<DashboardStats | null>(null);
+  upcomingAppointments = signal<Appointment[]>([]);
+  loading = signal(true);
+  error = signal(false);
 
   today = new Date().toLocaleDateString('en-GB', {
     weekday: 'long',
@@ -28,17 +27,15 @@ export class ReceptionistDashboardComponent implements OnInit {
 
   todayIso = new Date().toISOString().split('T')[0];
 
-  ngOnInit(): void {
+  constructor() {
     this.api.getDashboardStats().subscribe({
-      next: (data) => {
-        this.stats = data;
+      next: (dashboardStats) => {
+        this.stats.set(dashboardStats);
         this.loadAppointments();
-        this.cdr.detectChanges();
       },
       error: () => {
-        this.error = true;
-        this.loading = false;
-        this.cdr.detectChanges();
+        this.error.set(true);
+        this.loading.set(false);
       },
     });
   }
@@ -46,16 +43,16 @@ export class ReceptionistDashboardComponent implements OnInit {
   private loadAppointments(): void {
     this.api.getAppointments({ date: this.todayIso }).subscribe({
       next: (appts) => {
-        this.upcomingAppointments = appts
-          .filter((a) => ['Confirmed', 'PendingPayment', 'Arrived'].includes(a.status))
-          .sort((a, b) => (a.timeSlot || '').localeCompare(b.timeSlot || ''))
-          .slice(0, 8);
-        this.loading = false;
-        this.cdr.detectChanges();
+        this.upcomingAppointments.set(
+          appts
+            .filter((a) => ['Confirmed', 'PendingPayment', 'Arrived'].includes(a.status))
+            .sort((a, b) => (a.timeSlot || '').localeCompare(b.timeSlot || ''))
+            .slice(0, 8),
+        );
+        this.loading.set(false);
       },
       error: () => {
-        this.loading = false;
-        this.cdr.detectChanges();
+        this.loading.set(false);
       },
     });
   }
@@ -94,6 +91,6 @@ export class ReceptionistDashboardComponent implements OnInit {
   }
 
   get awaitingPaymentCount(): number {
-    return this.upcomingAppointments.filter((a) => a.status === 'PendingPayment').length;
+    return this.upcomingAppointments().filter((a) => a.status === 'PendingPayment').length;
   }
 }

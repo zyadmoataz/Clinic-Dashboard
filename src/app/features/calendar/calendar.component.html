@@ -7,8 +7,11 @@
 
 <div class="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
   <div class="flex flex-col gap-1">
-    <label class="text-muted text-sm font-medium">{{ 'calendar.pick_date' | translate }}</label>
+    <label for="calendar-date" class="text-muted text-sm font-medium">{{
+      'calendar.pick_date' | translate
+    }}</label>
     <input
+      id="calendar-date"
       type="date"
       [value]="selectedDate()"
       (input)="onDateChange($any($event.target).value)"
@@ -19,14 +22,14 @@
   <div class="bg-surface border-border flex items-center gap-2 rounded-lg border px-4 py-2">
     <lucide-icon name="calendar" class="text-primary h-5 w-5"></lucide-icon>
     <span class="text-text text-sm font-medium">
-      {{ appointmentsArr().length }} {{ 'calendar.appointments' | translate }}
+      {{ appointmentsList().length }} {{ 'calendar.appointments' | translate }}
     </span>
   </div>
 </div>
 
 @if (loadingStatus()) {
   <app-loading />
-} @else if (appointmentsArr().length === 0) {
+} @else if (appointmentsList().length === 0) {
   <app-feedback-states
     titleKey="calendar.empty_title"
     descriptionKey="calendar.empty_description"

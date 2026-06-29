@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -15,19 +15,17 @@ import { ButtonComponent } from '../../../shared/components/button.component';
   imports: [ReactiveFormsModule, TranslatePipe, InputComponent, ButtonComponent],
   templateUrl: './add-receptionist.component.html',
 })
-export class AddReceptionistComponent implements OnInit {
-  receptionistForm!: FormGroup;
-  isLoading = false;
+export class AddReceptionistComponent {
+  receptionistForm: FormGroup;
+  isLoading = signal(false);
 
-  constructor(
-    private fb: FormBuilder,
-    private apiService: ApiService,
-    private router: Router,
-    private toast: ToastService,
-    private translate: TranslateService,
-  ) {}
+  private fb = inject(FormBuilder);
+  private apiService = inject(ApiService);
+  private router = inject(Router);
+  private toast = inject(ToastService);
+  private translate = inject(TranslateService);
 
-  ngOnInit(): void {
+  constructor() {
     this.receptionistForm = this.fb.group({
       displayName: ['', [Validators.required, Validators.minLength(3)]],
       email: ['', [Validators.required, Validators.email]],
@@ -55,19 +53,19 @@ export class AddReceptionistComponent implements OnInit {
       return;
     }
 
-    this.isLoading = true;
+    this.isLoading.set(true);
     const formValue = this.receptionistForm.value;
 
-    const data = {
+    const receptionistData = {
       name: formValue.displayName,
       email: formValue.email,
       phone: formValue.phone,
       password: formValue.password,
     };
 
-    this.apiService.addReceptionist(data).subscribe({
+    this.apiService.addReceptionist(receptionistData).subscribe({
       next: () => {
-        this.isLoading = false;
+        this.isLoading.set(false);
         this.toast.success(this.translate.instant('common.success'));
         this.router.navigate(['/staff']);
       },
@@ -80,7 +78,7 @@ export class AddReceptionistComponent implements OnInit {
           this.toast.error(this.translate.instant('common.error') || 'An error occurred.');
         }
         console.error(err);
-        this.isLoading = false;
+        this.isLoading.set(false);
       },
     });
   }

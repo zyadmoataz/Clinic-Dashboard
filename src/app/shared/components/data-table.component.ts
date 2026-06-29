@@ -5,7 +5,6 @@
 import { Component, output, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
-import { TableActionsComponent } from './table-actions.component';
 
 @Component({
   selector: 'app-data-table',
@@ -50,9 +49,9 @@ import { TableActionsComponent } from './table-actions.component';
               >
                 @for (col of columns(); track col) {
                   <th
-                    class="px-5 py-3.5 text-xs font-semibold tracking-wider text-slate-500 uppercase dark:text-slate-400"
+                    class="px-6 py-4 text-start text-sm font-semibold whitespace-nowrap text-[var(--color-text)]"
                   >
-                    {{ col.label ? (col.label | translate) : (col | translate) }}
+                    {{ getLabel($any(col)) | translate }}
                   </th>
                 }
                 @if (hasActions()) {
@@ -93,7 +92,9 @@ import { TableActionsComponent } from './table-actions.component';
                         </span>
                       }
                       @if (!isBoolean(cell)) {
-                        {{ cell || '—' | translate }}
+                        {{
+                          cell !== null && cell !== undefined ? cell.toString() : ('--' | translate)
+                        }}
                       }
                     </td>
                   }
@@ -139,23 +140,31 @@ import { TableActionsComponent } from './table-actions.component';
 export class DataTableComponent {
   readonly data = input<
     {
-      id: any;
-      cells: any[];
+      id: string | number;
+      cells: (string | number | boolean | null | undefined)[];
     }[]
   >([]);
-  readonly columns = input<any[]>([]);
+  readonly columns = input<{ label: string; [key: string]: unknown }[] | string[]>([]);
   readonly isLoading = input(false);
 
-  deleteClicked = output<number>();
-  editClicked = output<number>();
-  activateClicked = output<number>();
+  deleteClicked = output<string | number>();
+  editClicked = output<string | number>();
+  activateClicked = output<string | number>();
 
   readonly showEdit = input(false);
   readonly showDelete = input(false);
   readonly showActivate = input(false);
 
-  isBoolean(val: any): boolean {
+  isBoolean(val: unknown): boolean {
     return typeof val === 'boolean';
+  }
+
+  isString(val: unknown): val is string {
+    return typeof val === 'string';
+  }
+
+  getLabel(col: string | { label: string; [key: string]: unknown }): string {
+    return typeof col === 'string' ? col : col.label;
   }
 
   hasActions(): boolean {

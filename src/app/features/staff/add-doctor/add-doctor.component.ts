@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 
 import { ReactiveFormsModule, FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -15,9 +15,9 @@ import { ButtonComponent } from '../../../shared/components/button.component';
   imports: [ReactiveFormsModule, TranslatePipe, InputComponent, ButtonComponent],
   templateUrl: './add-doctor.component.html',
 })
-export class AddDoctorComponent implements OnInit {
-  doctorForm!: FormGroup;
-  isLoading = false;
+export class AddDoctorComponent {
+  doctorForm: FormGroup;
+  isLoading = signal(false);
 
   days = [
     { label: 'days.sunday', value: 'Sunday' },
@@ -29,15 +29,13 @@ export class AddDoctorComponent implements OnInit {
     { label: 'days.saturday', value: 'Saturday' },
   ];
 
-  constructor(
-    private fb: FormBuilder,
-    private apiService: ApiService,
-    private router: Router,
-    private toast: ToastService,
-    private translate: TranslateService,
-  ) {}
+  private fb = inject(FormBuilder);
+  private apiService = inject(ApiService);
+  private router = inject(Router);
+  private toast = inject(ToastService);
+  private translate = inject(TranslateService);
 
-  ngOnInit(): void {
+  constructor() {
     this.doctorForm = this.fb.group({
       // Account
       displayName: ['', [Validators.required, Validators.minLength(3)]],
@@ -96,7 +94,7 @@ export class AddDoctorComponent implements OnInit {
       return;
     }
 
-    this.isLoading = true;
+    this.isLoading.set(true);
     const formValue = this.doctorForm.value;
 
     const doctorData = {
@@ -118,7 +116,7 @@ export class AddDoctorComponent implements OnInit {
 
     this.apiService.addDoctor(doctorData).subscribe({
       next: () => {
-        this.isLoading = false;
+        this.isLoading.set(false);
         this.toast.success(this.translate.instant('common.success'));
         this.router.navigate(['/staff']);
       },
@@ -131,7 +129,7 @@ export class AddDoctorComponent implements OnInit {
           this.toast.error(this.translate.instant('common.error') || 'An error occurred.');
         }
         console.error(err);
-        this.isLoading = false;
+        this.isLoading.set(false);
       },
     });
   }
