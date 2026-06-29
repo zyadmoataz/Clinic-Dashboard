@@ -3,13 +3,13 @@
 // PURPOSE: Shared UI Component
 // ==========================================
 import { Component, input } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-feedback-states',
   standalone: true,
-  imports: [CommonModule, TranslatePipe],
+  imports: [TranslatePipe],
   template: `
     <div
       class="border-border bg-surface flex flex-col items-center justify-center rounded-xl border p-12 text-center"

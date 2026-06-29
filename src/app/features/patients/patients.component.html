@@ -1,11 +1,11 @@
-<div class="px-6 py-8">
+<div>
   <!-- Header -->
-  <div class="mb-6 flex items-start justify-between">
+  <div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
     <div>
-      <h1 class="text-3xl font-bold text-gray-900 dark:text-white">
+      <h1 class="text-2xl font-bold text-[var(--color-text)] sm:text-3xl">
         {{ 'header.patients' | translate }}
       </h1>
-      <p class="mt-1 text-sm text-gray-500">
+      <p class="mt-1 text-sm text-[var(--color-muted)]">
         {{ 'patients.subtitle' | translate }}
       </p>
     </div>
@@ -15,74 +15,48 @@
   </div>
 
   <!-- Add Patient Form -->
-  <div
-    *ngIf="showForm"
-    class="mb-6 rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-800"
-  >
-    <form [formGroup]="patientForm" (ngSubmit)="onSubmit()">
-      <div class="mb-4 grid grid-cols-2 gap-4">
-        <!-- Name -->
-        <div class="flex flex-col gap-1">
-          <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
-            {{ 'patients.name' | translate }}
-          </label>
-          <input
+  @if (showForm) {
+    <div
+      class="mb-6 rounded-[var(--radius)] border border-[var(--color-border)] bg-[var(--color-surface)] p-6 shadow-[var(--shadow-sm)]"
+    >
+      <form [formGroup]="patientForm" (ngSubmit)="onSubmit()">
+        <div class="mb-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <!-- Name -->
+          <app-input
             formControlName="name"
-            type="text"
-            class="rounded-lg border px-3 py-2 text-sm transition focus:ring-2 focus:ring-teal-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-white"
-            [class.border-red-500]="name?.invalid && name?.touched"
-            [class.border-gray-300]="!(name?.invalid && name?.touched)"
-          />
-          <p *ngIf="name?.invalid && name?.touched" class="text-xs text-red-500">
-            {{ 'patients.name_required' | translate }}
-          </p>
-        </div>
-
-        <!-- Phone -->
-        <div class="flex flex-col gap-1">
-          <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
-            {{ 'patients.phone' | translate }}
-          </label>
-          <input
+            [label]="'patients.name' | translate"
+            [error]="name.invalid && name.touched ? ('patients.name_required' | translate) : null"
+          ></app-input>
+          <!-- Phone -->
+          <app-input
             formControlName="phone"
-            type="text"
-            class="rounded-lg border px-3 py-2 text-sm transition focus:ring-2 focus:ring-teal-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-white"
-            [class.border-red-500]="phone?.invalid && phone?.touched"
-            [class.border-gray-300]="!(phone?.invalid && phone?.touched)"
-          />
-          <p *ngIf="phone?.invalid && phone?.touched" class="text-xs text-red-500">
-            {{ 'patients.phone_required' | translate }}
-          </p>
+            [label]="'patients.phone' | translate"
+            [error]="
+              phone.invalid && phone.touched ? ('patients.phone_required' | translate) : null
+            "
+          ></app-input>
         </div>
-      </div>
-
-      <div class="grid grid-cols-2 gap-4">
-        <!-- Email -->
-        <div class="flex flex-col gap-1">
-          <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
-            {{ 'patients.email' | translate }}
-            <span class="font-normal text-gray-400">({{ 'patients.optional' | translate }})</span>
-          </label>
-          <input
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <!-- Email -->
+          <app-input
             formControlName="email"
             type="email"
-            class="rounded-lg border border-gray-300 px-3 py-2 text-sm transition focus:ring-2 focus:ring-teal-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-white"
-          />
+            [label]="
+              ('patients.email' | translate) + ' (' + ('patients.optional' | translate) + ')'
+            "
+          ></app-input>
+          <!-- Submit -->
+          <div class="mb-3 flex items-end">
+            <app-button type="submit" [disabled]="isSubmitting" customClass="w-full">
+              {{
+                isSubmitting ? ('patients.creating' | translate) : ('patients.create' | translate)
+              }}
+            </app-button>
+          </div>
         </div>
-
-        <!-- Submit -->
-        <div class="flex items-end">
-          <button
-            type="submit"
-            [disabled]="isSubmitting"
-            class="w-full rounded-lg bg-teal-600 py-2 text-sm font-semibold text-white transition hover:bg-teal-700 disabled:opacity-50"
-          >
-            {{ isSubmitting ? ('patients.creating' | translate) : ('patients.create' | translate) }}
-          </button>
-        </div>
-      </div>
-    </form>
-  </div>
+      </form>
+    </div>
+  }
 
   <!-- Search -->
   <div class="mb-6">
@@ -90,75 +64,18 @@
   </div>
 
   <!-- Loading -->
-  <div *ngIf="isLoading" class="py-10 text-center text-gray-400">
-    {{ 'patients.loading' | translate }}
-  </div>
+  @if (isLoading) {
+    <div class="py-10 text-center text-[var(--color-muted)]">
+      {{ 'patients.loading' | translate }}
+    </div>
+  }
 
   <!-- Table -->
-  <div
-    *ngIf="!isLoading"
-    class="overflow-hidden rounded-2xl border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800"
-  >
-    <table class="w-full text-sm">
-      <thead>
-        <tr class="border-b border-gray-200 bg-gray-50 dark:border-gray-600 dark:bg-gray-700">
-          <th
-            class="px-6 py-3 text-left text-xs font-semibold tracking-wider text-gray-500 uppercase"
-          >
-            {{ 'patients.name' | translate }}
-          </th>
-          <th
-            class="px-6 py-3 text-left text-xs font-semibold tracking-wider text-gray-500 uppercase"
-          >
-            {{ 'patients.phone' | translate }}
-          </th>
-          <th
-            class="px-6 py-3 text-left text-xs font-semibold tracking-wider text-gray-500 uppercase"
-          >
-            {{ 'patients.email' | translate }}
-          </th>
-          <th
-            class="px-6 py-3 text-left text-xs font-semibold tracking-wider text-gray-500 uppercase"
-          >
-            {{ 'patients.account' | translate }}
-          </th>
-        </tr>
-      </thead>
-      <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
-        <tr *ngIf="filteredPatients.length === 0">
-          <td colspan="4" class="py-10 text-center text-gray-400">
-            {{ 'patients.no_results' | translate }}
-          </td>
-        </tr>
-
-        <tr
-          *ngFor="let patient of filteredPatients"
-          class="transition-colors hover:bg-gray-50 dark:hover:bg-gray-700/50"
-        >
-          <td class="px-6 py-4 font-medium text-gray-900 dark:text-white">
-            {{ patient.name }}
-          </td>
-          <td class="px-6 py-4 text-gray-600 dark:text-gray-300">
-            {{ patient.phone }}
-          </td>
-          <td class="px-6 py-4 text-teal-600 dark:text-teal-400">
-            {{ patient.email }}
-          </td>
-          <td class="px-6 py-4">
-            <span
-              *ngIf="patient.email?.includes('clinic.local'); else registered"
-              class="rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-600"
-            >
-              {{ 'patients.walk_in' | translate }}
-            </span>
-            <ng-template #registered>
-              <span class="rounded-full bg-teal-50 px-3 py-1 text-xs font-medium text-teal-700">
-                {{ 'patients.registered' | translate }}
-              </span>
-            </ng-template>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+  @if (!isLoading) {
+    <app-data-table
+      [data]="tableData"
+      [columns]="tableColumns"
+      [isLoading]="isLoading"
+    ></app-data-table>
+  }
 </div>

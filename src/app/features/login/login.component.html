@@ -11,7 +11,7 @@
       class="pointer-events-none absolute -top-40 -left-40 z-10 h-[600px] w-[600px] rounded-full bg-white opacity-10 blur-[100px]"
     ></div>
     <div
-      class="pointer-events-none absolute -right-40 -bottom-40 z-10 h-[600px] w-[600px] rounded-full bg-teal-400 opacity-20 blur-[120px]"
+      class="pointer-events-none absolute -right-40 -bottom-40 z-10 h-[600px] w-[600px] rounded-full bg-white opacity-20 blur-[120px]"
     ></div>
 
     <div class="relative z-20 flex items-center gap-3">
@@ -52,6 +52,15 @@
         <p class="text-muted">Enter your credentials to access your dashboard.</p>
       </div>
 
+      @if (loginError()) {
+        <div
+          class="mb-6 flex items-start gap-3 rounded-xl border border-rose-200 bg-rose-50 p-4 text-rose-700 dark:border-rose-900/50 dark:bg-rose-900/20 dark:text-rose-400"
+        >
+          <lucide-icon name="alert-circle" class="mt-0.5 h-5 w-5 shrink-0"></lucide-icon>
+          <p class="text-sm leading-relaxed font-medium">{{ loginError() }}</p>
+        </div>
+      }
+
       <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="space-y-5">
         <app-input
           label="Email address"
@@ -61,28 +70,19 @@
         ></app-input>
 
         <div class="relative">
-          <div class="absolute top-0 right-0 z-10 flex h-6 items-center">
-            <a
-              href="#"
-              class="text-primary hover:text-primary-hover text-xs font-semibold transition-colors"
-              >Forgot password?</a
-            >
-          </div>
           <app-input
             label="Password"
-            type="password"
+            [type]="showPassword() ? 'text' : 'password'"
             formControlName="password"
             placeholder="••••••••"
           ></app-input>
-        </div>
-
-        <div class="mt-2 flex items-center gap-2">
-          <input
-            type="checkbox"
-            id="remember"
-            class="border-border text-primary focus:ring-primary-ring h-4 w-4 rounded"
-          />
-          <label for="remember" class="text-muted text-sm">Remember me for 30 days</label>
+          <button
+            type="button"
+            class="absolute end-4 top-[34px] text-slate-400 hover:text-slate-600 focus:outline-none dark:text-slate-500 dark:hover:text-slate-300"
+            (click)="togglePassword()"
+          >
+            <lucide-icon [name]="showPassword() ? 'eye-off' : 'eye'" class="h-5 w-5"></lucide-icon>
+          </button>
         </div>
 
         <button

@@ -10,6 +10,7 @@ import {
   FeedbackStatesComponent,
   PageHeaderComponent,
   SelectComponent,
+  InputComponent,
 } from '../../shared/components';
 import { LoadingComponent } from '../../shared/components/loading.component';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
@@ -17,17 +18,20 @@ import { LucideAngularModule } from 'lucide-angular';
 import { ApiService } from '../../core/services/api.service';
 import { ToastService } from '../../core/services/toast.service';
 import { Doctor, Service, Slot, WalkInBookingRequest } from '../../core/models';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-walk-in',
   standalone: true,
   imports: [
+    FormsModule,
     PageHeaderComponent,
     TranslatePipe,
     LoadingComponent,
     SelectComponent,
     FeedbackStatesComponent,
     ButtonComponent,
+    InputComponent,
     LucideAngularModule,
   ],
   templateUrl: './walk-in.component.html',

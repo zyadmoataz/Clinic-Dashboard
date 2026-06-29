@@ -3,19 +3,18 @@
 // PURPOSE: Shared UI Component
 // ==========================================
 import { Component, input } from '@angular/core';
-import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-page-header',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   template: `
-    <div class="mb-8 flex items-center justify-between">
+    <div class="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
       <div>
-        <h1 class="text-3xl font-bold">{{ title() }}</h1>
-        <p class="text-muted mb-5 text-xs md:text-sm">{{ description() }}</p>
+        <h1 class="text-2xl font-bold sm:text-3xl">{{ title() }}</h1>
+        <p class="text-muted mt-1 text-xs md:text-sm">{{ description() }}</p>
       </div>
-      <div class="flex gap-2">
+      <div class="flex shrink-0 gap-2">
         <ng-content></ng-content>
       </div>
     </div>

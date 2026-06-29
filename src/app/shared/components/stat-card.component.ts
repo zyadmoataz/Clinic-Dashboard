@@ -3,12 +3,11 @@
 // PURPOSE: Shared UI Component
 // ==========================================
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-stat-card',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   template: `
     <div class="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
       <p class="text-sm font-medium text-gray-500">Total Patients</p>

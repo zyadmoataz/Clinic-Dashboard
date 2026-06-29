@@ -1,43 +1,45 @@
-<div class="mx-auto flex max-w-[var(--container)] flex-col gap-4 p-4 sm:gap-6 sm:p-6">
+<div class="flex flex-col gap-4 sm:gap-6">
   <!-- Header -->
   <div>
-    <h1 class="text-xl font-bold tracking-tight text-[var(--color-text)] sm:text-2xl">Dashboard</h1>
+    <h1 class="text-xl font-bold tracking-tight text-[var(--color-text)] sm:text-2xl">
+      {{ 'dashboard.title' | translate }}
+    </h1>
     <p class="mt-1 text-sm text-[var(--color-muted)]">{{ today }}</p>
   </div>
 
   <!-- Skeleton -->
-  <ng-container *ngIf="loading">
+  @if (loading) {
     <div class="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
-      <div
-        *ngFor="let i of [1, 2, 3, 4]"
-        class="h-24 animate-pulse rounded-[var(--radius)] bg-[var(--color-surface-2)]"
-      ></div>
+      @for (i of [1, 2, 3, 4]; track i) {
+        <div class="h-24 animate-pulse rounded-[var(--radius)] bg-[var(--color-surface-2)]"></div>
+      }
     </div>
     <div class="h-32 animate-pulse rounded-[var(--radius)] bg-[var(--color-surface-2)]"></div>
-  </ng-container>
+  }
 
   <!-- Error -->
-  <div
-    *ngIf="error && !loading"
-    class="flex flex-col items-center gap-3 py-12 text-center text-sm text-[var(--color-muted)]"
-  >
-    <svg
-      width="32"
-      height="32"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="var(--color-danger)"
-      stroke-width="1.5"
+  @if (error && !loading) {
+    <div
+      class="flex flex-col items-center gap-3 py-12 text-center text-sm text-[var(--color-muted)]"
     >
-      <circle cx="12" cy="12" r="10" />
-      <line x1="12" y1="8" x2="12" y2="12" />
-      <line x1="12" y1="16" x2="12.01" y2="16" />
-    </svg>
-    <p>Could not load dashboard data. Please refresh.</p>
-  </div>
+      <svg
+        width="32"
+        height="32"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="var(--color-danger)"
+        stroke-width="1.5"
+      >
+        <circle cx="12" cy="12" r="10" />
+        <line x1="12" y1="8" x2="12" y2="12" />
+        <line x1="12" y1="16" x2="12.01" y2="16" />
+      </svg>
+      <p>Could not load dashboard data. Please refresh.</p>
+    </div>
+  }
 
   <!-- Content -->
-  <ng-container *ngIf="!loading && !error && stats">
+  @if (!loading && !error && stats) {
     <!-- Stat cards -->
     <div class="grid grid-cols-1 gap-3 sm:gap-4 md:grid-cols-2 lg:grid-cols-4">
       <div
@@ -63,15 +65,14 @@
           </svg>
         </div>
         <div class="flex min-w-0 flex-col gap-0.5">
-          <span class="truncate text-xs font-medium text-[var(--color-muted)]"
-            >Appointments today</span
-          >
+          <span class="truncate text-xs font-medium text-[var(--color-muted)]">{{
+            'dashboard.appointments_today' | translate
+          }}</span>
           <span class="text-3xl leading-tight font-bold tracking-tight text-[var(--color-text)]">{{
             stats.todaysAppointments
           }}</span>
         </div>
       </div>
-
       <div
         class="flex items-center gap-3 rounded-[var(--radius)] border border-[var(--color-border)] bg-[var(--color-surface)] p-3 shadow-[var(--shadow-sm)] transition-all duration-[var(--transition-fast)] hover:-translate-y-px hover:shadow-[var(--shadow-md)] sm:p-4"
       >
@@ -92,13 +93,14 @@
           </svg>
         </div>
         <div class="flex min-w-0 flex-col gap-0.5">
-          <span class="truncate text-xs font-medium text-[var(--color-muted)]">Confirmed</span>
+          <span class="truncate text-xs font-medium text-[var(--color-muted)]">{{
+            'dashboard.confirmed' | translate
+          }}</span>
           <span class="text-3xl leading-tight font-bold tracking-tight text-[var(--color-text)]">{{
             stats.confirmed
           }}</span>
         </div>
       </div>
-
       <div
         class="flex items-center gap-3 rounded-[var(--radius)] border border-[var(--color-border)] bg-[var(--color-surface)] p-3 shadow-[var(--shadow-sm)] transition-all duration-[var(--transition-fast)] hover:-translate-y-px hover:shadow-[var(--shadow-md)] sm:p-4"
       >
@@ -120,13 +122,14 @@
           </svg>
         </div>
         <div class="flex min-w-0 flex-col gap-0.5">
-          <span class="truncate text-xs font-medium text-[var(--color-muted)]">Arrived</span>
+          <span class="truncate text-xs font-medium text-[var(--color-muted)]">{{
+            'dashboard.checked_in' | translate
+          }}</span>
           <span class="text-3xl leading-tight font-bold tracking-tight text-[var(--color-text)]">{{
             stats.arrived
           }}</span>
         </div>
       </div>
-
       <div
         class="flex items-center gap-3 rounded-[var(--radius)] border border-[var(--color-border)] bg-[var(--color-surface)] p-3 shadow-[var(--shadow-sm)] transition-all duration-[var(--transition-fast)] hover:-translate-y-px hover:shadow-[var(--shadow-md)] sm:p-4"
       >
@@ -150,9 +153,9 @@
           </svg>
         </div>
         <div class="flex min-w-0 flex-col gap-0.5">
-          <span class="truncate text-xs font-medium text-[var(--color-muted)]"
-            >Today's Revenue</span
-          >
+          <span class="truncate text-xs font-medium text-[var(--color-muted)]">{{
+            'dashboard.revenue_today' | translate
+          }}</span>
           <span
             class="text-xl leading-tight font-extrabold tracking-tight text-[var(--color-text)]"
             >{{ stats.todaysRevenue | currency: 'EGP' }}</span
@@ -160,49 +163,57 @@
         </div>
       </div>
     </div>
-
     <!-- Overview strip -->
     <div
       class="rounded-[var(--radius)] border border-[var(--color-border)] bg-[var(--color-surface)] p-4 shadow-[var(--shadow-sm)] sm:p-5"
     >
       <div class="mb-4 flex items-center justify-between">
-        <span class="text-sm font-semibold text-[var(--color-text)]">Clinic overview</span>
+        <span class="text-sm font-semibold text-[var(--color-text)]">{{
+          'dashboard.overview' | translate
+        }}</span>
         <span
           class="flex items-center gap-1.5 rounded-[var(--radius-full)] bg-[var(--color-success-soft)] px-2.5 py-1 text-xs font-medium text-[var(--color-success)]"
         >
           <span class="h-1.5 w-1.5 animate-pulse rounded-full bg-[var(--color-success)]"></span>
-          Live
+          {{ 'dashboard.live' | translate }}
         </span>
       </div>
-
       <div
         class="grid grid-cols-1 gap-y-4 md:grid-cols-2 lg:grid-cols-4 lg:divide-x lg:divide-[var(--color-border)]"
       >
         <div class="flex flex-col items-center gap-1 px-2 py-2 sm:px-3">
-          <span class="text-center text-xs text-[var(--color-faint)]">Total today</span>
+          <span class="text-center text-xs text-[var(--color-faint)]">{{
+            'dashboard.total_today' | translate
+          }}</span>
           <span class="text-xl font-bold text-[var(--color-primary)] sm:text-2xl">{{
             stats.todaysAppointments
           }}</span>
         </div>
         <div class="flex flex-col items-center gap-1 px-2 py-2 sm:px-3">
-          <span class="text-center text-xs text-[var(--color-faint)]">Pending Visits</span>
+          <span class="text-center text-xs text-[var(--color-faint)]">{{
+            'dashboard.pending_visits' | translate
+          }}</span>
           <span class="text-xl font-bold text-[var(--color-warning)] sm:text-2xl">{{
             stats.confirmed
           }}</span>
         </div>
         <div class="flex flex-col items-center gap-1 px-2 py-2 sm:px-3">
-          <span class="text-center text-xs text-[var(--color-faint)]">Active Doctors</span>
+          <span class="text-center text-xs text-[var(--color-faint)]">{{
+            'dashboard.active_doctors' | translate
+          }}</span>
           <span class="text-xl font-bold text-[var(--color-primary)] sm:text-2xl">{{
             stats.arrived
           }}</span>
         </div>
         <div class="flex flex-col items-center gap-1 px-2 py-2 sm:px-3">
-          <span class="text-center text-xs text-[var(--color-faint)]">Total Patients</span>
+          <span class="text-center text-xs text-[var(--color-faint)]">{{
+            'dashboard.total_patients' | translate
+          }}</span>
           <span class="text-xl font-bold text-[var(--color-success)] sm:text-2xl">{{
             stats.completed
           }}</span>
         </div>
       </div>
     </div>
-  </ng-container>
+  }
 </div>

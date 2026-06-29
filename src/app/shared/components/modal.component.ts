@@ -3,12 +3,11 @@
 // PURPOSE: Shared UI Component
 // ==========================================
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-modal',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   template: `
     <!-- <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
       <div class="w-full max-w-md rounded-xl bg-white p-6 shadow-xl">

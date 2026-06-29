@@ -2,30 +2,31 @@
 // OWNER: Helda
 // ==========================================
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { Router } from '@angular/router';
 import { ApiService } from '../../core/services/api.service';
 import { Staff } from '../../core/models';
 
 import { DataTableComponent } from '../../shared/components/data-table.component';
 import { SearchInputComponent } from '../../shared/components/search-input.component';
+import { ButtonComponent } from '../../shared/components/button.component';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-staff',
   standalone: true,
-  imports: [CommonModule, DataTableComponent],
+  imports: [DataTableComponent, ButtonComponent, TranslatePipe],
   templateUrl: './staff.component.html',
-  styleUrls: ['./staff.component.css'],
 })
 export class StaffComponent implements OnInit {
   staffList: { id: string; cells: any[] }[] = [];
   isLoading = false;
 
   columns = [
-    { key: 'name', label: 'Name' },
-    { key: 'role', label: 'Role' },
-    { key: 'specialty', label: 'Specialty' },
-    { key: 'isActive', label: 'Status' },
+    { key: 'name', label: 'staff.columns.name' },
+    { key: 'role', label: 'staff.columns.role' },
+    { key: 'specialty', label: 'staff.columns.specialty' },
+    { key: 'isActive', label: 'staff.columns.status' },
   ];
 
   constructor(

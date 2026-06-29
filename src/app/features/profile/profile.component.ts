@@ -2,28 +2,27 @@
 // OWNER: Zyad
 // ==========================================
 import { Component, inject, OnInit, signal, ChangeDetectorRef } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { LucideAngularModule } from 'lucide-angular';
 import { ApiService } from '../../core/services/api.service';
 import { ToastService } from '../../core/services/toast.service';
 import { User } from '../../core/models';
-import { PageHeaderComponent, ButtonComponent, InputComponent } from '../../shared/components';
+import { PageHeaderComponent, InputComponent, AvatarComponent } from '../../shared/components';
 import { LoadingComponent } from '../../shared/components/loading.component';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     TranslatePipe,
     LucideAngularModule,
     PageHeaderComponent,
-    ButtonComponent,
     InputComponent,
     LoadingComponent,
+    AvatarComponent,
   ],
   templateUrl: './profile.component.html',
 })
@@ -42,8 +41,7 @@ export class ProfileComponent implements OnInit {
 
   ngOnInit(): void {
     this.profileForm = this.fb.group({
-      displayName: ['', [Validators.required]],
-      email: ['', [Validators.required, Validators.email]],
+      email: [''],
     });
 
     this.profileForm.disable();
@@ -57,7 +55,6 @@ export class ProfileComponent implements OnInit {
       next: (user) => {
         this.currentUser.set(user);
         this.profileForm.patchValue({
-          displayName: user.displayName,
           email: user.email,
         });
         this.loading.set(false);
@@ -67,43 +64,6 @@ export class ProfileComponent implements OnInit {
         this.toast.error(this.translate.instant('profile.load_failed'));
         this.loading.set(false);
         this.cdr.detectChanges();
-      },
-    });
-  }
-
-  toggleEdit(): void {
-    this.editing.set(!this.editing());
-    if (this.editing()) {
-      this.profileForm.enable();
-    } else {
-      this.profileForm.disable();
-      if (this.currentUser()) {
-        // Revert changes
-        this.profileForm.patchValue({
-          displayName: this.currentUser()!.displayName,
-          email: this.currentUser()!.email,
-        });
-      }
-    }
-  }
-
-  onSubmit(): void {
-    if (this.profileForm.invalid || this.saving()) return;
-
-    this.saving.set(true);
-    const updatedData = this.profileForm.value;
-
-    this.api.updateProfile(updatedData).subscribe({
-      next: (updatedUser) => {
-        this.currentUser.set(updatedUser);
-        this.editing.set(false);
-        this.profileForm.disable();
-        this.saving.set(false);
-        this.toast.success(this.translate.instant('profile.update_success'));
-      },
-      error: () => {
-        this.saving.set(false);
-        this.toast.error(this.translate.instant('profile.update_failed'));
       },
     });
   }

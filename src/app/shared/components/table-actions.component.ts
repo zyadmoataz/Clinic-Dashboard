@@ -3,13 +3,13 @@
 // PURPOSE: Centralized table actions row
 // ==========================================
 import { Component, input, output } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { LucideAngularModule } from 'lucide-angular';
 
 @Component({
   selector: 'app-table-actions',
   standalone: true,
-  imports: [CommonModule, LucideAngularModule],
+  imports: [LucideAngularModule],
   template: `
     <div class="flex items-center justify-center gap-2">
       @if (showView()) {

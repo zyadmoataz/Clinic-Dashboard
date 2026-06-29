@@ -3,12 +3,11 @@
 // PURPOSE: A section wrapper card with heading
 // ==========================================
 import { Component, input } from '@angular/core';
-import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-dashboard-section',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   template: `
     <div class="card border-border bg-surface mb-6 rounded-xl border p-6 shadow-sm">
       <div class="border-border mb-4 flex items-center justify-between border-b pb-2">

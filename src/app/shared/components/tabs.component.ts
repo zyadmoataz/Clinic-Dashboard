@@ -3,12 +3,11 @@
 // PURPOSE: Shared UI Component
 // ==========================================
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-tabs',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   template: `
     <div class="flex w-fit gap-2 rounded-full bg-gray-100 p-1">
       <button

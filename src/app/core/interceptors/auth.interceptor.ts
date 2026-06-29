@@ -9,9 +9,11 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const token = inject(AuthService).getToken();
   const router = inject(Router);
 
-  const headersConfig: { [name: string]: string | string[] } = {
-    'Content-Type': 'application/json',
-  };
+  const headersConfig: { [name: string]: string | string[] } = {};
+
+  if (!(req.body instanceof FormData)) {
+    headersConfig['Content-Type'] = 'application/json';
+  }
 
   if (token) {
     headersConfig['Authorization'] = `Bearer ${token}`;
@@ -21,7 +23,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
   return next(cloned).pipe(
     catchError((error: HttpErrorResponse) => {
-      if (error.status === 401) {
+      if (error.status === 401 || error.status === 403) {
         console.error('Unauthorized access - redirecting to login');
         inject(AuthService).logout();
         router.navigate(['/staff/login']);

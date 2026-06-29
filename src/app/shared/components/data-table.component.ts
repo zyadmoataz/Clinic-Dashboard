@@ -2,7 +2,7 @@
 // OWNER: Doaa, Helda
 // PURPOSE: Shared UI Component
 // ==========================================
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, output, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
 import { TableActionsComponent } from './table-actions.component';
@@ -12,94 +12,153 @@ import { TableActionsComponent } from './table-actions.component';
   standalone: true,
   imports: [CommonModule, TranslatePipe],
   template: `
-    <div
-      class="overflow-hidden rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] shadow-md"
-    >
-      <div *ngIf="isLoading" class="flex items-center justify-center py-16">
-        <div class="text-lg text-[var(--color-muted)]">Loading...</div>
-      </div>
-
-      <table *ngIf="!isLoading" class="min-w-full">
-        <thead class="border-b border-[var(--color-border)] bg-[var(--color-surface-2)]">
-          <tr>
-            <th
-              *ngFor="let col of columns"
-              class="px-6 py-5 text-left text-xs font-semibold tracking-wider text-[var(--color-muted)] uppercase"
+    <div class="overflow-hidden rounded-2xl bg-[var(--color-surface)] shadow-sm">
+      @if (isLoading()) {
+        <div class="flex items-center justify-center py-20">
+          <div class="flex flex-col items-center gap-3 text-[var(--color-muted)]">
+            <svg
+              class="h-8 w-8 animate-spin text-[var(--color-primary)]"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
             >
-              {{ col.label ? col.label : (col | translate) }}
-            </th>
-          </tr>
-        </thead>
+              <circle
+                class="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                stroke-width="4"
+              ></circle>
+              <path
+                class="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+              ></path>
+            </svg>
+            <span class="text-sm font-medium">{{ 'common.loading' | translate }}</span>
+          </div>
+        </div>
+      }
 
-        <tbody class="divide-y divide-[var(--color-border-subtle)]">
-          <tr *ngFor="let row of data" class="transition hover:bg-[var(--color-surface-hover)]">
-            <td
-              *ngFor="let cell of row.cells"
-              class="px-6 py-5 text-sm font-medium text-[var(--color-text)]"
-            >
-              <!-- If cell is a boolean (like isActive), render badge -->
-              <span
-                *ngIf="isBoolean(cell)"
-                class="rounded-full px-3 py-1 text-xs font-semibold"
-                [ngClass]="
-                  cell
-                    ? 'bg-[var(--color-success-soft)] text-[var(--color-success)]'
-                    : 'bg-[var(--color-danger-soft)] text-[var(--color-danger)]'
-                "
+      @if (!isLoading()) {
+        <div class="overflow-x-auto">
+          <table class="w-full text-start">
+            <thead>
+              <tr
+                class="border-b border-slate-200 bg-slate-50/80 dark:border-slate-700 dark:bg-slate-800/40"
               >
-                {{ cell ? 'Active' : 'Inactive' }}
-              </span>
-              <!-- Normal text -->
-              <span *ngIf="!isBoolean(cell)">{{ cell || '—' }}</span>
-            </td>
-            <!-- Actions (assuming the last column is actions) -->
-            <td class="px-6 py-5 text-right" *ngIf="hasActions()">
-              <div class="flex items-center justify-end gap-3">
-                <button
-                  *ngIf="editClicked.observed"
-                  (click)="editClicked.emit(row.id)"
-                  class="rounded-lg border border-[var(--color-border-strong)] bg-white px-3 py-1.5 text-sm font-medium text-[var(--color-text)] transition hover:bg-[var(--color-surface-hover)]"
+                @for (col of columns(); track col) {
+                  <th
+                    class="px-5 py-3.5 text-xs font-semibold tracking-wider text-slate-500 uppercase dark:text-slate-400"
+                  >
+                    {{ col.label ? (col.label | translate) : (col | translate) }}
+                  </th>
+                }
+                @if (hasActions()) {
+                  <th
+                    class="px-5 py-3.5 text-center text-xs font-semibold tracking-wider text-slate-500 uppercase dark:text-slate-400"
+                  >
+                    {{ 'common.actions' | translate }}
+                  </th>
+                }
+              </tr>
+            </thead>
+            <tbody>
+              @for (row of data(); track row; let idx = $index; let last = $last) {
+                <tr
+                  class="group transition-colors duration-150 hover:bg-slate-50/70 dark:hover:bg-slate-800/30"
+                  [class.border-b]="!last"
+                  [class.border-slate-100]="!last"
+                  [class.dark:border-slate-700/50]="!last"
                 >
-                  Edit
-                </button>
-                <button
-                  *ngIf="deleteClicked.observed"
-                  (click)="deleteClicked.emit(row.id)"
-                  class="rounded-lg bg-[var(--color-danger-soft)] px-3 py-1.5 text-sm font-medium text-[var(--color-danger)] transition hover:bg-red-100"
-                >
-                  Delete
-                </button>
-                <button
-                  *ngIf="activateClicked.observed"
-                  (click)="activateClicked.emit(row.id)"
-                  class="rounded-lg border border-[var(--color-border-strong)] bg-white px-3 py-1.5 text-sm font-medium text-[var(--color-text)] transition hover:bg-[var(--color-surface-hover)]"
-                >
-                  Toggle
-                </button>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+                  @for (cell of row.cells; track cell) {
+                    <td class="px-5 py-4 text-sm text-[var(--color-text)]">
+                      @if (isBoolean(cell)) {
+                        <span
+                          class="inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-semibold"
+                          [ngClass]="
+                            cell
+                              ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400'
+                              : 'bg-rose-50 text-rose-700 dark:bg-rose-900/30 dark:text-rose-400'
+                          "
+                        >
+                          <span
+                            class="h-1.5 w-1.5 rounded-full"
+                            [ngClass]="cell ? 'bg-emerald-500' : 'bg-rose-500'"
+                          ></span>
+                          {{
+                            cell ? ('common.active' | translate) : ('common.inactive' | translate)
+                          }}
+                        </span>
+                      }
+                      @if (!isBoolean(cell)) {
+                        {{ cell || '—' | translate }}
+                      }
+                    </td>
+                  }
+                  @if (hasActions()) {
+                    <td class="px-5 py-4 text-center">
+                      <div class="flex items-center justify-center gap-2">
+                        @if (showEdit()) {
+                          <button
+                            (click)="editClicked.emit(row.id)"
+                            class="inline-flex items-center gap-1 rounded-lg px-3 py-1.5 text-xs font-medium text-[var(--color-primary)] transition-colors hover:bg-[var(--color-primary)]/10"
+                          >
+                            {{ 'common.edit' | translate }}
+                          </button>
+                        }
+                        @if (showDelete()) {
+                          <button
+                            (click)="deleteClicked.emit(row.id)"
+                            class="inline-flex items-center gap-1 rounded-lg px-3 py-1.5 text-xs font-medium text-rose-600 transition-colors hover:bg-rose-50 dark:text-rose-400 dark:hover:bg-rose-900/20"
+                          >
+                            {{ 'common.delete' | translate }}
+                          </button>
+                        }
+                        @if (showActivate()) {
+                          <button
+                            (click)="activateClicked.emit(row.id)"
+                            class="inline-flex items-center gap-1 rounded-lg px-3 py-1.5 text-xs font-medium text-slate-600 transition-colors hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800"
+                          >
+                            {{ 'common.toggle' | translate }}
+                          </button>
+                        }
+                      </div>
+                    </td>
+                  }
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
     </div>
   `,
 })
 export class DataTableComponent {
-  @Input() data: { id: any; cells: any[] }[] = [];
-  @Input() columns: any[] = [];
-  @Input() isLoading = false;
+  readonly data = input<
+    {
+      id: any;
+      cells: any[];
+    }[]
+  >([]);
+  readonly columns = input<any[]>([]);
+  readonly isLoading = input(false);
 
-  @Output() deleteClicked = new EventEmitter<number>();
-  @Output() editClicked = new EventEmitter<number>();
-  @Output() activateClicked = new EventEmitter<number>();
+  deleteClicked = output<number>();
+  editClicked = output<number>();
+  activateClicked = output<number>();
+
+  readonly showEdit = input(false);
+  readonly showDelete = input(false);
+  readonly showActivate = input(false);
 
   isBoolean(val: any): boolean {
     return typeof val === 'boolean';
   }
 
   hasActions(): boolean {
-    return (
-      this.editClicked.observed || this.deleteClicked.observed || this.activateClicked.observed
-    );
+    return this.showEdit() || this.showDelete() || this.showActivate();
   }
 }

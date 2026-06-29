@@ -1,25 +1,23 @@
-<div class="space-y-8 p-8">
-  <div class="flex items-center justify-between">
+<div class="space-y-8">
+  <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
     <div>
-      <h1 class="text-4xl font-bold text-gray-900">Staff</h1>
-
-      <p class="mt-2 text-gray-500">Doctors and receptionists.</p>
+      <h1 class="text-2xl font-bold text-[var(--color-text)] sm:text-4xl">
+        {{ 'staff.title' | translate }}
+      </h1>
+      <p class="mt-1 text-sm text-[var(--color-muted)]">{{ 'staff.subtitle' | translate }}</p>
     </div>
 
-    <div class="flex gap-3">
-      <button
-        (click)="goToAddDoctor()"
-        class="font-small rounded-xl bg-teal-600 px-5 py-2 text-white transition hover:bg-teal-700"
-      >
-        + Add Doctor
-      </button>
+    <div class="flex shrink-0 gap-3">
+      <app-button (clicked)="goToAddDoctor()">
+        {{ 'staff.add_doctor' | translate }}
+      </app-button>
 
-      <button
-        (click)="goToAddreciptionist()"
-        class="font-small rounded-xl border border-gray-300 bg-white px-5 py-2.5 transition hover:bg-gray-100"
+      <app-button
+        (clicked)="goToAddreciptionist()"
+        customClass="border border-slate-200 bg-white px-5 py-2.5 transition hover:bg-slate-50 text-[var(--color-text)] dark:border-slate-700 dark:bg-slate-800 dark:hover:bg-slate-700"
       >
-        + Add Receptionist
-      </button>
+        {{ 'staff.add_receptionist' | translate }}
+      </app-button>
     </div>
   </div>
 

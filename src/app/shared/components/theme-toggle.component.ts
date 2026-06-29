@@ -3,21 +3,21 @@
 // PURPOSE: Global Theme toggle switch (Dark / Light)
 // ==========================================
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { LucideAngularModule } from 'lucide-angular';
 
 @Component({
   selector: 'app-theme-toggle',
   standalone: true,
-  imports: [CommonModule, LucideAngularModule],
+  imports: [LucideAngularModule],
   template: `
     <button
       (click)="toggleTheme()"
-      class="border-border bg-surface text-text hover:border-primary hover:text-primary flex h-9 w-9 items-center justify-center rounded-lg border transition-colors"
+      class="flex h-10 w-10 items-center justify-center rounded-full text-[var(--color-muted)] transition-colors hover:bg-[var(--color-surface-2)] hover:text-[var(--color-text)] focus:ring-2 focus:ring-[var(--color-primary)]/20 focus:outline-none"
       [attr.aria-label]="isDark ? 'Switch to light mode' : 'Switch to dark mode'"
       [title]="isDark ? 'Light Mode' : 'Dark Mode'"
     >
-      <lucide-icon [name]="isDark ? 'moon' : 'sun'" class="h-4 w-4"></lucide-icon>
+      <lucide-icon [name]="isDark ? 'moon' : 'sun'" class="h-5 w-5"></lucide-icon>
     </button>
   `,
 })

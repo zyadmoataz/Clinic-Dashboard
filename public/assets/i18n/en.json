@@ -1,4 +1,8 @@
 {
+  "Admin": "Admin",
+  "Doctor": "Doctor",
+  "Receptionist": "Receptionist",
+  "System Admin": "System Admin",
   "header": {
     "dashboard": "Dashboard",
     "staff": "Staff",
@@ -16,7 +20,25 @@
     "appointments_today": "Today's appointments",
     "confirmed": "Confirmed",
     "checked_in": "Checked in",
-    "revenue_today": "Today's revenue"
+    "revenue_today": "Today's revenue",
+    "overview": "Clinic overview",
+    "live": "Live",
+    "total_today": "Total today",
+    "pending_visits": "Pending Visits",
+    "active_doctors": "Active Doctors",
+    "total_patients": "Total Patients"
+  },
+  "staff": {
+    "title": "Staff",
+    "subtitle": "Doctors and receptionists.",
+    "add_doctor": "+ Add Doctor",
+    "add_receptionist": "+ Add Receptionist",
+    "columns": {
+      "name": "Name",
+      "role": "Role",
+      "specialty": "Specialty",
+      "status": "Status"
+    }
   },
   "patients": {
     "subtitle": "Register and search patients.",
@@ -28,6 +50,8 @@
     "add": "+ Add patient",
     "cancel": "Cancel",
     "create": "Create",
+    "search": "Search patients...",
+    "search_placeholder": "Search by name or phone",
     "creating": "Creating...",
     "name_required": "Name is required",
     "phone_required": "Phone is required",
@@ -42,25 +66,38 @@
   },
   "common": {
     "success": "Success",
-    "error": "Error"
+    "error": "Error",
+    "active": "Active",
+    "inactive": "Inactive",
+    "loading": "Loading...",
+    "edit": "Edit",
+    "delete": "Delete",
+    "toggle": "Toggle",
+    "actions": "Actions",
+    "enter_text": "...Enter text",
+    "admin": "Admin",
+    "doctor": "Doctor",
+    "receptionist": "Receptionist"
   },
-  "profile": {
-    "subtitle": "Manage your personal information.",
-    "personal_info": "Personal Information",
-    "name": "Full Name",
-    "email": "Email Address",
-    "role": "Role",
-    "edit": "Edit Profile",
-    "cancel": "Cancel",
-    "save": "Save Changes",
-    "saving": "Saving...",
-    "load_failed": "Failed to load profile.",
-    "update_success": "Profile updated successfully.",
-    "update_failed": "Failed to update profile."
+  "days": {
+    "sunday": "Sunday",
+    "monday": "Monday",
+    "tuesday": "Tuesday",
+    "wednesday": "Wednesday",
+    "thursday": "Thursday",
+    "friday": "Friday",
+    "saturday": "Saturday"
   },
   "services": {
     "subtitle": "Manage clinic services and pricing.",
     "add": "+ Add Service",
+    "columns": {
+      "name": "Service Name",
+      "doctor": "Doctor",
+      "duration": "Duration",
+      "price": "Price",
+      "actions": "Actions"
+    },
     "edit_modal": {
       "title": "Edit Service",
       "edit": "Save Changes"
@@ -86,9 +123,15 @@
       "title": "Delete Service",
       "message": "Are you sure you want to delete this service? This action cannot be undone.",
       "cancel": "Cancel",
-      "delete": "Delete"
+      "delete": "Delete",
+      "delete_success": "Service deleted successfully.",
+      "delete_failed": "Failed to delete service."
     },
-    "load": "Loading..."
+    "load": "Loading...",
+    "load_failed": "Failed to load services.",
+    "update_success": "Service updated successfully.",
+    "create_success": "Service created successfully.",
+    "save_failed": "Failed to save service."
   },
   "walk_in": {
     "subtitle": "Book a walk-in appointment.",
@@ -103,6 +146,7 @@
     "date": "Date",
     "time_slot": "Time Slot",
     "pick_doctor_first": "Please select a doctor and date first.",
+    "no_slots": "No available slots for this date.",
     "book": "Book Appointment",
     "saving": "Booking...",
     "book_success": "Appointment booked successfully.",
@@ -110,13 +154,18 @@
     "load_doctors_failed": "Failed to load doctors."
   },
   "calendar": {
-    "subtitle": "View and manage daily appointments.",
+    "title": "My schedule",
+    "subtitle": "Your appointments for the day.",
+    "date": "Date",
+    "no_appointments": "No appointments",
+    "no_appointments_desc": "You have nothing booked for this day.",
     "new_walk_in": "New Walk-in",
     "pick_date": "Pick a Date",
     "appointments": "Appointments",
     "unknown_patient": "Unknown Patient",
     "unknown_doctor": "Unknown Doctor",
     "unknown_service": "Unknown Service",
+    "load_failed": "Failed to load appointments.",
     "status": {
       "Confirmed": "Confirmed",
       "PendingPayment": "Pending Payment",
@@ -126,19 +175,119 @@
       "Cancelled": "Cancelled"
     }
   },
+  "profile": {
+    "subtitle": "Manage your personal profile and account settings.",
+    "personal_info": "Personal Information",
+    "edit": "Edit Profile",
+    "cancel": "Cancel",
+    "name": "Full Name",
+    "email": "Email Address",
+    "role": "Role",
+    "save": "Save Changes",
+    "saving": "Saving...",
+    "update_success": "Profile updated successfully.",
+    "update_failed": "Failed to update profile.",
+    "load_failed": "Failed to load profile data."
+  },
   "availability": {
+    "subtitle": "Manage doctor schedules and blocked dates.",
+    "select_doctor": "Select Doctor",
+    "working_hours": "Working Hours",
+    "add_day": "Add Day",
+    "select_day": "Select Day",
+    "save_changes": "Save Changes",
+    "no_working_hours": "No working hours configured yet.",
+    "blocked_days": "Blocked Dates",
     "add_blocked_date": "Block Date",
+    "no_blocked_days": "No blocked dates configured.",
+    "availability_updated": "Working hours updated successfully.",
+    "availability_update_failed": "Failed to update working hours.",
+    "create_blocked_date_success": "Date blocked successfully.",
+    "create_blocked_date_failed": "Failed to block date.",
+    "date_already_blocked": "This date is already blocked.",
     "delete_modal": {
       "title": "Delete Blocked Date",
       "message": "Are you sure you want to delete this blocked date?",
       "cancel": "Cancel",
-      "delete": "Delete"
-    },
-    "subtitle": "Manage doctor schedules and blocked dates.",
-    "select_doctor": "Select Doctor"
+      "delete": "Delete",
+      "delete_success": "Blocked date removed successfully.",
+      "delete_failed": "Failed to remove blocked date."
+    }
+  },
+  "add_doctor": {
+    "title": "Add doctor",
+    "account": "Account",
+    "full_name": "Full name",
+    "full_name_required": "Full name is required",
+    "email": "Email",
+    "email_required": "Email is required",
+    "invalid_email": "Invalid email",
+    "phone": "Phone",
+    "phone_required": "Phone is required",
+    "temp_password": "Temporary password",
+    "password_required": "Password is required",
+    "password_min": "Min 6 characters",
+    "profile": "Profile",
+    "specialty": "Specialty",
+    "specialty_required": "Specialty is required",
+    "photo_url": "Photo URL",
+    "optional": "(optional)",
+    "bio": "Bio",
+    "weekly_availability": "Weekly availability",
+    "add_window": "+ Add window",
+    "create": "Create doctor",
+    "creating": "Creating..."
+  },
+  "add_receptionist": {
+    "title": "Add receptionist",
+    "create": "Create receptionist"
+  },
+  "reports": {
+    "title": "Reports",
+    "export_csv": "Export CSV",
+    "export": "Export",
+    "status_mix": "Status mix",
+    "revenue_week": "Revenue by week",
+    "top_services": "Top services",
+    "load_failed": "Could not load reports. Please refresh.",
+    "appts": "appts",
+    "total": "total",
+    "no_show_rate": "No-show rate",
+    "vs_clinic_target": "vs. clinic target",
+    "this_month": "This month",
+    "last_month": "Last month",
+    "revenue_by_service": "Revenue by service",
+    "no_service_data": "No service data available.",
+    "status": {
+      "confirmed": "Confirmed",
+      "completed": "Completed",
+      "awaiting_payment": "Awaiting payment",
+      "no_show": "No-show / cancelled"
+    }
   },
   "feedback": {
     "no_data_title": "No Data Available",
     "no_data_description": "There is no data to display here yet."
+  },
+  "sidebar": {
+    "administration": "Administration",
+    "front_desk": "Front Desk",
+    "clinic": "Clinic",
+    "profile_section": "Profile",
+    "my_schedule": "My Schedule"
+  },
+  "login": {
+    "access_denied": "Access denied",
+    "patients_no_access": "Patients cannot access the staff dashboard.",
+    "success": "Login successful",
+    "welcome_back": "Welcome back",
+    "failed": "Login failed",
+    "check_credentials": "Please check your credentials",
+    "invalid_credentials": "That email or password didn't match. Check and try again, or reset your password."
+  },
+  "logout": {
+    "success": "Logout successful",
+    "message": "You have been logged out",
+    "button": "Sign out"
   }
 }

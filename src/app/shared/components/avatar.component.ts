@@ -2,7 +2,7 @@
 // OWNER: Zyad, Othman, Omar, Helda
 // PURPOSE: Shared UI Component
 // ==========================================
-import { Component, Input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -13,9 +13,9 @@ import { CommonModule } from '@angular/common';
     <div
       class="flex items-center justify-center rounded-full bg-blue-100 font-semibold text-blue-800"
       [ngClass]="{
-        'h-8 w-8 text-xs': size === 'sm',
-        'h-10 w-10 text-sm': size === 'md',
-        'h-12 w-12 text-base': size === 'lg',
+        'h-8 w-8 text-xs': size() === 'sm',
+        'h-10 w-10 text-sm': size() === 'md',
+        'h-12 w-12 text-base': size() === 'lg',
       }"
     >
       {{ initials }}
@@ -23,12 +23,13 @@ import { CommonModule } from '@angular/common';
   `,
 })
 export class AvatarComponent {
-  @Input() name: string = '';
-  @Input() size: 'sm' | 'md' | 'lg' = 'md';
+  readonly name = input<string>('');
+  readonly size = input<'sm' | 'md' | 'lg'>('md');
 
   get initials(): string {
-    if (!this.name) return 'AU';
-    const parts = this.name.split(' ').filter(Boolean);
+    const name = this.name();
+    if (!name) return 'AU';
+    const parts = name.split(' ').filter(Boolean);
     if (parts.length === 0) return 'AU';
     if (parts.length === 1) return parts[0].substring(0, 2).toUpperCase();
     return (parts[0][0] + parts[1][0]).toUpperCase();

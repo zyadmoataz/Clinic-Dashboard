@@ -3,23 +3,28 @@
   [description]="'availability.subtitle' | translate"
 ></app-page-header>
 
-<app-select
-  [options]="doctorsArr()"
-  labelKey="displayName"
-  valueKey="id"
-  [placeholder]="'availability.select_doctor' | translate"
-  (valueChange)="onDoctorSelect($event)"
-></app-select>
+<div class="mb-6">
+  <app-select
+    [options]="doctorsArr()"
+    labelKey="displayName"
+    valueKey="id"
+    [placeholder]="'availability.select_doctor' | translate"
+    (valueChange)="onDoctorSelect($event)"
+  ></app-select>
+</div>
 
 @if ((!selectedDoctor() || doctorsArr().length === 0) && !loadingAvailStatus()) {
   <app-feedback-states />
 }
 
 @if (selectedDoctor()) {
-  <div class="mt-6 flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
-    <section class="bg-surface flex-1 rounded-xl p-4 text-center">
-      <div class="mb-4 flex flex-col text-center sm:flex-row sm:justify-between">
-        <h2 class="mb-3 text-lg font-semibold">
+  <div class="flex flex-col gap-6 lg:flex-row lg:items-start">
+    <!-- Working Hours Section -->
+    <section
+      class="flex-1 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800"
+    >
+      <div class="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <h2 class="text-lg font-bold text-[var(--color-text)]">
           {{ 'availability.working_hours' | translate }}
         </h2>
 
@@ -32,32 +37,44 @@
         <app-loading />
       } @else {
         @for (item of editableAvailabilityArr(); track $index) {
-          <div class="mb-3 flex items-center gap-3">
-            <app-select
-              [options]="dayOptions"
-              labelKey="label"
-              valueKey="value"
-              [selectedValue]="item.dayOfWeek"
-              [placeholder]="'availability.select_day' | translate"
-              (valueChange)="updateDay($index, $event)"
-            ></app-select>
+          <div
+            class="mb-4 flex flex-col gap-3 rounded-xl border border-slate-100 bg-slate-50/50 p-4 sm:flex-row sm:items-center dark:border-slate-700 dark:bg-slate-800/50"
+          >
+            <div class="flex-1">
+              <app-select
+                [options]="dayOptions"
+                labelKey="label"
+                valueKey="value"
+                [selectedValue]="item.dayOfWeek"
+                [placeholder]="'availability.select_day' | translate"
+                (valueChange)="updateDay($index, $event)"
+              ></app-select>
+            </div>
 
-            <input
-              type="time"
-              [value]="item.startTime"
-              (input)="updateStartTime($index, $any($event.target).value)"
-              class="border-border rounded border px-2 py-1"
-            />
+            <div class="flex items-center gap-2">
+              <input
+                type="time"
+                [value]="item.startTime"
+                (input)="updateStartTime($index, $any($event.target).value)"
+                class="h-11 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm shadow-sm transition-colors hover:border-slate-300 focus:border-[var(--color-primary)] focus:ring-4 focus:ring-[var(--color-primary)]/10 focus:outline-none dark:border-slate-700 dark:bg-slate-800"
+              />
 
-            <input
-              type="time"
-              [value]="item.endTime"
-              (input)="updateEndTime($index, $any($event.target).value)"
-              class="border-border rounded border px-2 py-1"
-            />
+              <span class="text-muted text-xs font-medium">→</span>
 
-            <button type="button" (click)="removeAvailability($index)" class="text-danger">
-              <lucide-icon name="trash"></lucide-icon>
+              <input
+                type="time"
+                [value]="item.endTime"
+                (input)="updateEndTime($index, $any($event.target).value)"
+                class="h-11 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm shadow-sm transition-colors hover:border-slate-300 focus:border-[var(--color-primary)] focus:ring-4 focus:ring-[var(--color-primary)]/10 focus:outline-none dark:border-slate-700 dark:bg-slate-800"
+              />
+            </div>
+
+            <button
+              type="button"
+              (click)="removeAvailability($index)"
+              class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-rose-500 transition-colors hover:bg-rose-50 dark:hover:bg-rose-900/20"
+            >
+              <lucide-icon name="trash" class="h-4 w-4"></lucide-icon>
             </button>
           </div>
         }
@@ -69,25 +86,32 @@
             descriptionKey="availability.no_working_hours"
           />
         } @else {
-          <app-button (clicked)="saveAvailability()">
-            {{ 'availability.save_changes' | translate }}
-          </app-button>
+          <div class="mt-4">
+            <app-button (clicked)="saveAvailability()">
+              {{ 'availability.save_changes' | translate }}
+            </app-button>
+          </div>
         }
       }
     </section>
 
-    <section class="bg-surface flex-1 rounded-xl p-4">
-      <h2 class="mb-3 text-lg font-semibold">{{ 'availability.blocked_days' | translate }}</h2>
+    <!-- Blocked Dates Section -->
+    <section
+      class="flex-1 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800"
+    >
+      <h2 class="mb-6 text-lg font-bold text-[var(--color-text)]">
+        {{ 'availability.blocked_days' | translate }}
+      </h2>
 
       @if (loadingBlockedStatus()) {
         <app-loading />
       } @else {
-        <div class="mb-4 flex flex-col gap-3 text-center sm:flex-row">
+        <div class="mb-6 flex flex-col gap-3 sm:flex-row">
           <input
             type="date"
             [value]="newBlockedDate()"
             (input)="newBlockedDate.set($any($event.target).value)"
-            class="border-border bg-surface flex-1 rounded-lg border px-3 py-2"
+            class="h-11 flex-1 rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm shadow-sm transition-colors hover:border-slate-300 focus:border-[var(--color-primary)] focus:ring-4 focus:ring-[var(--color-primary)]/10 focus:outline-none dark:border-slate-700 dark:bg-slate-800"
           />
 
           <app-button (clicked)="createBlockedDate()" [disabled]="!newBlockedDate()">
@@ -106,21 +130,23 @@
         <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
           @for (item of blockedDatesArr(); track item.id) {
             <div
-              class="border-border bg-surface relative flex flex-col items-center rounded-xl border p-4"
+              class="group relative flex flex-col items-center rounded-xl border border-slate-200 bg-slate-50/50 p-5 transition-all hover:border-slate-300 hover:shadow-sm dark:border-slate-700 dark:bg-slate-800/50"
             >
               <app-button
                 type="button"
-                customClass="rounded transition-all text-danger hover:bg-danger-soft hover:text-danger absolute top-3 inset-e-3 p-1"
+                customClass="rounded-lg transition-all text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-900/20 absolute top-3 inset-e-3 p-1.5 opacity-0 group-hover:opacity-100"
                 (clicked)="openDeleteModal(item)"
               >
                 <lucide-icon name="trash" class="h-4 w-4"></lucide-icon>
               </app-button>
 
-              <div class="bg-primary-soft text-primary mb-3 rounded-full p-3">
+              <div
+                class="mb-3 rounded-full bg-[var(--color-primary)]/10 p-3 text-[var(--color-primary)]"
+              >
                 <lucide-icon name="calendar" class="h-6 w-6"></lucide-icon>
               </div>
 
-              <span class="text-text text-sm font-medium">
+              <span class="text-sm font-semibold text-[var(--color-text)]">
                 {{ item.date }}
               </span>
             </div>
@@ -144,14 +170,14 @@
       <app-button
         type="button"
         (clicked)="closeDeleteModal()"
-        customClass="bg-secondary hover:bg-secondary-hover text-white h-10 px-4 py-2"
+        customClass="border border-slate-200 bg-white hover:bg-slate-50 text-[var(--color-text)] h-10 px-4 py-2 dark:border-slate-700 dark:bg-slate-800"
       >
         {{ 'availability.delete_modal.cancel' | translate }}
       </app-button>
 
       <app-button
         type="button"
-        customClass="bg-danger hover:bg-danger-hover text-white h-10 px-4 py-2"
+        customClass="bg-rose-600 hover:bg-rose-700 text-white h-10 px-4 py-2"
         (clicked)="confirmDeleteBlockedDate()"
       >
         {{ 'availability.delete_modal.delete' | translate }}

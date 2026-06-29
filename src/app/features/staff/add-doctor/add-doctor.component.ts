@@ -1,16 +1,18 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { ReactiveFormsModule, FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ApiService } from '../../../core/services/api.service';
 import { ToastService } from '../../../core/services/toast.service';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { InputComponent } from '../../../shared/components/input.component';
+import { ButtonComponent } from '../../../shared/components/button.component';
 
 @Component({
   selector: 'app-add-doctor',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [ReactiveFormsModule, TranslatePipe, InputComponent, ButtonComponent],
   templateUrl: './add-doctor.component.html',
 })
 export class AddDoctorComponent implements OnInit {
@@ -18,13 +20,13 @@ export class AddDoctorComponent implements OnInit {
   isLoading = false;
 
   days = [
-    { label: 'Sunday', value: 'Sunday' },
-    { label: 'Monday', value: 'Monday' },
-    { label: 'Tuesday', value: 'Tuesday' },
-    { label: 'Wednesday', value: 'Wednesday' },
-    { label: 'Thursday', value: 'Thursday' },
-    { label: 'Friday', value: 'Friday' },
-    { label: 'Saturday', value: 'Saturday' },
+    { label: 'days.sunday', value: 'Sunday' },
+    { label: 'days.monday', value: 'Monday' },
+    { label: 'days.tuesday', value: 'Tuesday' },
+    { label: 'days.wednesday', value: 'Wednesday' },
+    { label: 'days.thursday', value: 'Thursday' },
+    { label: 'days.friday', value: 'Friday' },
+    { label: 'days.saturday', value: 'Saturday' },
   ];
 
   constructor(

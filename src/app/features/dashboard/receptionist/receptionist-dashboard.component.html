@@ -1,4 +1,4 @@
-<div class="mx-auto flex max-w-[var(--container)] flex-col gap-4 p-4 sm:gap-6 sm:p-6">
+<div class="flex flex-col gap-4 sm:gap-6">
   <!-- Header -->
   <div>
     <h1
@@ -10,37 +10,37 @@
   </div>
 
   <!-- Skeleton -->
-  <ng-container *ngIf="loading">
+  @if (loading) {
     <div class="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
-      <div
-        *ngFor="let i of [1, 2, 3, 4]"
-        class="h-28 animate-pulse rounded-[var(--radius)] bg-[var(--color-surface-2)]"
-      ></div>
+      @for (i of [1, 2, 3, 4]; track i) {
+        <div class="h-28 animate-pulse rounded-[var(--radius)] bg-[var(--color-surface-2)]"></div>
+      }
     </div>
     <div class="h-64 animate-pulse rounded-[var(--radius)] bg-[var(--color-surface-2)]"></div>
-  </ng-container>
+  }
 
   <!-- Error -->
-  <div
-    *ngIf="error && !loading"
-    class="flex flex-col items-center gap-3 py-12 text-center text-sm text-[var(--color-muted)]"
-  >
-    <svg
-      width="32"
-      height="32"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="var(--color-danger)"
-      stroke-width="1.5"
+  @if (error && !loading) {
+    <div
+      class="flex flex-col items-center gap-3 py-12 text-center text-sm text-[var(--color-muted)]"
     >
-      <circle cx="12" cy="12" r="10" />
-      <line x1="12" y1="8" x2="12" y2="12" />
-      <line x1="12" y1="16" x2="12.01" y2="16" />
-    </svg>
-    <p>Could not load dashboard data. Please refresh.</p>
-  </div>
+      <svg
+        width="32"
+        height="32"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="var(--color-danger)"
+        stroke-width="1.5"
+      >
+        <circle cx="12" cy="12" r="10" />
+        <line x1="12" y1="8" x2="12" y2="12" />
+        <line x1="12" y1="16" x2="12.01" y2="16" />
+      </svg>
+      <p>Could not load dashboard data. Please refresh.</p>
+    </div>
+  }
 
-  <ng-container *ngIf="!loading && !error && stats">
+  @if (!loading && !error && stats) {
     <!-- Stat cards -->
     <div class="grid grid-cols-1 gap-3 sm:gap-4 md:grid-cols-2 lg:grid-cols-4">
       <div
@@ -75,7 +75,6 @@
           >
         </div>
       </div>
-
       <div
         class="flex items-start gap-3 rounded-[var(--radius)] border border-[var(--color-border)] bg-[var(--color-surface)] p-3 shadow-[var(--shadow-sm)] transition-all duration-[var(--transition-fast)] hover:-translate-y-px hover:shadow-[var(--shadow-md)] sm:p-4"
       >
@@ -103,7 +102,6 @@
           >
         </div>
       </div>
-
       <div
         class="flex items-start gap-3 rounded-[var(--radius)] border border-[var(--color-border)] bg-[var(--color-surface)] p-3 shadow-[var(--shadow-sm)] transition-all duration-[var(--transition-fast)] hover:-translate-y-px hover:shadow-[var(--shadow-md)] sm:p-4"
       >
@@ -133,7 +131,6 @@
           </span>
         </div>
       </div>
-
       <div
         class="flex items-start gap-3 rounded-[var(--radius)] border border-[var(--color-border)] bg-[var(--color-surface)] p-3 shadow-[var(--shadow-sm)] transition-all duration-[var(--transition-fast)] hover:-translate-y-px hover:shadow-[var(--shadow-md)] sm:p-4"
       >
@@ -165,7 +162,6 @@
         </div>
       </div>
     </div>
-
     <!-- Next up -->
     <div
       class="overflow-auto rounded-[var(--radius)] border border-[var(--color-border)] bg-[var(--color-surface)] shadow-[var(--shadow-sm)]"
@@ -181,33 +177,34 @@
           Open day calendar →
         </a>
       </div>
-
       <div class="divide-y divide-[var(--color-border)]">
-        <ng-container *ngIf="upcomingAppointments.length > 0; else noAppts">
-          <div
-            *ngFor="let appt of upcomingAppointments"
-            class="flex items-center gap-3 px-4 py-3 transition-colors duration-[var(--transition-fast)] hover:bg-[var(--color-bg)] sm:gap-4 sm:px-5 sm:py-3.5"
-          >
-            <span class="w-11 shrink-0 text-sm font-semibold text-[var(--color-text)]">{{
-              appt.timeSlot
-            }}</span>
-            <div class="h-9 w-0.5 shrink-0 rounded-full" [ngClass]="borderClass(appt.status)"></div>
-            <div class="min-w-0 flex-1">
-              <p class="truncate text-sm font-semibold text-[var(--color-text)]">
-                {{ appt.patientName }} · {{ appt.doctorName }}
-              </p>
-              <p class="truncate text-xs text-[var(--color-muted)]">{{ appt.serviceName }}</p>
-            </div>
-            <span
-              class="shrink-0 rounded-[var(--radius-full)] px-2 py-1 text-xs font-semibold whitespace-nowrap sm:px-2.5"
-              [ngClass]="statusClass(appt.status)"
+        @if (upcomingAppointments.length > 0) {
+          @for (appt of upcomingAppointments; track appt) {
+            <div
+              class="flex items-center gap-3 px-4 py-3 transition-colors duration-[var(--transition-fast)] hover:bg-[var(--color-bg)] sm:gap-4 sm:px-5 sm:py-3.5"
             >
-              {{ statusLabel(appt.status) }}
-            </span>
-          </div>
-        </ng-container>
-
-        <ng-template #noAppts>
+              <span class="w-11 shrink-0 text-sm font-semibold text-[var(--color-text)]">{{
+                appt.timeSlot
+              }}</span>
+              <div
+                class="h-9 w-0.5 shrink-0 rounded-full"
+                [ngClass]="borderClass(appt.status)"
+              ></div>
+              <div class="min-w-0 flex-1">
+                <p class="truncate text-sm font-semibold text-[var(--color-text)]">
+                  {{ appt.patientName }} · {{ appt.doctorName }}
+                </p>
+                <p class="truncate text-xs text-[var(--color-muted)]">{{ appt.serviceName }}</p>
+              </div>
+              <span
+                class="shrink-0 rounded-[var(--radius-full)] px-2 py-1 text-xs font-semibold whitespace-nowrap sm:px-2.5"
+                [ngClass]="statusClass(appt.status)"
+              >
+                {{ statusLabel(appt.status) }}
+              </span>
+            </div>
+          }
+        } @else {
           <div class="flex flex-col items-center gap-2 py-10 text-sm text-[var(--color-faint)]">
             <svg
               width="24"
@@ -224,8 +221,8 @@
             </svg>
             <p>No upcoming appointments for today.</p>
           </div>
-        </ng-template>
+        }
       </div>
     </div>
-  </ng-container>
+  }
 </div>

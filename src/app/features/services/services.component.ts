@@ -10,6 +10,7 @@ import {
   FeedbackStatesComponent,
   ModalComponent,
   PageHeaderComponent,
+  InputComponent,
 } from '../../shared/components';
 import { LoadingComponent } from '../../shared/components/loading.component';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
@@ -30,6 +31,7 @@ import { CommonModule } from '@angular/common';
     ReactiveFormsModule,
     CommonModule,
     PageHeaderComponent,
+    InputComponent,
   ],
   templateUrl: './services.component.html',
 })
@@ -67,7 +69,6 @@ export class ServicesComponent {
     'services.columns.doctor',
     'services.columns.duration',
     'services.columns.price',
-    'services.columns.actions',
   ];
 
   tableData = computed(() =>
@@ -201,10 +202,10 @@ export class ServicesComponent {
       next: (resp) => {
         if (this.isEditMode()) {
           this.servicesArr.update((arr) => arr.map((s) => (s.id === resp.id ? resp : s)));
-          this.toastService.success('Service updated successfully');
+          this.toastService.success(this.translateService.instant('services.update_success'));
         } else {
           this.servicesArr.update((arr) => [...arr, resp]);
-          this.toastService.success('Service created successfully');
+          this.toastService.success(this.translateService.instant('services.create_success'));
         }
 
         this.closeCreateModal();
@@ -214,7 +215,7 @@ export class ServicesComponent {
       },
 
       error: () => {
-        this.toastService.error('Add/Edit Service failed');
+        this.toastService.error(this.translateService.instant('services.save_failed'));
         this.createServiceLoading.set(false);
       },
     });

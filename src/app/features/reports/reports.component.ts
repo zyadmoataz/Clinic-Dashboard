@@ -1,7 +1,7 @@
 // ==========================================
 // OWNER: Othman
 // ==========================================
-import { Component, OnInit, ElementRef, ViewChild, inject, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ElementRef, viewChild, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ApiService } from '../../core/services/api.service';
 import { ClinicReports } from '../../core/models';
@@ -27,19 +27,21 @@ Chart.register(
   DoughnutController,
   BarController,
 );
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-reports',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslatePipe],
   templateUrl: './reports.component.html',
 })
 export class ReportsComponent implements OnInit {
   private api = inject(ApiService);
   private cdr = inject(ChangeDetectorRef);
+  private translate = inject(TranslateService);
 
-  @ViewChild('doughnutCanvas') doughnutCanvas!: ElementRef<HTMLCanvasElement>;
-  @ViewChild('barCanvas') barCanvas!: ElementRef<HTMLCanvasElement>;
+  readonly doughnutCanvas = viewChild<ElementRef<HTMLCanvasElement>>('doughnutCanvas');
+  readonly barCanvas = viewChild<ElementRef<HTMLCanvasElement>>('barCanvas');
 
   private doughnutChart?: Chart;
   private barChart?: Chart;
@@ -53,10 +55,10 @@ export class ReportsComponent implements OnInit {
   noShowTarget = 8;
 
   statusMix = [
-    { label: 'Confirmed', pct: 61, dot: 'bg-[#10b981]' },
-    { label: 'Completed', pct: 22, dot: 'bg-[#34d399]' },
-    { label: 'Awaiting payment', pct: 10, dot: 'bg-[#f59e0b]' },
-    { label: 'No-show / cancelled', pct: 7, dot: 'bg-[#ef4444]' },
+    { key: 'confirmed', pct: 61, dot: 'bg-[#10b981]' },
+    { key: 'completed', pct: 22, dot: 'bg-[#34d399]' },
+    { key: 'awaiting_payment', pct: 10, dot: 'bg-[#f59e0b]' },
+    { key: 'no_show', pct: 7, dot: 'bg-[#ef4444]' },
   ];
 
   serviceBars: { name: string; revenue: number; pct: number }[] = [];
@@ -83,12 +85,17 @@ export class ReportsComponent implements OnInit {
   }
 
   private initCharts(): void {
-    if (this.doughnutCanvas?.nativeElement) {
+    if (this.doughnutCanvas()?.nativeElement) {
       this.doughnutChart?.destroy();
-      this.doughnutChart = new Chart(this.doughnutCanvas.nativeElement, {
+      this.doughnutChart = new Chart(this.doughnutCanvas()!.nativeElement, {
         type: 'doughnut',
         data: {
-          labels: ['Confirmed', 'Completed', 'Awaiting payment', 'No-show / cancelled'],
+          labels: [
+            this.translate.instant('reports.status.confirmed') || 'Confirmed',
+            this.translate.instant('reports.status.completed') || 'Completed',
+            this.translate.instant('reports.status.awaiting_payment') || 'Awaiting payment',
+            this.translate.instant('reports.status.no_show') || 'No-show / cancelled',
+          ],
           datasets: [
             {
               data: [61, 22, 10, 7],
@@ -110,9 +117,9 @@ export class ReportsComponent implements OnInit {
       });
     }
 
-    if (this.barCanvas?.nativeElement) {
+    if (this.barCanvas()?.nativeElement) {
       this.barChart?.destroy();
-      this.barChart = new Chart(this.barCanvas.nativeElement, {
+      this.barChart = new Chart(this.barCanvas()!.nativeElement, {
         type: 'bar',
         data: {
           labels: ['W1', 'W2', 'W3', 'W4'],

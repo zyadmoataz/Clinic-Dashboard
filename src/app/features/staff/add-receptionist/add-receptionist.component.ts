@@ -1,16 +1,18 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ApiService } from '../../../core/services/api.service';
 import { ToastService } from '../../../core/services/toast.service';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { InputComponent } from '../../../shared/components/input.component';
+import { ButtonComponent } from '../../../shared/components/button.component';
 
 @Component({
   selector: 'app-add-receptionist',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [ReactiveFormsModule, TranslatePipe, InputComponent, ButtonComponent],
   templateUrl: './add-receptionist.component.html',
 })
 export class AddReceptionistComponent implements OnInit {

@@ -1,137 +1,144 @@
-<app-page-header
-  [title]="'header.walk_in' | translate"
-  [description]="'walk_in.subtitle' | translate"
-></app-page-header>
+<div class="w-full">
+  <app-page-header
+    [title]="'header.walk_in' | translate"
+    [description]="'walk_in.subtitle' | translate"
+  ></app-page-header>
 
-<form
-  (submit)="$event.preventDefault(); submit()"
-  class="border-border bg-surface mx-auto flex max-w-3xl flex-col gap-6 rounded-xl border p-6"
->
-  <!-- Patient details -->
-  <fieldset class="flex flex-col gap-4">
-    <legend class="text-text mb-2 flex items-center gap-2 text-lg font-semibold">
-      <lucide-icon name="contact" class="text-primary h-5 w-5"></lucide-icon>
-      {{ 'walk_in.patient_details' | translate }}
-    </legend>
-
-    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-      <div class="flex flex-col gap-1">
-        <label class="text-muted text-sm font-medium">
-          {{ 'walk_in.patient_name' | translate }}
-        </label>
-        <input
-          type="text"
-          [value]="patientName()"
-          (input)="patientName.set($any($event.target).value)"
-          [placeholder]="'walk_in.patient_name' | translate"
-          class="border-border bg-surface text-text focus:border-primary focus:ring-primary rounded-lg border px-3 py-2 text-sm focus:ring-1 focus:outline-none"
-        />
-      </div>
-
-      <div class="flex flex-col gap-1">
-        <label class="text-muted text-sm font-medium">
-          {{ 'walk_in.patient_phone' | translate }}
-        </label>
-        <input
-          type="tel"
-          [value]="patientPhone()"
-          (input)="patientPhone.set($any($event.target).value)"
-          [placeholder]="'walk_in.patient_phone' | translate"
-          class="border-border bg-surface text-text focus:border-primary focus:ring-primary rounded-lg border px-3 py-2 text-sm focus:ring-1 focus:outline-none"
-        />
-      </div>
-    </div>
-  </fieldset>
-
-  <!-- Booking details -->
-  <fieldset class="flex flex-col gap-4">
-    <legend class="text-text mb-2 flex items-center gap-2 text-lg font-semibold">
-      <lucide-icon name="stethoscope" class="text-primary h-5 w-5"></lucide-icon>
-      {{ 'walk_in.booking_details' | translate }}
-    </legend>
-
-    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-      <div class="flex flex-col gap-1">
-        <label class="text-muted text-sm font-medium">
-          {{ 'walk_in.doctor' | translate }}
-        </label>
-        <app-select
-          [options]="doctorsArr()"
-          labelKey="displayName"
-          valueKey="id"
-          [selectedValue]="selectedDoctorId()"
-          [placeholder]="'walk_in.select_doctor' | translate"
-          (valueChange)="onDoctorSelect($event)"
-        ></app-select>
-      </div>
-
-      <div class="flex flex-col gap-1">
-        <label class="text-muted text-sm font-medium">
-          {{ 'walk_in.service' | translate }}
-        </label>
-        <app-select
-          [options]="serviceOptions()"
-          labelKey="name"
-          valueKey="id"
-          [selectedValue]="selectedServiceId()"
-          [placeholder]="'walk_in.select_service' | translate"
-          [disabled]="!selectedDoctorId()"
-          (valueChange)="onServiceSelect($event)"
-        ></app-select>
-      </div>
-
-      <div class="flex flex-col gap-1">
-        <label class="text-muted text-sm font-medium">
-          {{ 'walk_in.date' | translate }}
-        </label>
-        <input
-          type="date"
-          [value]="selectedDate()"
-          [min]="today"
-          (input)="onDateChange($any($event.target).value)"
-          class="border-border bg-surface text-text focus:border-primary focus:ring-primary rounded-lg border px-3 py-2 text-sm focus:ring-1 focus:outline-none"
-        />
-      </div>
-    </div>
-
-    <!-- Slots -->
-    <div class="flex flex-col gap-2">
-      <label class="text-muted text-sm font-medium">
-        {{ 'walk_in.time_slot' | translate }}
-      </label>
-
-      @if (loadingSlots()) {
-        <app-loading />
-      } @else if (!canLoadSlots()) {
-        <p class="text-muted text-sm">{{ 'walk_in.pick_doctor_first' | translate }}</p>
-      } @else if (slotsArr().length === 0) {
-        <app-feedback-states [showIcon]="false" titleKey="" descriptionKey="walk_in.no_slots" />
-      } @else {
-        <div class="flex flex-wrap gap-2">
-          @for (slot of slotsArr(); track slot.time) {
-            <button
-              type="button"
-              [disabled]="!slot.isAvailable"
-              (click)="selectedSlot.set(slot.time)"
-              class="rounded-lg border px-3 py-2 text-sm font-medium transition-all disabled:cursor-not-allowed disabled:opacity-40"
-              [class.bg-primary]="selectedSlot() === slot.time"
-              [class.text-white]="selectedSlot() === slot.time"
-              [class.border-primary]="selectedSlot() === slot.time"
-              [class.border-border]="selectedSlot() !== slot.time"
-              [class.text-text]="selectedSlot() !== slot.time"
-            >
-              {{ slot.time }}
-            </button>
-          }
+  <form
+    (submit)="$event.preventDefault(); submit()"
+    class="mt-8 flex w-full flex-col gap-10 rounded-3xl bg-[var(--color-surface)] p-6 shadow-sm sm:p-10"
+  >
+    <!-- Patient details -->
+    <fieldset class="flex flex-col gap-5">
+      <legend class="mb-4 flex items-center gap-2 text-lg font-bold text-[var(--color-text)]">
+        <div
+          class="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--color-primary)]/10 text-[var(--color-primary)]"
+        >
+          <lucide-icon name="contact" class="h-5 w-5"></lucide-icon>
         </div>
-      }
-    </div>
-  </fieldset>
+        {{ 'walk_in.patient_details' | translate }}
+      </legend>
 
-  <div class="flex justify-end gap-2">
-    <app-button type="submit" [disabled]="!isValid() || saving()">
-      <lucide-icon name="door-open" class="me-2 h-4 w-4"></lucide-icon>
-      {{ (saving() ? 'walk_in.saving' : 'walk_in.book') | translate }}
-    </app-button>
-  </div>
-</form>
+      <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div class="flex flex-col gap-1">
+          <app-input
+            name="patientName"
+            [label]="'walk_in.patient_name' | translate"
+            type="text"
+            [ngModel]="patientName()"
+            (ngModelChange)="patientName.set($event)"
+            [ngModelOptions]="{ standalone: true }"
+            [placeholder]="'walk_in.patient_name' | translate"
+          ></app-input>
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <app-input
+            name="patientPhone"
+            [label]="'walk_in.patient_phone' | translate"
+            type="tel"
+            [ngModel]="patientPhone()"
+            (ngModelChange)="patientPhone.set($event)"
+            [ngModelOptions]="{ standalone: true }"
+            [placeholder]="'walk_in.patient_phone' | translate"
+          ></app-input>
+        </div>
+      </div>
+    </fieldset>
+
+    <!-- Booking details -->
+    <fieldset class="flex flex-col gap-5">
+      <legend class="mb-4 flex items-center gap-2 text-lg font-bold text-[var(--color-text)]">
+        <div
+          class="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--color-primary)]/10 text-[var(--color-primary)]"
+        >
+          <lucide-icon name="stethoscope" class="h-5 w-5"></lucide-icon>
+        </div>
+        {{ 'walk_in.booking_details' | translate }}
+      </legend>
+
+      <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div class="flex flex-col gap-1">
+          <label class="text-muted text-sm font-medium">
+            {{ 'walk_in.doctor' | translate }}
+          </label>
+          <app-select
+            [options]="doctorsArr()"
+            labelKey="displayName"
+            valueKey="id"
+            [selectedValue]="selectedDoctorId()"
+            [placeholder]="'walk_in.select_doctor' | translate"
+            (valueChange)="onDoctorSelect($event)"
+          ></app-select>
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <label class="text-muted text-sm font-medium">
+            {{ 'walk_in.service' | translate }}
+          </label>
+          <app-select
+            [options]="serviceOptions()"
+            labelKey="name"
+            valueKey="id"
+            [selectedValue]="selectedServiceId()"
+            [placeholder]="'walk_in.select_service' | translate"
+            [disabled]="!selectedDoctorId()"
+            (valueChange)="onServiceSelect($event)"
+          ></app-select>
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <app-input
+            name="selectedDate"
+            [label]="'walk_in.date' | translate"
+            type="date"
+            [ngModel]="selectedDate()"
+            (ngModelChange)="onDateChange($event)"
+            [ngModelOptions]="{ standalone: true }"
+            [min]="today"
+          ></app-input>
+        </div>
+      </div>
+
+      <!-- Slots -->
+      <div class="flex flex-col gap-2">
+        <label class="text-muted text-sm font-medium">
+          {{ 'walk_in.time_slot' | translate }}
+        </label>
+
+        @if (loadingSlots()) {
+          <app-loading />
+        } @else if (!canLoadSlots()) {
+          <p class="text-muted text-sm">{{ 'walk_in.pick_doctor_first' | translate }}</p>
+        } @else if (slotsArr().length === 0) {
+          <app-feedback-states [showIcon]="false" titleKey="" descriptionKey="walk_in.no_slots" />
+        } @else {
+          <div class="flex flex-wrap gap-2">
+            @for (slot of slotsArr(); track slot.time) {
+              <button
+                type="button"
+                [disabled]="!slot.isAvailable"
+                (click)="selectedSlot.set(slot.time)"
+                class="rounded-lg border px-3 py-2 text-sm font-medium transition-all disabled:cursor-not-allowed disabled:opacity-40"
+                [class.bg-primary]="selectedSlot() === slot.time"
+                [class.text-white]="selectedSlot() === slot.time"
+                [class.border-primary]="selectedSlot() === slot.time"
+                [class.border-border]="selectedSlot() !== slot.time"
+                [class.text-text]="selectedSlot() !== slot.time"
+              >
+                {{ slot.time }}
+              </button>
+            }
+          </div>
+        }
+      </div>
+    </fieldset>
+
+    <div class="mt-4 flex justify-end gap-2">
+      <app-button type="submit" [disabled]="!isValid() || saving()">
+        <lucide-icon name="door-open" class="me-2 h-4 w-4"></lucide-icon>
+        {{ (saving() ? 'walk_in.saving' : 'walk_in.book') | translate }}
+      </app-button>
+    </div>
+  </form>
+</div>

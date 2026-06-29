@@ -2,23 +2,26 @@
 // OWNER: Helda
 // ==========================================
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ApiService } from '../../core/services/api.service';
 import { Patient } from '../../core/models';
 import { SearchInputComponent } from '../../shared/components/search-input.component';
 import { ButtonComponent } from '../../shared/components/button.component';
+import { InputComponent } from '../../shared/components/input.component';
+import { DataTableComponent } from '../../shared/components/data-table.component';
 import { ToastService } from '../../core/services/toast.service';
 
 @Component({
   selector: 'app-patients',
   standalone: true,
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     SearchInputComponent,
     ButtonComponent,
+    InputComponent,
+    DataTableComponent,
     TranslatePipe,
   ],
   templateUrl: './patients.component.html',
@@ -47,12 +50,6 @@ export class PatientsComponent implements OnInit {
       phone: ['', Validators.required],
       email: [''],
     });
-  }
-
-  switchLang(lang: 'en' | 'ar'): void {
-    this.translate.use(lang);
-    document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
-    document.documentElement.lang = lang;
   }
 
   loadPatients(): void {
@@ -136,10 +133,28 @@ export class PatientsComponent implements OnInit {
     );
   }
 
+  get tableColumns() {
+    return ['patients.name', 'patients.phone', 'patients.email', 'patients.account'];
+  }
+
+  get tableData() {
+    return this.filteredPatients.map((p) => ({
+      id: p.id,
+      cells: [
+        p.name,
+        p.phone,
+        p.email,
+        p.email?.includes('clinic.local')
+          ? this.translate.instant('patients.walk_in')
+          : this.translate.instant('patients.registered'),
+      ],
+    }));
+  }
+
   get name() {
-    return this.patientForm.get('name');
+    return this.patientForm.get('name')!;
   }
   get phone() {
-    return this.patientForm.get('phone');
+    return this.patientForm.get('phone')!;
   }
 }

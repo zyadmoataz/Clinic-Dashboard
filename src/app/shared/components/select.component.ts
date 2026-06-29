@@ -3,16 +3,15 @@
 // PURPOSE: Shared UI Component
 // ==========================================
 import { Component, input, output } from '@angular/core';
-import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-select',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   template: `
     <div class="w-full">
       <select
-        class="text-text bg-surface focus:border-primary focus:ring-primary mb-5 flex h-10 w-full rounded-lg border px-3 py-2 text-sm focus:ring-1 focus:outline-none"
+        class="flex h-11 w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-2 text-sm text-[var(--color-text)] shadow-sm transition-all duration-200 hover:border-slate-400 focus:border-[var(--color-primary)] focus:ring-4 focus:ring-[var(--color-primary)]/20 focus:outline-none disabled:cursor-not-allowed disabled:opacity-60"
         [disabled]="disabled()"
         [value]="selectedValue()"
         (change)="onChange($event)"

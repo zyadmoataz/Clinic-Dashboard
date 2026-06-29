@@ -27,6 +27,8 @@
   <app-data-table
     [columns]="tableColumns"
     [data]="tableData()"
+    [showDelete]="true"
+    [showEdit]="true"
     (deleteClicked)="onDeleteClicked($event)"
     (editClicked)="onEditClicked($event)"
   />
@@ -44,85 +46,53 @@
 
     <form [formGroup]="createServiceForm" (ngSubmit)="submitService()" class="space-y-4">
       <div>
-        <label class="mb-1 block text-sm font-medium">
-          {{ 'services.create_modal.name' | translate }}
-        </label>
-
-        <input type="text" formControlName="name" class="w-full rounded-lg border p-2" />
-
-        @if (
-          createServiceForm.controls.name.touched &&
-          createServiceForm.controls.name.hasError('required')
-        ) {
-          <p class="text-danger mt-1 text-sm">
-            {{ 'services.create_modal.name_required' | translate }}
-          </p>
-        }
-
-        @if (
-          createServiceForm.controls.name.touched &&
-          createServiceForm.controls.name.hasError('minlength')
-        ) {
-          <p class="text-danger mt-1 text-sm">
-            {{ 'services.create_modal.name_min' | translate }}
-          </p>
-        }
+        <app-input
+          formControlName="name"
+          [label]="'services.create_modal.name' | translate"
+          [error]="
+            createServiceForm.controls.name.touched &&
+            createServiceForm.controls.name.hasError('required')
+              ? ('services.create_modal.name_required' | translate)
+              : createServiceForm.controls.name.touched &&
+                  createServiceForm.controls.name.hasError('minlength')
+                ? ('services.create_modal.name_min' | translate)
+                : null
+          "
+        ></app-input>
       </div>
 
       <div>
-        <label class="mb-1 block text-sm font-medium">
-          {{ 'services.create_modal.duration' | translate }}
-        </label>
-
-        <input
+        <app-input
           type="number"
           formControlName="durationMinutes"
-          class="w-full rounded-lg border p-2"
-        />
-
-        @if (
-          createServiceForm.controls.durationMinutes.touched &&
-          createServiceForm.controls.durationMinutes.hasError('required')
-        ) {
-          <p class="text-danger mt-1 text-sm">
-            {{ 'services.create_modal.duration_required' | translate }}
-          </p>
-        }
-
-        @if (
-          createServiceForm.controls.durationMinutes.touched &&
-          createServiceForm.controls.durationMinutes.hasError('min')
-        ) {
-          <p class="text-danger mt-1 text-sm">
-            {{ 'services.create_modal.duration_min' | translate }}
-          </p>
-        }
+          [label]="'services.create_modal.duration' | translate"
+          [error]="
+            createServiceForm.controls.durationMinutes.touched &&
+            createServiceForm.controls.durationMinutes.hasError('required')
+              ? ('services.create_modal.duration_required' | translate)
+              : createServiceForm.controls.durationMinutes.touched &&
+                  createServiceForm.controls.durationMinutes.hasError('min')
+                ? ('services.create_modal.duration_min' | translate)
+                : null
+          "
+        ></app-input>
       </div>
 
       <div>
-        <label class="mb-1 block text-sm font-medium">
-          {{ 'services.create_modal.price' | translate }}
-        </label>
-
-        <input type="number" formControlName="price" class="w-full rounded-lg border p-2" />
-
-        @if (
-          createServiceForm.controls.price.touched &&
-          createServiceForm.controls.price.hasError('required')
-        ) {
-          <p class="text-danger mt-1 text-sm">
-            {{ 'services.create_modal.price_required' | translate }}
-          </p>
-        }
-
-        @if (
-          createServiceForm.controls.price.touched &&
-          createServiceForm.controls.price.hasError('min')
-        ) {
-          <p class="text-danger mt-1 text-sm">
-            {{ 'services.create_modal.price_min' | translate }}
-          </p>
-        }
+        <app-input
+          type="number"
+          formControlName="price"
+          [label]="'services.create_modal.price' | translate"
+          [error]="
+            createServiceForm.controls.price.touched &&
+            createServiceForm.controls.price.hasError('required')
+              ? ('services.create_modal.price_required' | translate)
+              : createServiceForm.controls.price.touched &&
+                  createServiceForm.controls.price.hasError('min')
+                ? ('services.create_modal.price_min' | translate)
+                : null
+          "
+        ></app-input>
       </div>
       <div>
         <label class="mb-1 block text-sm font-medium">
@@ -131,7 +101,7 @@
 
         <select
           formControlName="doctorId"
-          class="bg-surface text-text w-full rounded-lg border p-2"
+          class="w-full rounded-[var(--radius-sm)] border border-[var(--color-border)] bg-[var(--color-surface)] p-2 text-[var(--color-text)] transition focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)] focus:outline-none"
           [ngClass]="{
             'cursor-not-allowed opacity-70': isEditMode(),
           }"

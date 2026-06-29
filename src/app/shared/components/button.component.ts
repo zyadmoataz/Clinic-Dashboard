@@ -3,12 +3,11 @@
 // PURPOSE: Shared UI Component
 // ==========================================
 import { Component, input, output } from '@angular/core';
-import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-button',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   template: `
     <button
       [disabled]="disabled()"
@@ -24,7 +23,9 @@ import { CommonModule } from '@angular/common';
 })
 export class ButtonComponent {
   disabled = input<boolean>(false);
-  customClass = input<string>('bg-primary text-white hover:bg-primary-hover h-10 px-4 py-2');
+  customClass = input<string>(
+    'bg-[var(--color-primary)] text-[var(--color-on-primary)] hover:bg-[var(--color-primary-hover)] h-10 px-4 py-2',
+  );
   clicked = output<MouseEvent>();
   type = input<'button' | 'submit'>('button');
 

@@ -1,189 +1,158 @@
-<div class="mx-auto max-w-3xl px-4 py-8">
-  <h1 class="mb-6 text-3xl font-bold text-gray-900 dark:text-white">Add doctor</h1>
+<div class="w-full">
+  <div class="mb-8">
+    <h1 class="text-2xl font-bold tracking-tight text-[var(--color-text)] sm:text-3xl">
+      {{ 'add_doctor.title' | translate }}
+    </h1>
+    <p class="mt-1 text-sm text-[var(--color-muted)]">Add a new doctor to the clinic system.</p>
+  </div>
 
-  <form [formGroup]="doctorForm" (ngSubmit)="onSubmit()">
-    <div
-      class="flex flex-col gap-6 rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-800"
-    >
-      <!-- ── Account Section ── -->
-      <p class="text-sm font-medium text-gray-400">Account</p>
+  <form
+    [formGroup]="doctorForm"
+    (ngSubmit)="onSubmit()"
+    class="flex w-full flex-col gap-8 rounded-3xl bg-[var(--color-surface)] p-6 shadow-sm sm:p-10"
+  >
+    <!-- ── Account Section ── -->
+    <p class="text-sm font-medium text-[var(--color-muted)]">
+      {{ 'add_doctor.account' | translate }}
+    </p>
 
-      <div class="grid grid-cols-2 gap-4">
-        <!-- Full Name -->
-        <div class="flex flex-col gap-1">
-          <label class="text-sm font-medium text-gray-700 dark:text-gray-300"> Full name </label>
-          <input
-            formControlName="displayName"
-            type="text"
-            class="rounded-lg border px-3 py-2 text-sm transition focus:ring-2 focus:ring-teal-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-white"
-            [class.border-red-500]="displayName?.invalid && displayName?.touched"
-            [class.border-gray-300]="!(displayName?.invalid && displayName?.touched)"
-          />
-          <p *ngIf="displayName?.invalid && displayName?.touched" class="text-xs text-red-500">
-            Full name is required
-          </p>
-        </div>
+    <div class="grid grid-cols-2 gap-4">
+      <!-- Full Name -->
+      <app-input
+        formControlName="displayName"
+        [label]="'add_doctor.full_name' | translate"
+        [error]="
+          displayName!.invalid && displayName!.touched
+            ? ('add_doctor.full_name_required' | translate)
+            : null
+        "
+      ></app-input>
 
-        <!-- Email -->
-        <div class="flex flex-col gap-1">
-          <label class="text-sm font-medium text-gray-700 dark:text-gray-300"> Email </label>
-          <input
-            formControlName="email"
-            type="email"
-            class="rounded-lg border px-3 py-2 text-sm transition focus:ring-2 focus:ring-teal-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-white"
-            [class.border-red-500]="email?.invalid && email?.touched"
-            [class.border-gray-300]="!(email?.invalid && email?.touched)"
-          />
-          <p *ngIf="email?.invalid && email?.touched" class="text-xs text-red-500">
-            <span *ngIf="email?.errors?.['required']">Email is required</span>
-            <span *ngIf="email?.errors?.['email']">Invalid email</span>
-          </p>
-        </div>
+      <!-- Email -->
+      <app-input
+        formControlName="email"
+        type="email"
+        [label]="'add_doctor.email' | translate"
+        [error]="
+          email!.invalid && email!.touched
+            ? email!.errors?.['required']
+              ? ('add_doctor.email_required' | translate)
+              : ('add_doctor.invalid_email' | translate)
+            : null
+        "
+      ></app-input>
 
-        <!-- Phone -->
-        <div class="flex flex-col gap-1">
-          <label class="text-sm font-medium text-gray-700 dark:text-gray-300"> Phone </label>
-          <input
-            formControlName="phone"
-            type="text"
-            class="rounded-lg border px-3 py-2 text-sm transition focus:ring-2 focus:ring-teal-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-white"
-            [class.border-red-500]="phone?.invalid && phone?.touched"
-            [class.border-gray-300]="!(phone?.invalid && phone?.touched)"
-          />
-          <p *ngIf="phone?.invalid && phone?.touched" class="text-xs text-red-500">
-            Phone is required
-          </p>
-        </div>
+      <!-- Phone -->
+      <app-input
+        formControlName="phone"
+        [label]="'add_doctor.phone' | translate"
+        [error]="
+          phone!.invalid && phone!.touched ? ('add_doctor.phone_required' | translate) : null
+        "
+      ></app-input>
 
-        <!-- Temporary Password -->
-        <div class="flex flex-col gap-1">
-          <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
-            Temporary password
-          </label>
-          <input
-            formControlName="password"
-            type="password"
-            class="rounded-lg border px-3 py-2 text-sm transition focus:ring-2 focus:ring-teal-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-white"
-            [class.border-red-500]="password?.invalid && password?.touched"
-            [class.border-gray-300]="!(password?.invalid && password?.touched)"
-          />
-          <p *ngIf="password?.invalid && password?.touched" class="text-xs text-red-500">
-            <span *ngIf="password?.errors?.['required']">Password is required</span>
-            <span *ngIf="password?.errors?.['minlength']">Min 6 characters</span>
-          </p>
-        </div>
-      </div>
+      <!-- Temporary Password -->
+      <app-input
+        formControlName="password"
+        type="password"
+        [label]="'add_doctor.temp_password' | translate"
+        [error]="
+          password!.invalid && password!.touched
+            ? password!.errors?.['required']
+              ? ('add_doctor.password_required' | translate)
+              : ('add_doctor.password_min' | translate)
+            : null
+        "
+      ></app-input>
+    </div>
 
-      <!-- ── Profile Section ── -->
-      <p class="mt-2 text-sm font-medium text-gray-400">Profile</p>
+    <!-- ── Profile Section ── -->
+    <p class="mt-2 text-sm font-medium text-[var(--color-muted)]">
+      {{ 'add_doctor.profile' | translate }}
+    </p>
 
-      <div class="grid grid-cols-2 gap-4">
-        <!-- Specialty -->
-        <div class="flex flex-col gap-1">
-          <label class="text-sm font-medium text-gray-700 dark:text-gray-300"> Specialty </label>
-          <input
-            formControlName="specialty"
-            type="text"
-            class="rounded-lg border px-3 py-2 text-sm transition focus:ring-2 focus:ring-teal-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-white"
-            [class.border-red-500]="specialty?.invalid && specialty?.touched"
-            [class.border-gray-300]="!(specialty?.invalid && specialty?.touched)"
-          />
-          <p *ngIf="specialty?.invalid && specialty?.touched" class="text-xs text-red-500">
-            Specialty is required
-          </p>
-        </div>
+    <div class="grid grid-cols-2 gap-4">
+      <!-- Specialty -->
+      <app-input
+        formControlName="specialty"
+        [label]="'add_doctor.specialty' | translate"
+        [error]="
+          specialty!.invalid && specialty!.touched
+            ? ('add_doctor.specialty_required' | translate)
+            : null
+        "
+      ></app-input>
 
-        <!-- Photo URL -->
-        <div class="flex flex-col gap-1">
-          <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
-            Photo URL
-            <span class="font-normal text-gray-400">(optional)</span>
-          </label>
-          <input
-            formControlName="photoUrl"
-            type="text"
-            class="rounded-lg border border-gray-300 px-3 py-2 text-sm transition focus:ring-2 focus:ring-teal-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-white"
-          />
-        </div>
-      </div>
+      <!-- Photo URL -->
+      <app-input
+        formControlName="photoUrl"
+        [label]="('add_doctor.photo_url' | translate) + ' ' + ('add_doctor.optional' | translate)"
+      ></app-input>
+    </div>
 
-      <!-- Bio -->
-      <div class="flex flex-col gap-1">
-        <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
-          Bio
-          <span class="font-normal text-gray-400">(optional)</span>
-        </label>
-        <input
-          formControlName="bio"
-          type="text"
-          class="rounded-lg border border-gray-300 px-3 py-2 text-sm transition focus:ring-2 focus:ring-teal-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-white"
-        />
-      </div>
+    <!-- Bio -->
+    <app-input
+      formControlName="bio"
+      [label]="('add_doctor.bio' | translate) + ' ' + ('add_doctor.optional' | translate)"
+    ></app-input>
 
-      <!-- ── Weekly Availability ── -->
-      <div class="mt-2 flex items-center justify-between">
-        <p class="text-base font-semibold text-gray-900 dark:text-white">Weekly availability</p>
-        <button
-          type="button"
-          (click)="addWindow()"
-          class="flex items-center gap-1 rounded-lg border border-teal-600 px-3 py-1.5 text-sm font-medium text-teal-600 transition hover:border-teal-700 hover:text-teal-700"
-        >
-          + Add window
-        </button>
-      </div>
+    <!-- ── Weekly Availability ── -->
+    <div class="mt-2 flex items-center justify-between">
+      <p class="text-base font-semibold text-[var(--color-text)]">
+        {{ 'add_doctor.weekly_availability' | translate }}
+      </p>
+      <button
+        type="button"
+        (click)="addWindow()"
+        class="flex items-center gap-1 rounded-[var(--radius-sm)] border border-[var(--color-primary)] px-3 py-1.5 text-sm font-medium text-[var(--color-primary)] transition hover:bg-[var(--color-primary-soft)]"
+      >
+        {{ 'add_doctor.add_window' | translate }}
+      </button>
+    </div>
 
-      <!-- Availability Rows -->
-      <div formArrayName="availability" class="flex flex-col gap-3">
-        <div
-          *ngFor="let window of availability.controls; let i = index"
-          [formGroupName]="i"
-          class="flex items-center gap-3"
-        >
+    <!-- Availability Rows -->
+    <div formArrayName="availability" class="flex flex-col gap-3">
+      @for (window of availability.controls; track window; let i = $index) {
+        <div [formGroupName]="i" class="flex items-center gap-3">
           <!-- Day -->
           <select
             formControlName="dayOfWeek"
-            class="w-40 rounded-lg border border-gray-300 px-3 py-2 text-sm transition focus:ring-2 focus:ring-teal-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+            class="w-40 rounded-[var(--radius-sm)] border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm text-[var(--color-text)] transition focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)] focus:outline-none"
           >
-            <option *ngFor="let day of days" [value]="day.value">
-              {{ day.label }}
-            </option>
+            @for (day of days; track day) {
+              <option [value]="day.value">
+                {{ day.label | translate }}
+              </option>
+            }
           </select>
-
           <!-- Start Time -->
           <input
             formControlName="startTime"
             type="time"
-            class="flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm transition focus:ring-2 focus:ring-teal-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+            class="flex-1 rounded-[var(--radius-sm)] border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm text-[var(--color-text)] transition focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)] focus:outline-none"
           />
-
           <!-- End Time -->
           <input
             formControlName="endTime"
             type="time"
-            class="flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm transition focus:ring-2 focus:ring-teal-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+            class="flex-1 rounded-[var(--radius-sm)] border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm text-[var(--color-text)] transition focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)] focus:outline-none"
           />
-
           <!-- Delete -->
           <button
             type="button"
             (click)="removeWindow(i)"
-            class="p-1 text-gray-400 transition hover:text-red-500"
+            class="p-1 text-[var(--color-muted)] transition hover:text-[var(--color-danger)]"
           >
             🗑
           </button>
         </div>
-      </div>
+      }
+    </div>
 
-      <!-- ── Submit ── -->
-      <div class="mt-2">
-        <button
-          type="submit"
-          [disabled]="isLoading"
-          class="rounded-lg bg-teal-600 px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-teal-700 disabled:opacity-50"
-        >
-          {{ isLoading ? 'Creating...' : 'Create doctor' }}
-        </button>
-      </div>
+    <div class="mt-4 flex justify-end">
+      <app-button type="submit" [disabled]="isLoading">
+        {{ isLoading ? ('add_doctor.creating' | translate) : ('add_doctor.create' | translate) }}
+      </app-button>
     </div>
   </form>
 </div>

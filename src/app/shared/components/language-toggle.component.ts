@@ -3,7 +3,7 @@
 // PURPOSE: Shared UI Component
 // ==========================================
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { TranslateService } from '@ngx-translate/core';
 import { LucideAngularModule } from 'lucide-angular';
 import { ButtonComponent } from './button.component';
@@ -11,12 +11,16 @@ import { ButtonComponent } from './button.component';
 @Component({
   selector: 'app-language-toggle',
   standalone: true,
-  imports: [CommonModule, LucideAngularModule, ButtonComponent],
+  imports: [LucideAngularModule],
   template: `
-    <app-button variant="ghost" (clicked)="toggleLanguage()" aria-label="Toggle language">
-      <lucide-icon name="globe" class="mr-1 h-5 w-5"></lucide-icon>
-      <span class="text-xs font-bold">{{ currentLang === 'en' ? 'AR' : 'EN' }}</span>
-    </app-button>
+    <button
+      (click)="toggleLanguage()"
+      class="flex h-10 items-center justify-center gap-2 rounded-full px-3 text-sm font-bold text-[var(--color-muted)] transition-colors hover:bg-[var(--color-surface-2)] hover:text-[var(--color-text)] focus:ring-2 focus:ring-[var(--color-primary)]/20 focus:outline-none"
+      aria-label="Toggle language"
+    >
+      <lucide-icon name="globe" class="h-5 w-5"></lucide-icon>
+      <span>{{ currentLang === 'en' ? 'AR' : 'EN' }}</span>
+    </button>
   `,
 })
 export class LanguageToggleComponent {
