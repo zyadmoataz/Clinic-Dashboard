@@ -18,124 +18,33 @@
     "checked_in": "حاضر",
     "revenue_today": "إيرادات اليوم"
   },
-  "services": {
-    "subtitle": "الخدمات القابلة للحجز لكل طبيب.",
-    "add": "إضافة خدمة",
-    "load_failed": "فشل تحميل الخدمات",
-    "load": "تحميل...",
-    "columns": {
-      "name": "اسم الخدمة",
-      "doctor": "اسم الطبيب",
-      "duration": "مدة الخدمة",
-      "price": "سعر الخدمة",
-      "actions": "تعديل/حذف خدمة"
-    },
-    "delete_modal": {
-      "title": "حذف خدمة",
-      "message": "هل أنت متأكد من حذف هذه الخدمة؟",
-      "delete": "حذف",
-      "cancel": "إلغاء",
-      "delete_failed": "فشل حذف الخدمة",
-      "delete_success": "تم حذف الخدمة بنجاح"
-    },
-    "create_modal": {
-      "title": "إضافة خدمة",
-      "name": "اسم الخدمة",
-      "doctor": "اسم الطبيب",
-      "duration": "مدة الخدمة (بالدقائق)",
-      "price": "سعر الخدمة",
-      "create": "إضافة",
-      "cancel": "إلغاء",
-
-      "name_required": "اسم الخدمة مطلوب",
-      "name_min": "يجب أن يحتوي اسم الخدمة على حرفين على الأقل",
-
-      "doctor_required": "اسم الطبيب مطلوب",
-
-      "duration_required": "مدة الخدمة مطلوبة",
-      "duration_min": "يجب أن تكون مدة الخدمة 30 د على الأقل",
-
-      "price_required": "سعر الخدمة مطلوب",
-      "price_min": "يجب أن يكون سعر الخدمة 50 على الأقل",
-
-      "select_doctor": "اختر طبيب",
-
-      "create_success": "تمت إضافة الخدمة بنجاح",
-      "create_failed": "فشل إضافة الخدمة"
-    },
-    "edit_modal": {
-      "title": "تعديل خدمة",
-      "edit": "تعديل"
-    }
+  
+  "patients": {
+    "patients": "المرضى",
+    "subtitle":       "تسجيل المرضى والبحث عنهم.",
+    "name":           "الاسم",
+    "phone":          "الهاتف",
+    "email":          "البريد الإلكتروني",
+    "optional":       "اختياري",
+    "account":        "الحساب",
+    "add":            "+ إضافة مريض",
+    "cancel":         "إلغاء",
+    "create":         "إنشاء",
+    "creating":       "جاري الإنشاء...",
+    "name_required":  "الاسم مطلوب",
+    "phone_required": "الهاتف مطلوب",
+    "no_results":     "لا يوجد مرضى.",
+    "loading":        "جاري التحميل...",
+    "walk_in":        "حجز مباشر",
+    "registered":     "مسجل",
+     "fill_required": "يرجى ملء جميع الحقول المطلوبة.",
+    "created_success": "تم إضافة المريض بنجاح.",
+    "create_failed": "فشل في إضافة المريض.",
+    "load_failed": "فشل في تحميل المرضى."
   },
-  "availability": {
-    "subtitle": "ساعات العمل والأيام المحظورة.",
-    "select_doctor": "اختر طبيب",
-    "working_hours": "ساعات العمل",
-    "blocked_days": "الأيام المحظورة",
-    "no_working_hours": "لا توجد ساعات عمل متاحة.",
-    "no_blocked_days": "لا توجد أيام محظورة.",
-    "add_blocked_date": "إضافة يوم محظور",
-    "create_blocked_date_success": "تمت إضافة اليوم المحظور بنجاح.",
-    "create_blocked_date_failed": "فشل إضافة اليوم المحظور.",
-    "date_already_blocked": "هذا التاريخ محظور بالفعل.",
-    "add_day": "إضافة يوم",
-    "save_changes": "حفظ التغييرات",
-    "availability_updated": "تم تحديث ساعات العمل بنجاح.",
-    "availability_update_failed": "فشل تحديث ساعات العمل.",
-    "select_day": "اختر يوم",
-    "delete_modal": {
-      "title": "حذف اليوم المحظور",
-      "message": "هل أنت متأكد من إزالة هذا اليوم المحظور؟",
-      "delete": "حذف",
-      "cancel": "إلغاء",
-      "delete_success": "تم حذف اليوم المحظور بنجاح",
-      "delete_failed": "فشل حذف اليوم المحظور"
-    }
-  },
-
-  "calendar": {
-    "subtitle": "المواعيد المجدولة لليوم المحدد.",
-    "pick_date": "اختر التاريخ",
-    "appointments": "موعد",
-    "new_walk_in": "حجز مباشر جديد",
-    "load_failed": "فشل تحميل المواعيد",
-    "empty_title": "لا توجد مواعيد",
-    "empty_description": "لا توجد مواعيد محجوزة لهذا اليوم.",
-    "unknown_patient": "مريض غير معروف",
-    "unknown_doctor": "طبيب غير معروف",
-    "unknown_service": "خدمة غير معروفة",
-    "status": {
-      "PendingPayment": "بانتظار الدفع",
-      "Confirmed": "مؤكد",
-      "Arrived": "حاضر",
-      "Completed": "مكتمل",
-      "NoShow": "لم يحضر",
-      "Cancelled": "ملغى"
-    }
-  },
-  "walk_in": {
-    "subtitle": "تسجيل حجز مباشر من مكتب الاستقبال.",
-    "patient_details": "بيانات المريض",
-    "booking_details": "تفاصيل الحجز",
-    "patient_name": "اسم المريض",
-    "patient_phone": "رقم الهاتف",
-    "doctor": "الطبيب",
-    "service": "الخدمة",
-    "date": "التاريخ",
-    "time_slot": "الوقت",
-    "select_doctor": "اختر طبيب",
-    "select_service": "اختر خدمة",
-    "pick_doctor_first": "اختر طبيباً وتاريخاً لعرض الأوقات المتاحة.",
-    "no_slots": "لا توجد أوقات متاحة لهذا الاختيار.",
-    "book": "تأكيد الحجز",
-    "saving": "جاري الحجز...",
-    "book_success": "تم الحجز المباشر بنجاح!",
-    "book_failed": "فشل الحجز المباشر.",
-    "load_doctors_failed": "فشل تحميل الأطباء."
-  },
-  "feedback": {
-    "no_data_title": "لا توجد بيانات",
-    "no_data_description": "لا يوجد أي محتوى لعرضه حالياً."
+  "common": {
+    "success": "نجاح",
+    "error": "خطأ"
   }
 }
+

@@ -34,6 +34,18 @@ export const routes: Routes = [
               import('./features/staff/staff.component').then((m) => m.StaffComponent),
           },
           {
+            path: 'add-doctor',
+            loadComponent: () =>
+              import('./features/staff/add-doctor/add-doctor').then((m) => m.AddDoctorComponent),
+          },
+          {
+            path: 'add-receptionist',
+            loadComponent: () =>
+              import('./features/staff/add-receptionist/add-receptionist').then(
+                (m) => m.AddReceptionistComponent,
+              ),
+          },
+          {
             path: 'services',
             loadComponent: () =>
               import('./features/services/services.component').then((m) => m.ServicesComponent),

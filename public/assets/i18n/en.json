@@ -18,123 +18,35 @@
     "checked_in": "Checked in",
     "revenue_today": "Today's revenue"
   },
-  "services": {
-    "subtitle": "Bookable services per doctor.",
-    "add": "Add Service",
-    "load_failed": "Failed to load services",
-    "load": "loading...",
-    "columns": {
-      "name": "Service Name",
-      "doctor": "Doctor Name",
-      "duration": "Service Duration",
-      "price": "Service Price",
-      "actions": "Edit/Delete Service"
-    },
-    "delete_modal": {
-      "title": "Delete Service",
-      "message": "Are you sure you want to delete this service?",
-      "delete": "Delete",
-      "cancel": "Cancel",
-      "delete_failed": "Failed to delete service",
-      "delete_success": "Service deleted successfully"
-    },
-    "create_modal": {
-      "title": "Create Service",
-      "name": "Service Name",
-      "doctor": "Doctor Name",
-      "duration": "Service Duration (in Minutes)",
-      "price": "Service Price",
-      "create": "Create",
-      "cancel": "Cancel",
-
-      "name_required": "Service name is required",
-      "name_min": "Service name must be at least 2 characters",
-
-      "doctor_required": "Doctor is required",
-
-      "duration_required": "Duration is required",
-      "duration_min": "Duration must be at least 30 min.",
-
-      "price_required": "Price is required",
-      "price_min": "Price must be at least 50",
-
-      "select_doctor": "Select Doctor",
-
-      "create_success": "Service created successfully",
-      "create_failed": "Failed to create service"
-    },
-    "edit_modal": {
-      "title": "Edit Service",
-      "edit": "Edit"
-    }
+ 
+  "patients": {
+  "subtitle":       "Register and search patients.",
+    "name":           "Name",
+    "phone":          "Phone",
+    "email":          "Email",
+    "optional":       "optional",
+    "account":        "Account",
+    "add":            "+ Add patient",
+    "cancel":         "Cancel",
+    "create":         "Create",
+    "creating":       "Creating...",
+    "name_required":  "Name is required",
+    "phone_required": "Phone is required",
+    "no_results":     "No patients found.",
+    "loading":        "Loading...",
+    "walk_in":        "Walk-in",
+    "registered":     "Registered",
+     "fill_required": "Please fill all required fields.",
+    "created_success": "Patient created successfully.",
+    "create_failed": "Failed to create patient.",
+    "load_failed": "Failed to load patients."
   },
-  "availability": {
-    "subtitle": "Working hours and blocked days.",
-    "select_doctor": "Select Doctor",
-    "working_hours": "Working Hours",
-    "blocked_days": "Blocked Days",
-    "no_working_hours": "No available working hours.",
-    "no_blocked_days": "No blocked days.",
-    "add_blocked_date": "Add Blocked Date",
-    "create_blocked_date_success": "Blocked date added successfully.",
-    "create_blocked_date_failed": "Failed to add blocked date.",
-    "date_already_blocked": "This date is already blocked.",
-    "add_day": "Add Day",
-    "save_changes": "Save Changes",
-    "availability_updated": "Availability updated successfully.",
-    "availability_update_failed": "Failed to update availability.",
-    "select_day": "Select Day",
-    "delete_modal": {
-      "title": "Delete Blocked Date",
-      "message": "Are you sure you want to remove this blocked date?",
-      "delete": "Delete",
-      "cancel": "Cancel",
-      "delete_success": "Blocked date removed successfully",
-      "delete_failed": "Failed to remove blocked date"
-    }
-  },
-  "calendar": {
-    "subtitle": "Appointments scheduled for the selected day.",
-    "pick_date": "Select date",
-    "appointments": "appointments",
-    "new_walk_in": "New Walk-in",
-    "load_failed": "Failed to load appointments",
-    "empty_title": "No appointments",
-    "empty_description": "There are no appointments booked for this day.",
-    "unknown_patient": "Unknown patient",
-    "unknown_doctor": "Unknown doctor",
-    "unknown_service": "Unknown service",
-    "status": {
-      "PendingPayment": "Pending Payment",
-      "Confirmed": "Confirmed",
-      "Arrived": "Arrived",
-      "Completed": "Completed",
-      "NoShow": "No Show",
-      "Cancelled": "Cancelled"
-    }
-  },
-  "walk_in": {
-    "subtitle": "Register a front-desk walk-in booking.",
-    "patient_details": "Patient Details",
-    "booking_details": "Booking Details",
-    "patient_name": "Patient Name",
-    "patient_phone": "Phone Number",
-    "doctor": "Doctor",
-    "service": "Service",
-    "date": "Date",
-    "time_slot": "Time Slot",
-    "select_doctor": "Select Doctor",
-    "select_service": "Select Service",
-    "pick_doctor_first": "Select a doctor and date to view available slots.",
-    "no_slots": "No available slots for this selection.",
-    "book": "Book Walk-in",
-    "saving": "Booking...",
-    "book_success": "Walk-in booked successfully!",
-    "book_failed": "Failed to book walk-in.",
-    "load_doctors_failed": "Failed to load doctors."
-  },
-  "feedback": {
-    "no_data_title": "No Data",
-    "no_data_description": "There is nothing to display here yet."
+  
+  "common": {
+    "success": "Success",
+    "error": "Error"
   }
 }
+
+
+

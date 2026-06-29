@@ -65,7 +65,7 @@ export class ApiService {
     return this.http.get<DoctorAvailability[]>(`${this.baseUrl}/doctors/${id}/availability`);
   }
 
-  setDoctorAvailability(id: string, data: Array<Omit<DoctorAvailability, 'id'>>): Observable<void> {
+  setDoctorAvailability(id: number, data: any): Observable<void> {
     return this.http.put<void>(`${this.baseUrl}/doctors/${id}/availability`, data);
   }
 

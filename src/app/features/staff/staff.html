@@ -1,0 +1,27 @@
+<div class="space-y-8 p-8">
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="text-4xl font-bold text-gray-900">Staff</h1>
+
+      <p class="mt-2 text-gray-500">Doctors and receptionists.</p>
+    </div>
+
+    <div class="flex gap-3">
+      <button
+        (click)="goToAddDoctor()"
+        class="font-small rounded-xl bg-teal-600 px-5 py-2 text-white transition hover:bg-teal-700"
+      >
+        + Add Doctor
+      </button>
+
+      <button
+        (click)="goToAddreciptionist()"
+        class="font-small rounded-xl border border-gray-300 bg-white px-5 py-2.5 transition hover:bg-gray-100"
+      >
+        + Add Receptionist
+      </button>
+    </div>
+  </div>
+
+  <app-data-table [data]="staffList" [columns]="columns" [isLoading]="isLoading"> </app-data-table>
+</div>

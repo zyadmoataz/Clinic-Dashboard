@@ -121,7 +121,7 @@ export interface Visit {
 
 export interface Patient {
   id: number;
-  displayName: string;
+  name: string;
   email: string;
   phone: string;
   gender?: string;
@@ -137,15 +137,21 @@ export interface Staff {
 }
 
 export interface DoctorRegisterRequest {
-  displayName: string;
+  name: string;
   email: string;
-  specialty: string;
+  phone: string;
+  password: string;
+  specialization: string;
+  photoUrl?: string;
+  bio?: string;
   yearsExperience: number;
 }
 
 export interface ReceptionistRegisterRequest {
-  displayName: string;
+  name: string;
   email: string;
+  phone: number;
+  password: string;
 }
 
 export interface ClinicReports {

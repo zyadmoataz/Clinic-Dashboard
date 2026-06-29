@@ -1,0 +1,85 @@
+<div class="px-4 py-8">
+  <h1 class="mb-6 text-3xl font-bold text-gray-900 dark:text-white">Add receptionist</h1>
+
+  <form [formGroup]="receptionistForm" (ngSubmit)="onSubmit()">
+    <div
+      class="flex flex-col gap-5 rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-800"
+    >
+      <!-- Full Name -->
+      <div class="flex flex-col gap-1">
+        <label class="text-sm font-medium text-gray-700 dark:text-gray-300"> Full name </label>
+        <input
+          formControlName="displayName"
+          type="text"
+          class="rounded-lg border px-3 py-2 text-sm transition focus:ring-2 focus:ring-teal-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+          [class.border-red-500]="displayName?.invalid && displayName?.touched"
+          [class.border-gray-300]="!(displayName?.invalid && displayName?.touched)"
+        />
+        <p *ngIf="displayName?.invalid && displayName?.touched" class="text-xs text-red-500">
+          <span *ngIf="displayName?.errors?.['required']">Full name is required</span>
+          <span *ngIf="displayName?.errors?.['minlength']">Min 3 characters</span>
+        </p>
+      </div>
+
+      <!-- Email -->
+      <div class="flex flex-col gap-1">
+        <label class="text-sm font-medium text-gray-700 dark:text-gray-300"> Email </label>
+        <input
+          formControlName="email"
+          type="email"
+          class="rounded-lg border px-3 py-2 text-sm transition focus:ring-2 focus:ring-teal-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+          [class.border-red-500]="email?.invalid && email?.touched"
+          [class.border-gray-300]="!(email?.invalid && email?.touched)"
+        />
+        <p *ngIf="email?.invalid && email?.touched" class="text-xs text-red-500">
+          <span *ngIf="email?.errors?.['required']">Email is required</span>
+          <span *ngIf="email?.errors?.['email']">Invalid email</span>
+        </p>
+      </div>
+
+      <!-- Phone -->
+      <div class="flex flex-col gap-1">
+        <label class="text-sm font-medium text-gray-700 dark:text-gray-300"> Phone </label>
+        <input
+          formControlName="phone"
+          type="text"
+          class="rounded-lg border px-3 py-2 text-sm transition focus:ring-2 focus:ring-teal-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+          [class.border-red-500]="phone?.invalid && phone?.touched"
+          [class.border-gray-300]="!(phone?.invalid && phone?.touched)"
+        />
+        <p *ngIf="phone?.invalid && phone?.touched" class="text-xs text-red-500">
+          Phone is required
+        </p>
+      </div>
+
+      <!-- Temporary Password -->
+      <div class="flex flex-col gap-1">
+        <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
+          Temporary password
+        </label>
+        <input
+          formControlName="password"
+          type="password"
+          class="rounded-lg border px-3 py-2 text-sm transition focus:ring-2 focus:ring-teal-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+          [class.border-red-500]="password?.invalid && password?.touched"
+          [class.border-gray-300]="!(password?.invalid && password?.touched)"
+        />
+        <p *ngIf="password?.invalid && password?.touched" class="text-xs text-red-500">
+          <span *ngIf="password?.errors?.['required']">Password is required</span>
+          <span *ngIf="password?.errors?.['minlength']">Min 6 characters</span>
+        </p>
+      </div>
+
+      <!-- Submit -->
+      <div class="mt-2">
+        <button
+          type="submit"
+          [disabled]="isLoading"
+          class="rounded-lg bg-teal-600 px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-teal-700 disabled:opacity-50"
+        >
+          {{ isLoading ? 'Creating...' : 'Create receptionist' }}
+        </button>
+      </div>
+    </div>
+  </form>
+</div>
