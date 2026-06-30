@@ -1,7 +1,3 @@
-// ==========================================
-// OWNER: Zyad (Shared Components)
-// PURPOSE: Global Theme toggle switch (Dark / Light)
-// ==========================================
 import { Component, OnInit } from '@angular/core';
 
 import { LucideAngularModule } from 'lucide-angular';

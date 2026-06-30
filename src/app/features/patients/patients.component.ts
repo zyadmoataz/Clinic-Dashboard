@@ -1,6 +1,3 @@
-// ==========================================
-// OWNER: Helda
-// ==========================================
 import { Component, inject, signal } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 
@@ -12,6 +9,7 @@ import { SearchInputComponent } from '../../shared/components/search-input.compo
 import { ButtonComponent } from '../../shared/components/button.component';
 import { InputComponent } from '../../shared/components/input.component';
 import { DataTableComponent } from '../../shared/components/data-table.component';
+import { ModalComponent } from '../../shared/components/modal.component';
 import { ToastService } from '../../core/services/toast.service';
 
 @Component({
@@ -23,6 +21,7 @@ import { ToastService } from '../../core/services/toast.service';
     ButtonComponent,
     InputComponent,
     DataTableComponent,
+    ModalComponent,
     TranslatePipe,
   ],
   templateUrl: './patients.component.html',
@@ -44,8 +43,8 @@ export class PatientsComponent {
   constructor() {
     this.patientForm = this.fb.group({
       name: ['', Validators.required],
-      phone: ['', Validators.required],
-      email: [''],
+      phone: ['', [Validators.required, Validators.pattern(/^[0-9+() -]{8,20}$/)]],
+      email: ['', [Validators.email]],
     });
     this.loadPatients();
   }
@@ -156,5 +155,8 @@ export class PatientsComponent {
   }
   get phone() {
     return this.patientForm.get('phone')!;
+  }
+  get email() {
+    return this.patientForm.get('email')!;
   }
 }

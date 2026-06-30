@@ -1,7 +1,3 @@
-// ==========================================
-// OWNER: Doaa, Omar, Helda
-// PURPOSE: Shared UI Component
-// ==========================================
 import { Component } from '@angular/core';
 
 @Component({

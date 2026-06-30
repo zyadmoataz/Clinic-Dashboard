@@ -46,7 +46,7 @@ export class ReceptionistDashboardComponent {
         this.upcomingAppointments.set(
           appts
             .filter((a) => ['Confirmed', 'PendingPayment', 'Arrived'].includes(a.status))
-            .sort((a, b) => (a.timeSlot || '').localeCompare(b.timeSlot || ''))
+            .sort((a, b) => (a.startTime || '').localeCompare(b.startTime || ''))
             .slice(0, 8),
         );
         this.loading.set(false);

@@ -1,6 +1,3 @@
-// ==========================================
-// OWNER: Othman
-// ==========================================
 import { Component, ElementRef, viewChild, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ApiService } from '../../core/services/api.service';

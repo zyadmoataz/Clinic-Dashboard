@@ -1,7 +1,3 @@
-// ==========================================
-// OWNER: Zyad (Maintainer) & All Developers (Consumers)
-// PURPOSE: Shared UI Component
-// ==========================================
 import { Component, input, forwardRef, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';

@@ -66,6 +66,7 @@
     "load_failed": "فشل في تحميل المرضى."
   },
   "common": {
+    "all": "الكل",
     "success": "نجاح",
     "error": "خطأ",
     "active": "نشط",
@@ -78,7 +79,9 @@
     "enter_text": "...أدخل النص",
     "admin": "مشرف",
     "doctor": "طبيب",
-    "receptionist": "موظف استقبال"
+    "receptionist": "موظف استقبال",
+    "cancel": "إلغاء",
+    "confirm": "تأكيد"
   },
   "days": {
     "sunday": "الأحد",
@@ -108,12 +111,15 @@
       "name": "اسم الخدمة",
       "name_required": "اسم الخدمة مطلوب",
       "name_min": "الاسم قصير جداً",
+      "name_placeholder": "مثال: استشارة طبية",
       "duration": "المدة (دقائق)",
+      "duration_placeholder": "مثال: 30",
       "duration_required": "المدة مطلوبة",
-      "duration_min": "المدة يجب أن تكون دقيقة واحدة على الأقل",
+      "duration_min": "المدة يجب أن تكون 30 دقيقة على الأقل",
       "price": "السعر (ج.م)",
+      "price_placeholder": "مثال: 150",
       "price_required": "السعر مطلوب",
-      "price_min": "السعر يجب أن يكون 0 على الأقل",
+      "price_min": "السعر يجب أن يكون 50 على الأقل",
       "doctor": "الطبيب المعين",
       "select_doctor": "اختر طبيباً",
       "doctor_required": "الطبيب مطلوب",
@@ -135,6 +141,9 @@
     "save_failed": "فشل في حفظ الخدمة."
   },
   "walk_in": {
+    "add_new_patient": "إضافة مريض جديد",
+    "name_error": "يجب أن يكون الاسم حرفين على الأقل.",
+    "phone_error": "يجب أن يكون رقم الهاتف 6 أرقام على الأقل.",
     "subtitle": "حجز موعد مباشر.",
     "patient_details": "بيانات المريض",
     "patient_name": "اسم المريض",
@@ -167,6 +176,25 @@
     "unknown_doctor": "طبيب غير معروف",
     "unknown_service": "خدمة غير معروفة",
     "load_failed": "فشل في تحميل المواعيد.",
+    "reschedule_title": "تأجيل الموعد",
+    "table": {
+      "time": "الوقت",
+      "patient": "المريض",
+      "doctor": "الطبيب",
+      "service": "الخدمة",
+      "status": "الحالة",
+      "payment": "الدفع"
+    },
+    "payment_status": {
+      "Paid": "مدفوع",
+      "Refunded": "مسترد",
+      "Pending": "قيد الانتظار"
+    },
+    "actions": {
+      "checked_in": "تسجيل وصول",
+      "cash_paid": "دفع نقدي",
+      "no_show": "لم يحضر"
+    },
     "status": {
       "Confirmed": "مؤكد",
       "PendingPayment": "قيد الدفع",
@@ -174,7 +202,9 @@
       "Completed": "مكتمل",
       "NoShow": "لم يحضر",
       "Cancelled": "ملغى"
-    }
+    },
+    "action_success": "تم تنفيذ الإجراء بنجاح.",
+    "action_failed": "فشل الإجراء."
   },
   "profile": {
     "subtitle": "إدارة ملفك الشخصي وإعدادات حسابك.",

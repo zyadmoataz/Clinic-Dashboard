@@ -1,7 +1,3 @@
-// ==========================================
-// OWNER: Othman
-// PURPOSE: Shared UI Component
-// ==========================================
 import { Component } from '@angular/core';
 
 @Component({

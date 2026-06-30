@@ -6,63 +6,257 @@
 </app-page-header>
 
 <div class="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-  <div class="flex flex-col gap-1">
-    <label for="calendar-date" class="text-muted text-sm font-medium">{{
-      'calendar.pick_date' | translate
-    }}</label>
-    <input
-      id="calendar-date"
-      type="date"
-      [value]="selectedDate()"
-      (input)="onDateChange($any($event.target).value)"
-      class="border-border bg-surface text-text focus:border-primary focus:ring-primary rounded-lg border px-3 py-2 focus:ring-1 focus:outline-none"
-    />
+  <div class="flex flex-col gap-4 sm:flex-row sm:items-end">
+    <div class="flex flex-col gap-1">
+      <label for="calendar-date" class="text-muted text-sm font-medium">{{
+        'calendar.date' | translate
+      }}</label>
+      <div class="relative w-full sm:w-48">
+        <input
+          #datePicker
+          id="calendar-date"
+          type="date"
+          [attr.lang]="currentLang"
+          [value]="selectedDate()"
+          (input)="onDateChange($any($event.target).value)"
+          (click)="$any(datePicker).showPicker()"
+          class="absolute inset-0 z-10 h-full w-full cursor-pointer opacity-0"
+        />
+        <div
+          class="border-border bg-surface text-text focus-within:border-primary focus-within:ring-primary flex h-[42px] w-full items-center justify-between rounded-lg border px-3 py-2 focus-within:ring-1"
+        >
+          <span class="text-sm font-medium">{{ formattedSelectedDate }}</span>
+          <lucide-icon name="calendar" class="h-4 w-4 text-[var(--color-text)]"></lucide-icon>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex w-full flex-col gap-1 sm:w-48">
+      <label for="calendar-doctor" class="text-muted text-sm font-medium">{{
+        'walk_in.doctor' | translate
+      }}</label>
+      <app-select
+        id="calendar-doctor"
+        [options]="doctorsSelectOptions()"
+        [selectedValue]="selectedDoctorId()"
+        [placeholder]="'walk_in.select_doctor' | translate"
+        (valueChange)="onDoctorChange($event)"
+      ></app-select>
+    </div>
   </div>
 
   <div class="bg-surface border-border flex items-center gap-2 rounded-lg border px-4 py-2">
     <lucide-icon name="calendar" class="text-primary h-5 w-5"></lucide-icon>
     <span class="text-text text-sm font-medium">
-      {{ appointmentsList().length }} {{ 'calendar.appointments' | translate }}
+      {{ sortedAppointments().length }} {{ 'calendar.appointments' | translate }}
     </span>
   </div>
 </div>
 
 @if (loadingStatus()) {
   <app-loading />
-} @else if (appointmentsList().length === 0) {
+} @else if (sortedAppointments().length === 0) {
   <app-feedback-states
-    titleKey="calendar.empty_title"
-    descriptionKey="calendar.empty_description"
+    titleKey="calendar.no_appointments"
+    descriptionKey="calendar.no_appointments_desc"
   />
 } @else {
-  <div class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
-    @for (appt of sortedAppointments(); track appt.id) {
-      <article class="border-border bg-surface flex flex-col gap-3 rounded-xl border p-4">
-        <div class="flex items-start justify-between">
-          <div class="text-primary flex items-center gap-2 text-lg font-bold">
-            <lucide-icon name="clock" class="h-5 w-5"></lucide-icon>
-            <span>{{ appt.timeSlot }}</span>
-          </div>
-          <app-badge [customClass]="statusClass(appt.status)">
-            {{ 'calendar.status.' + appt.status | translate }}
-          </app-badge>
-        </div>
-
-        <div class="flex flex-col gap-1">
-          <p class="text-text flex items-center gap-2 font-semibold">
-            <lucide-icon name="contact" class="text-muted h-4 w-4"></lucide-icon>
-            {{ appt.patientName || ('calendar.unknown_patient' | translate) }}
-          </p>
-          <p class="text-muted flex items-center gap-2 text-sm">
-            <lucide-icon name="stethoscope" class="h-4 w-4"></lucide-icon>
-            {{ appt.doctorName || ('calendar.unknown_doctor' | translate) }}
-          </p>
-          <p class="text-muted flex items-center gap-2 text-sm">
-            <lucide-icon name="activity" class="h-4 w-4"></lucide-icon>
-            {{ appt.serviceName || ('calendar.unknown_service' | translate) }}
-          </p>
-        </div>
-      </article>
-    }
+  <div class="overflow-hidden rounded-2xl bg-[var(--color-surface)] shadow-sm">
+    <div class="overflow-x-auto">
+      <table class="w-full text-start">
+        <thead>
+          <tr
+            class="border-b border-slate-200 bg-slate-50/50 dark:border-slate-700 dark:bg-slate-800/50"
+          >
+            <th
+              class="px-6 py-4 text-start text-sm font-semibold whitespace-nowrap text-[var(--color-text)]"
+            >
+              {{ 'calendar.table.time' | translate }}
+            </th>
+            <th
+              class="px-6 py-4 text-start text-sm font-semibold whitespace-nowrap text-[var(--color-text)]"
+            >
+              {{ 'calendar.table.patient' | translate }}
+            </th>
+            <th
+              class="px-6 py-4 text-start text-sm font-semibold whitespace-nowrap text-[var(--color-text)]"
+            >
+              {{ 'calendar.table.doctor' | translate }}
+            </th>
+            <th
+              class="px-6 py-4 text-start text-sm font-semibold whitespace-nowrap text-[var(--color-text)]"
+            >
+              {{ 'calendar.table.service' | translate }}
+            </th>
+            <th
+              class="px-6 py-4 text-start text-sm font-semibold whitespace-nowrap text-[var(--color-text)]"
+            >
+              {{ 'calendar.table.status' | translate }}
+            </th>
+            <th
+              class="px-6 py-4 text-start text-sm font-semibold whitespace-nowrap text-[var(--color-text)]"
+            >
+              {{ 'calendar.table.payment' | translate }}
+            </th>
+            <th class="px-6 py-4"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (appt of sortedAppointments(); track appt.id; let last = $last) {
+            <tr
+              class="group transition-colors duration-150 hover:bg-slate-50/70 dark:hover:bg-slate-800/30"
+              [class.border-b]="!last"
+              [class.border-slate-100]="!last"
+              [class.dark:border-slate-700/50]="!last"
+            >
+              <td class="px-6 py-4 text-sm font-bold text-[var(--color-text)]">
+                {{ formatTime(appt.startTime) }}
+              </td>
+              <td class="px-6 py-4 text-sm text-[var(--color-text)]">
+                {{ appt.patientName || ('calendar.unknown_patient' | translate) }}
+              </td>
+              <td class="px-6 py-4 text-sm text-[var(--color-text)]">
+                {{ appt.doctorName || ('calendar.unknown_doctor' | translate) }}
+              </td>
+              <td class="px-6 py-4 text-sm text-[var(--color-text)]">
+                {{ appt.serviceName || ('calendar.unknown_service' | translate) }}
+              </td>
+              <td class="px-6 py-4 text-sm">
+                <app-badge
+                  [customClass]="
+                    statusClass(appt.status).replace('bg-', '!bg-').replace('text-', '!text-')
+                  "
+                >
+                  {{ 'calendar.status.' + appt.status | translate }}
+                </app-badge>
+              </td>
+              <td class="px-6 py-4 text-sm">
+                <app-badge [customClass]="paymentClass(appt.payment?.status)">
+                  {{
+                    appt.payment?.status
+                      ? ('calendar.payment_status.' + appt.payment!.status | translate)
+                      : ('calendar.payment_status.Pending' | translate)
+                  }}
+                </app-badge>
+              </td>
+              <td class="px-6 py-4 text-sm">
+                <div class="flex items-center justify-end gap-2">
+                  @if (
+                    appt.status === 'PendingPayment' ||
+                    appt.status === 'Confirmed' ||
+                    appt.status === 'Arrived'
+                  ) {
+                    @if (appt.status === 'Confirmed') {
+                      <app-button
+                        (clicked)="markArrived(appt.id)"
+                        customClass="!bg-transparent !text-[var(--color-text)] border border-[var(--color-border)] h-8 !px-3 hover:!bg-[var(--color-surface-2)]"
+                        >{{ 'calendar.actions.checked_in' | translate }}</app-button
+                      >
+                    }
+                    @if (
+                      (appt.status === 'PendingPayment' || appt.status === 'Arrived') &&
+                      appt.payment?.status !== 'Paid'
+                    ) {
+                      <app-button
+                        (clicked)="markPaid(appt.id)"
+                        customClass="!bg-transparent !text-[var(--color-text)] border border-[var(--color-border)] h-8 !px-3 hover:!bg-[var(--color-surface-2)]"
+                        >{{ 'calendar.actions.cash_paid' | translate }}</app-button
+                      >
+                    }
+                    @if (appt.status === 'PendingPayment' || appt.status === 'Confirmed') {
+                      <app-button
+                        (clicked)="markNoShow(appt.id)"
+                        customClass="!bg-transparent !text-[var(--color-text)] border border-[var(--color-border)] h-8 !px-3 hover:!bg-[var(--color-surface-2)]"
+                        >{{ 'calendar.actions.no_show' | translate }}</app-button
+                      >
+                      <app-button
+                        (clicked)="openRescheduleModal(appt)"
+                        customClass="flex h-8 w-8 items-center justify-center !bg-transparent border border-[var(--color-border)] !px-0 text-[var(--color-muted)] hover:!bg-[var(--color-surface-2)] hover:!text-[var(--color-text)]"
+                      >
+                        <lucide-icon name="calendar" class="h-4 w-4"></lucide-icon>
+                      </app-button>
+                    }
+                    <app-button
+                      (clicked)="cancelAppointment(appt.id)"
+                      customClass="flex h-8 w-8 items-center justify-center !bg-transparent border border-[var(--color-border)] !px-0 text-[var(--color-muted)] hover:!bg-[var(--color-surface-2)] hover:!text-[var(--color-text)]"
+                    >
+                      <lucide-icon name="x" class="h-4 w-4"></lucide-icon>
+                    </app-button>
+                  }
+                </div>
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="7" class="px-6 py-8 text-center text-[var(--color-muted)]">
+                {{ 'calendar.no_appointments' | translate }}
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
   </div>
+}
+
+@if (rescheduleAppointmentId()) {
+  <app-modal>
+    <div class="flex flex-col gap-4">
+      <h2 class="text-xl font-bold text-[var(--color-text)]">
+        {{ 'calendar.reschedule_title' | translate }}
+      </h2>
+
+      <app-input
+        type="date"
+        [attr.lang]="currentLang"
+        [ngModel]="rescheduleDate()"
+        (ngModelChange)="onRescheduleDateChange($event)"
+        [label]="'walk_in.date' | translate"
+      />
+
+      <div class="flex flex-col gap-2">
+        <label class="text-sm font-medium text-[var(--color-muted)]">{{
+          'walk_in.time_slot' | translate
+        }}</label>
+        @if (loadingSlots()) {
+          <app-loading />
+        } @else if (rescheduleSlots().length === 0) {
+          <p class="text-sm text-[var(--color-muted)]">{{ 'walk_in.no_slots' | translate }}</p>
+        } @else {
+          <div class="flex flex-wrap gap-2">
+            @for (slot of rescheduleSlots(); track slot) {
+              <button
+                type="button"
+                (click)="rescheduleSelectedSlot.set(slot)"
+                class="rounded-lg border px-3 py-2 text-sm font-medium transition-all"
+                [class.bg-primary]="rescheduleSelectedSlot() === slot"
+                [class.text-white]="rescheduleSelectedSlot() === slot"
+                [class.border-primary]="rescheduleSelectedSlot() === slot"
+                [class.border-border]="rescheduleSelectedSlot() !== slot"
+                [class.text-text]="rescheduleSelectedSlot() !== slot"
+              >
+                {{ slot }}
+              </button>
+            }
+          </div>
+        }
+      </div>
+
+      <div class="mt-4 flex justify-end gap-2">
+        <app-button
+          variant="secondary"
+          (clicked)="closeRescheduleModal()"
+          [disabled]="rescheduling()"
+        >
+          {{ 'common.cancel' | translate }}
+        </app-button>
+        <app-button
+          (clicked)="submitReschedule()"
+          [disabled]="!rescheduleSelectedSlot() || rescheduling()"
+        >
+          {{ 'common.confirm' | translate }}
+        </app-button>
+      </div>
+    </div>
+  </app-modal>
 }

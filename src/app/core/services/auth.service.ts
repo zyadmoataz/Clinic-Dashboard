@@ -1,6 +1,3 @@
-// ==========================================
-// OWNER: Othman
-// ==========================================
 import { Injectable, signal } from '@angular/core';
 
 export interface User {

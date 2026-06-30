@@ -5,7 +5,8 @@
   ></app-page-header>
 
   <form
-    (submit)="$event.preventDefault(); submit()"
+    [formGroup]="walkInForm"
+    (ngSubmit)="submit()"
     class="mt-8 flex w-full flex-col gap-10 rounded-3xl bg-[var(--color-surface)] p-6 shadow-sm sm:p-10"
   >
     <!-- Patient details -->
@@ -21,26 +22,54 @@
 
       <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div class="flex flex-col gap-1">
-          <app-input
-            name="patientName"
-            [label]="'walk_in.patient_name' | translate"
-            type="text"
-            [ngModel]="patientName()"
-            (ngModelChange)="patientName.set($event)"
-            [ngModelOptions]="{ standalone: true }"
-            [placeholder]="'walk_in.patient_name' | translate"
-          ></app-input>
+          <div class="relative w-full">
+            <app-input
+              name="patientName"
+              formControlName="patientName"
+              [label]="'walk_in.patient_name' | translate"
+              type="text"
+              [placeholder]="'walk_in.patient_name' | translate"
+              [error]="nameError()"
+              (blur)="hideDropdown()"
+            ></app-input>
+
+            @if (
+              showPatientDropdown() &&
+              (patientSearchResults().length > 0 || patientNameValue.length >= 2)
+            ) {
+              <div
+                class="absolute top-[70px] z-50 max-h-60 w-full overflow-auto rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] py-1 shadow-lg"
+              >
+                @if (!selectedPatient()) {
+                  <div
+                    (mousedown)="$event.preventDefault(); addNewPatient()"
+                    class="cursor-pointer border-b border-[var(--color-border)] px-4 py-2 text-sm font-medium text-[var(--color-primary)] hover:bg-[var(--color-surface-2)]"
+                  >
+                    + {{ 'walk_in.add_new_patient' | translate }}
+                  </div>
+                }
+                @for (p of patientSearchResults(); track p.id) {
+                  <div
+                    (mousedown)="$event.preventDefault(); selectPatient(p)"
+                    class="cursor-pointer px-4 py-2 text-sm text-[var(--color-text)] hover:bg-[var(--color-surface-2)]"
+                  >
+                    <div class="font-medium">{{ p.name }}</div>
+                    <div class="text-xs text-slate-500">{{ p.phone }}</div>
+                  </div>
+                }
+              </div>
+            }
+          </div>
         </div>
 
         <div class="flex flex-col gap-1">
           <app-input
             name="patientPhone"
+            formControlName="patientPhone"
             [label]="'walk_in.patient_phone' | translate"
             type="tel"
-            [ngModel]="patientPhone()"
-            (ngModelChange)="patientPhone.set($event)"
-            [ngModelOptions]="{ standalone: true }"
             [placeholder]="'walk_in.patient_phone' | translate"
+            [error]="phoneError()"
           ></app-input>
         </div>
       </div>
@@ -64,10 +93,9 @@
           </label>
           <app-select
             id="walkin-doctor"
+            formControlName="selectedDoctorId"
             [options]="doctorsSelectOptions()"
-            [selectedValue]="selectedDoctorId()"
             [placeholder]="'walk_in.select_doctor' | translate"
-            (valueChange)="onDoctorSelect($event)"
           ></app-select>
         </div>
 
@@ -77,22 +105,18 @@
           </label>
           <app-select
             id="walkin-service"
+            formControlName="selectedServiceId"
             [options]="servicesSelectOptions()"
-            [selectedValue]="selectedServiceId()"
             [placeholder]="'walk_in.select_service' | translate"
-            [disabled]="!selectedDoctorId()"
-            (valueChange)="onServiceSelect($event)"
           ></app-select>
         </div>
 
         <div class="flex flex-col gap-1">
           <app-input
             name="selectedDate"
+            formControlName="selectedDate"
             [label]="'walk_in.date' | translate"
             type="date"
-            [ngModel]="selectedDate()"
-            (ngModelChange)="onDateChange($event)"
-            [ngModelOptions]="{ standalone: true }"
             [min]="today"
           ></app-input>
         </div>
@@ -106,7 +130,7 @@
 
         @if (loadingSlots()) {
           <app-loading />
-        } @else if (!canLoadSlots()) {
+        } @else if (!canLoadSlots) {
           <p class="text-muted text-sm">{{ 'walk_in.pick_doctor_first' | translate }}</p>
         } @else if (availableSlots().length === 0) {
           <app-feedback-states [showIcon]="false" titleKey="" descriptionKey="walk_in.no_slots" />
@@ -120,13 +144,13 @@
                 [id]="'walkin-slot-' + $index"
                 type="button"
                 [disabled]="!slot.isAvailable"
-                (click)="selectedSlot.set(slot.time)"
+                (click)="setSlot(slot.time)"
                 class="rounded-lg border px-3 py-2 text-sm font-medium transition-all disabled:cursor-not-allowed disabled:opacity-40"
-                [class.bg-primary]="selectedSlot() === slot.time"
-                [class.text-white]="selectedSlot() === slot.time"
-                [class.border-primary]="selectedSlot() === slot.time"
-                [class.border-border]="selectedSlot() !== slot.time"
-                [class.text-text]="selectedSlot() !== slot.time"
+                [class.bg-primary]="selectedSlotValue === slot.time"
+                [class.text-white]="selectedSlotValue === slot.time"
+                [class.border-primary]="selectedSlotValue === slot.time"
+                [class.border-border]="selectedSlotValue !== slot.time"
+                [class.text-text]="selectedSlotValue !== slot.time"
               >
                 {{ slot.time }}
               </button>
@@ -137,7 +161,7 @@
     </fieldset>
 
     <div class="mt-4 flex justify-end gap-2">
-      <app-button type="submit" [disabled]="!isValid() || saving()">
+      <app-button type="submit" [disabled]="walkInForm.invalid || saving()">
         <lucide-icon name="door-open" class="me-2 h-4 w-4"></lucide-icon>
         {{ (saving() ? 'walk_in.saving' : 'walk_in.book') | translate }}
       </app-button>

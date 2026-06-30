@@ -14,48 +14,67 @@
     </app-button>
   </div>
 
-  <!-- Add Patient Form -->
+  <!-- Add Patient Modal -->
   @if (showForm()) {
-    <div
-      class="mb-6 rounded-[var(--radius)] border border-[var(--color-border)] bg-[var(--color-surface)] p-6 shadow-[var(--shadow-sm)]"
-    >
+    <app-modal (closeModal)="toggleForm()">
+      <div class="mb-5">
+        <h2 class="text-xl font-bold text-[var(--color-text)]">
+          {{ 'patients.add' | translate }}
+        </h2>
+        <p class="mt-1 text-sm text-[var(--color-muted)]">
+          {{ 'patients.subtitle' | translate }}
+        </p>
+      </div>
+
       <form [formGroup]="patientForm" (ngSubmit)="onSubmit()">
-        <div class="mb-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div class="mb-4 flex flex-col gap-4">
           <!-- Name -->
           <app-input
             formControlName="name"
+            [placeholder]="'patients.name_placeholder' | translate"
             [label]="'patients.name' | translate"
             [error]="name.invalid && name.touched ? ('patients.name_required' | translate) : null"
           ></app-input>
           <!-- Phone -->
           <app-input
             formControlName="phone"
+            [placeholder]="'patients.phone_placeholder' | translate"
             [label]="'patients.phone' | translate"
             [error]="
-              phone.invalid && phone.touched ? ('patients.phone_required' | translate) : null
+              phone.invalid && phone.touched
+                ? phone.hasError('required')
+                  ? ('patients.phone_required' | translate)
+                  : ('patients.phone_invalid' | translate)
+                : null
             "
           ></app-input>
-        </div>
-        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <!-- Email -->
           <app-input
             formControlName="email"
             type="email"
+            [placeholder]="'patients.email_placeholder' | translate"
+            [error]="email.invalid && email.touched ? ('patients.email_invalid' | translate) : null"
             [label]="
               ('patients.email' | translate) + ' (' + ('patients.optional' | translate) + ')'
             "
           ></app-input>
-          <!-- Submit -->
-          <div class="mb-3 flex items-end">
-            <app-button type="submit" [disabled]="isSubmitting()" customClass="w-full">
-              {{
-                isSubmitting() ? ('patients.creating' | translate) : ('patients.create' | translate)
-              }}
-            </app-button>
-          </div>
+        </div>
+
+        <div class="mt-6 flex justify-end gap-3 border-t border-[var(--color-border)] pt-4">
+          <app-button
+            customClass="px-4 py-2 text-[var(--color-text)] bg-transparent hover:bg-[var(--color-surface-2)]"
+            (clicked)="toggleForm()"
+          >
+            {{ 'patients.cancel' | translate }}
+          </app-button>
+          <app-button type="submit" [disabled]="isSubmitting()">
+            {{
+              isSubmitting() ? ('patients.creating' | translate) : ('patients.create' | translate)
+            }}
+          </app-button>
         </div>
       </form>
-    </div>
+    </app-modal>
   }
 
   <!-- Search -->

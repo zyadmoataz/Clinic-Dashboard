@@ -1,6 +1,3 @@
-// ==========================================
-// OWNER: Zyad
-// ==========================================
 import { Component, inject, signal } from '@angular/core';
 
 import { RouterModule } from '@angular/router';

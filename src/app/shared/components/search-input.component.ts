@@ -1,7 +1,3 @@
-// ==========================================
-// OWNER: Omar, Helda
-// PURPOSE: Shared UI Component
-// ==========================================
 import { Component, input, output } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
 

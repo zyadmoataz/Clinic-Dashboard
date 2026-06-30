@@ -1,7 +1,3 @@
-// ==========================================
-// OWNER: Doaa, Helda
-// PURPOSE: Centralized table actions row
-// ==========================================
 import { Component, input, output } from '@angular/core';
 
 import { LucideAngularModule } from 'lucide-angular';

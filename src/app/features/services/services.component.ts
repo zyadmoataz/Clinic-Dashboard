@@ -1,6 +1,3 @@
-// ==========================================
-// OWNER: Doaa
-// ==========================================
 import { Component, computed, inject, signal } from '@angular/core';
 import { ApiService } from '../../core/services/api.service';
 import { Doctor, Service } from '../../core/models';

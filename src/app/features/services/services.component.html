@@ -18,14 +18,17 @@
 } @else if (servicesList().length === 0) {
   <app-feedback-states />
 } @else {
-  <app-data-table
-    [columns]="tableColumns"
-    [data]="tableData()"
-    [showDelete]="true"
-    [showEdit]="true"
-    (deleteClicked)="onDeleteClicked($event)"
-    (editClicked)="onEditClicked($event)"
-  />
+  <div class="w-full overflow-x-auto">
+    <app-data-table
+      [columns]="tableColumns"
+      [data]="tableData()"
+      [showDelete]="true"
+      [showEdit]="true"
+      (deleteClicked)="onDeleteClicked($event)"
+      (editClicked)="onEditClicked($event)"
+      class="block min-w-[800px]"
+    />
+  </div>
 }
 
 @if (showCreateModal()) {
@@ -43,6 +46,7 @@
         <app-input
           formControlName="name"
           [label]="'services.create_modal.name' | translate"
+          [placeholder]="'services.create_modal.name_placeholder' | translate"
           [error]="
             createServiceForm.controls.name.touched &&
             createServiceForm.controls.name.hasError('required')
@@ -60,6 +64,7 @@
           type="number"
           formControlName="durationMinutes"
           [label]="'services.create_modal.duration' | translate"
+          [placeholder]="'services.create_modal.duration_placeholder' | translate"
           [error]="
             createServiceForm.controls.durationMinutes.touched &&
             createServiceForm.controls.durationMinutes.hasError('required')
@@ -77,6 +82,7 @@
           type="number"
           formControlName="price"
           [label]="'services.create_modal.price' | translate"
+          [placeholder]="'services.create_modal.price_placeholder' | translate"
           [error]="
             createServiceForm.controls.price.touched &&
             createServiceForm.controls.price.hasError('required')
@@ -104,7 +110,19 @@
           createServiceForm.controls.doctorId.touched &&
           createServiceForm.controls.doctorId.hasError('required')
         ) {
-          <p class="text-danger mt-1 text-sm">
+          <p class="mt-1.5 flex items-center gap-1 text-xs font-medium text-rose-500">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+              class="h-4 w-4"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-5a.75.75 0 01.75.75v4.5a.75.75 0 01-1.5 0v-4.5A.75.75 0 0110 5zm0 10a1 1 0 100-2 1 1 0 000 2z"
+                clip-rule="evenodd"
+              />
+            </svg>
             {{ 'services.create_modal.doctor_required' | translate }}
           </p>
         }

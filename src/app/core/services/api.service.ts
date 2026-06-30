@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Observable, map } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import {
   User,
@@ -55,8 +55,17 @@ export class ApiService {
     return this.http.get<Doctor>(`${this.baseUrl}/doctors/${id}`);
   }
 
-  getDoctorSlots(id: string, params?: { date?: string; serviceId?: number }): Observable<Slot[]> {
-    return this.http.get<Slot[]>(`${this.baseUrl}/doctors/${id}/slots`, { params });
+  getDoctorSlots(id: string, params?: { date?: string; serviceId?: string }): Observable<Slot[]> {
+    let httpParams = new HttpParams();
+    if (params?.date) httpParams = httpParams.set('date', params.date);
+    if (params?.serviceId) httpParams = httpParams.set('serviceId', params.serviceId);
+
+    return this.http
+      .get<{
+        date: string;
+        slots: string[];
+      }>(`${this.baseUrl}/doctors/${id}/slots`, { params: httpParams })
+      .pipe(map((res) => (res.slots || []).map((time) => ({ time, isAvailable: true }))));
   }
 
   getDoctorAvailability(id: string): Observable<DoctorAvailability[]> {
@@ -117,19 +126,19 @@ export class ApiService {
   }
 
   markArrived(id: number): Observable<Appointment> {
-    return this.http.put<Appointment>(`${this.baseUrl}/appointments/${id}/arrived`, {});
+    return this.http.put<Appointment>(`${this.baseUrl}/appointments/${id}/arrived`, null);
   }
 
   markNoShow(id: number): Observable<Appointment> {
-    return this.http.put<Appointment>(`${this.baseUrl}/appointments/${id}/no-show`, {});
+    return this.http.put<Appointment>(`${this.baseUrl}/appointments/${id}/no-show`, null);
   }
 
   markCashPaid(id: number): Observable<Appointment> {
-    return this.http.put<Appointment>(`${this.baseUrl}/appointments/${id}/cash-paid`, {});
+    return this.http.put<Appointment>(`${this.baseUrl}/appointments/${id}/cash-paid`, null);
   }
 
   cancelAppointment(id: number): Observable<Appointment> {
-    return this.http.put<Appointment>(`${this.baseUrl}/appointments/${id}/cancel`, {});
+    return this.http.put<Appointment>(`${this.baseUrl}/appointments/${id}/cancel`, null);
   }
 
   // ── Doctor Clinical ──

@@ -43,8 +43,11 @@
   "patients": {
     "subtitle": "Register and search patients.",
     "name": "Name",
+    "name_placeholder": "e.g. John Doe",
     "phone": "Phone",
+    "phone_placeholder": "e.g. 01012345678",
     "email": "Email",
+    "email_placeholder": "e.g. john@example.com",
     "optional": "optional",
     "account": "Account",
     "add": "+ Add patient",
@@ -55,6 +58,8 @@
     "creating": "Creating...",
     "name_required": "Name is required",
     "phone_required": "Phone is required",
+    "phone_invalid": "Invalid phone format",
+    "email_invalid": "Invalid email format",
     "no_results": "No patients found.",
     "loading": "Loading...",
     "walk_in": "Walk-in",
@@ -65,6 +70,7 @@
     "load_failed": "Failed to load patients."
   },
   "common": {
+    "all": "All",
     "success": "Success",
     "error": "Error",
     "active": "Active",
@@ -77,7 +83,9 @@
     "enter_text": "...Enter text",
     "admin": "Admin",
     "doctor": "Doctor",
-    "receptionist": "Receptionist"
+    "receptionist": "Receptionist",
+    "cancel": "Cancel",
+    "confirm": "Confirm"
   },
   "days": {
     "sunday": "Sunday",
@@ -107,12 +115,15 @@
       "name": "Service Name",
       "name_required": "Service name is required",
       "name_min": "Name is too short",
+      "name_placeholder": "e.g. Consultation",
       "duration": "Duration (minutes)",
+      "duration_placeholder": "e.g. 30",
       "duration_required": "Duration is required",
-      "duration_min": "Duration must be at least 1 minute",
+      "duration_min": "Duration must be at least 30 minutes",
       "price": "Price (EGP)",
+      "price_placeholder": "e.g. 150",
       "price_required": "Price is required",
-      "price_min": "Price must be at least 0",
+      "price_min": "Price must be at least 50",
       "doctor": "Assigned Doctor",
       "select_doctor": "Select a doctor",
       "doctor_required": "Doctor is required",
@@ -134,6 +145,9 @@
     "save_failed": "Failed to save service."
   },
   "walk_in": {
+    "add_new_patient": "Add New Patient",
+    "name_error": "Name must be at least 2 characters.",
+    "phone_error": "Phone number must be at least 6 characters.",
     "subtitle": "Book a walk-in appointment.",
     "patient_details": "Patient Details",
     "patient_name": "Patient Name",
@@ -154,26 +168,47 @@
     "load_doctors_failed": "Failed to load doctors."
   },
   "calendar": {
-    "title": "My schedule",
-    "subtitle": "Your appointments for the day.",
+    "title": "Appointments Calendar",
+    "subtitle": "Your schedule for the day.",
     "date": "Date",
-    "no_appointments": "No appointments",
-    "no_appointments_desc": "You have nothing booked for this day.",
+    "no_appointments": "No appointments found",
+    "no_appointments_desc": "You don't have any appointments scheduled for this day.",
     "new_walk_in": "New Walk-in",
-    "pick_date": "Pick a Date",
+    "pick_date": "Pick Date",
     "appointments": "Appointments",
     "unknown_patient": "Unknown Patient",
     "unknown_doctor": "Unknown Doctor",
     "unknown_service": "Unknown Service",
     "load_failed": "Failed to load appointments.",
+    "reschedule_title": "Reschedule Appointment",
+    "table": {
+      "time": "TIME",
+      "patient": "PATIENT",
+      "doctor": "DOCTOR",
+      "service": "SERVICE",
+      "status": "STATUS",
+      "payment": "PAYMENT"
+    },
+    "payment_status": {
+      "Paid": "Paid",
+      "Refunded": "Refunded",
+      "Pending": "Pending"
+    },
+    "actions": {
+      "checked_in": "Checked in",
+      "cash_paid": "Cash paid",
+      "no_show": "No-show"
+    },
     "status": {
       "Confirmed": "Confirmed",
       "PendingPayment": "Pending Payment",
       "Arrived": "Arrived",
       "Completed": "Completed",
-      "NoShow": "No Show",
+      "NoShow": "No-show",
       "Cancelled": "Cancelled"
-    }
+    },
+    "action_success": "Action completed successfully.",
+    "action_failed": "Failed to complete action."
   },
   "profile": {
     "subtitle": "Manage your personal profile and account settings.",

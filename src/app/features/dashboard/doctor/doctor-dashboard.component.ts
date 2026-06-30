@@ -27,7 +27,7 @@ export class DoctorDashboardComponent {
     this.api.getDoctorSchedule().subscribe({
       next: (appts) => {
         this.appointments.set(
-          appts.sort((a, b) => (a.timeSlot || '').localeCompare(b.timeSlot || '')),
+          appts.sort((a, b) => (a.startTime || '').localeCompare(b.startTime || '')),
         );
         this.loading.set(false);
       },

@@ -87,22 +87,33 @@ export interface Appointment {
   patientId: number;
   patientName?: string;
   date: string;
-  timeSlot: string;
+  startTime: string;
   status: 'PendingPayment' | 'Confirmed' | 'Arrived' | 'Completed' | 'NoShow' | 'Cancelled';
+  payment?: {
+    id: number;
+    amount: number;
+    method: string;
+    status: string;
+    transactionRef: string;
+    paidAt: string | null;
+  };
 }
 
 export interface WalkInBookingRequest {
-  doctorId: number;
+  doctorId: string;
   serviceId: number;
-  patientName: string;
-  patientPhone: string;
+  newPatient?: {
+    name: string;
+    phone: string;
+  };
+  patientId?: number;
   date: string;
-  timeSlot: string;
+  startTime: string;
 }
 
 export interface RescheduleRequest {
   date: string;
-  timeSlot: string;
+  startTime: string;
 }
 
 export interface VisitRecordRequest {

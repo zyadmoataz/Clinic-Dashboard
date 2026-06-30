@@ -37,44 +37,63 @@
       } @else {
         @for (item of editableAvailabilities(); track $index) {
           <div
-            class="mb-4 flex flex-col gap-3 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-2)] p-4 sm:flex-row sm:items-center"
+            class="mb-4 flex flex-wrap items-center gap-3 overflow-hidden rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-2)] p-4"
           >
-            <div class="flex-1">
-              <app-select
-                [options]="dayOptions"
-                labelKey="label"
-                valueKey="value"
-                [selectedValue]="item.dayOfWeek"
-                [placeholder]="'availability.select_day' | translate"
-                (valueChange)="updateDay($index, $event)"
-              ></app-select>
+            <!-- Day Select & Mobile Trash (only shows when wrapped or on small screens) -->
+            <div
+              class="flex w-full max-w-full min-w-[min(140px,100%)] flex-[1_1_200px] items-center gap-2"
+            >
+              <div class="flex-1">
+                <app-select
+                  [options]="dayOptions"
+                  labelKey="label"
+                  valueKey="value"
+                  [selectedValue]="item.dayOfWeek"
+                  [placeholder]="'availability.select_day' | translate"
+                  (valueChange)="updateDay($index, $event)"
+                ></app-select>
+              </div>
+
+              <!-- Trash button that appears when screen is too small for side-by-side times -->
+              <button
+                type="button"
+                (click)="removeAvailability($index)"
+                class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[var(--color-danger)]/10 text-[var(--color-danger)] transition-colors hover:bg-[var(--color-danger)]/20 sm:hidden"
+              >
+                <lucide-icon name="trash" class="h-4 w-4"></lucide-icon>
+              </button>
             </div>
 
-            <div class="flex items-center gap-2">
+            <!-- Times & Desktop Trash -->
+            <div
+              class="flex w-full max-w-full min-w-[min(260px,100%)] flex-[2_1_300px] flex-col items-center gap-2 min-[360px]:flex-row"
+            >
               <input
                 type="time"
                 [value]="item.startTime"
                 (input)="updateStartTime($index, $any($event.target).value)"
-                class="h-11 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm shadow-sm transition-colors hover:border-[var(--color-border-strong)] focus:border-[var(--color-primary)] focus:ring-4 focus:ring-[var(--color-primary)]/10 focus:outline-none"
+                class="h-11 w-full min-w-0 flex-1 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm shadow-sm transition-colors hover:border-[var(--color-border-strong)] focus:border-[var(--color-primary)] focus:ring-4 focus:ring-[var(--color-primary)]/10 focus:outline-none"
               />
 
-              <span class="text-muted text-xs font-medium">→</span>
+              <span class="rotate-90 text-xs font-medium text-slate-400 min-[360px]:rotate-0"
+                >→</span
+              >
 
               <input
                 type="time"
                 [value]="item.endTime"
                 (input)="updateEndTime($index, $any($event.target).value)"
-                class="h-11 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm shadow-sm transition-colors hover:border-[var(--color-border-strong)] focus:border-[var(--color-primary)] focus:ring-4 focus:ring-[var(--color-primary)]/10 focus:outline-none"
+                class="h-11 w-full min-w-0 flex-1 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm shadow-sm transition-colors hover:border-[var(--color-border-strong)] focus:border-[var(--color-primary)] focus:ring-4 focus:ring-[var(--color-primary)]/10 focus:outline-none"
               />
-            </div>
 
-            <button
-              type="button"
-              (click)="removeAvailability($index)"
-              class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-[var(--color-danger)] transition-colors hover:bg-[var(--color-danger-soft)]"
-            >
-              <lucide-icon name="trash" class="h-4 w-4"></lucide-icon>
-            </button>
+              <button
+                type="button"
+                (click)="removeAvailability($index)"
+                class="hidden h-11 w-11 shrink-0 items-center justify-center rounded-xl text-[var(--color-danger)] transition-colors hover:bg-[var(--color-danger)]/10 sm:flex"
+              >
+                <lucide-icon name="trash" class="h-4 w-4"></lucide-icon>
+              </button>
+            </div>
           </div>
         }
 

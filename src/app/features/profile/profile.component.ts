@@ -1,6 +1,3 @@
-// ==========================================
-// OWNER: Zyad
-// ==========================================
 import { Component, inject, OnInit, signal, ChangeDetectorRef } from '@angular/core';
 
 import { ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';

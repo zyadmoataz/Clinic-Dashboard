@@ -1,7 +1,3 @@
-// ==========================================
-// OWNER: Othman
-// PURPOSE: A section wrapper card with heading
-// ==========================================
 import { Component, input } from '@angular/core';
 
 @Component({

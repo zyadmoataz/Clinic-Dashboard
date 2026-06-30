@@ -1,7 +1,3 @@
-// ==========================================
-// OWNER: Doaa, Helda
-// PURPOSE: Shared UI Component
-// ==========================================
 import { Component, output, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';

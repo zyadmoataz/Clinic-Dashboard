@@ -1,7 +1,3 @@
-// ==========================================
-// OWNER: Zyad (Maintainer) & All Developers (Consumers)
-// PURPOSE: Shared UI Component
-// ==========================================
 import { Component, input, output } from '@angular/core';
 
 @Component({
