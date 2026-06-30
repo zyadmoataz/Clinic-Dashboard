@@ -140,7 +140,7 @@
                 </app-badge>
               </td>
               <td class="px-6 py-4 text-sm">
-                <div class="flex items-center justify-end gap-2">
+                <div class="flex flex-wrap items-center justify-end gap-2">
                   @if (
                     appt.status === 'PendingPayment' ||
                     appt.status === 'Confirmed' ||
@@ -149,7 +149,7 @@
                     @if (appt.status === 'Confirmed') {
                       <app-button
                         (clicked)="markArrived(appt.id)"
-                        customClass="!bg-transparent !text-[var(--color-text)] border border-[var(--color-border)] h-8 !px-3 hover:!bg-[var(--color-surface-2)]"
+                        customClass="!bg-transparent !text-[var(--color-text)] border border-[var(--color-border)] min-h-[32px] !px-3 whitespace-nowrap hover:!bg-[var(--color-surface-2)]"
                         >{{ 'calendar.actions.checked_in' | translate }}</app-button
                       >
                     }
@@ -159,14 +159,14 @@
                     ) {
                       <app-button
                         (clicked)="markPaid(appt.id)"
-                        customClass="!bg-transparent !text-[var(--color-text)] border border-[var(--color-border)] h-8 !px-3 hover:!bg-[var(--color-surface-2)]"
+                        customClass="!bg-transparent !text-[var(--color-text)] border border-[var(--color-border)] min-h-[32px] !px-3 whitespace-nowrap hover:!bg-[var(--color-surface-2)]"
                         >{{ 'calendar.actions.cash_paid' | translate }}</app-button
                       >
                     }
                     @if (appt.status === 'PendingPayment' || appt.status === 'Confirmed') {
                       <app-button
                         (clicked)="markNoShow(appt.id)"
-                        customClass="!bg-transparent !text-[var(--color-text)] border border-[var(--color-border)] h-8 !px-3 hover:!bg-[var(--color-surface-2)]"
+                        customClass="!bg-transparent !text-[var(--color-text)] border border-[var(--color-border)] min-h-[32px] !px-3 whitespace-nowrap hover:!bg-[var(--color-surface-2)]"
                         >{{ 'calendar.actions.no_show' | translate }}</app-button
                       >
                       <app-button

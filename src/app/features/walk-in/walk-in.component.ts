@@ -9,6 +9,8 @@ import {
 } from '../../shared/components';
 import { LoadingComponent } from '../../shared/components/loading.component';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { DatePipe } from '@angular/common';
+import { ArabicDigitsPipe } from '../../shared/pipes/arabic-digits.pipe';
 import { LucideAngularModule } from 'lucide-angular';
 import { ApiService } from '../../core/services/api.service';
 import { ToastService } from '../../core/services/toast.service';
@@ -30,6 +32,8 @@ import { debounceTime, distinctUntilChanged, switchMap, catchError } from 'rxjs/
     ButtonComponent,
     InputComponent,
     LucideAngularModule,
+    DatePipe,
+    ArabicDigitsPipe,
   ],
   templateUrl: './walk-in.component.html',
 })

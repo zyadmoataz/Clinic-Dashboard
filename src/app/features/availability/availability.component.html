@@ -37,7 +37,7 @@
       } @else {
         @for (item of editableAvailabilities(); track $index) {
           <div
-            class="mb-4 flex flex-wrap items-center gap-3 overflow-hidden rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-2)] p-4"
+            class="mb-4 flex flex-wrap items-center gap-3 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-2)] p-4"
           >
             <!-- Day Select & Mobile Trash (only shows when wrapped or on small screens) -->
             <div
@@ -45,7 +45,7 @@
             >
               <div class="flex-1">
                 <app-select
-                  [options]="dayOptions"
+                  [options]="dayOptions()"
                   labelKey="label"
                   valueKey="value"
                   [selectedValue]="item.dayOfWeek"
@@ -124,15 +124,19 @@
       @if (loadingBlockedStatus()) {
         <app-loading />
       } @else {
-        <div class="mb-6 flex flex-col gap-3 sm:flex-row">
+        <div class="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center">
           <input
             type="date"
             [value]="newBlockedDate()"
             (input)="newBlockedDate.set($any($event.target).value)"
-            class="h-11 flex-1 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-2 text-sm shadow-sm transition-colors hover:border-[var(--color-border-strong)] focus:border-[var(--color-primary)] focus:ring-4 focus:ring-[var(--color-primary)]/10 focus:outline-none"
+            class="h-11 w-full flex-1 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-2 text-sm shadow-sm transition-colors hover:border-[var(--color-border-strong)] focus:border-[var(--color-primary)] focus:ring-4 focus:ring-[var(--color-primary)]/10 focus:outline-none"
           />
 
-          <app-button (clicked)="createBlockedDate()" [disabled]="!newBlockedDate()">
+          <app-button
+            (clicked)="createBlockedDate()"
+            [disabled]="!newBlockedDate()"
+            customClass="w-full sm:w-auto whitespace-nowrap"
+          >
             + {{ 'availability.add_blocked_date' | translate }}
           </app-button>
         </div>
@@ -163,9 +167,9 @@
                 <lucide-icon name="calendar" class="h-6 w-6"></lucide-icon>
               </div>
 
-              <span class="text-sm font-semibold text-[var(--color-text)]">
-                {{ item.date }}
-              </span>
+              <div class="text-sm font-semibold text-[var(--color-text)]">
+                {{ item.date | arabicDigits }}
+              </div>
             </div>
           }
         </div>

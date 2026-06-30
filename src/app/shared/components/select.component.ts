@@ -85,6 +85,10 @@ import { SelectOption } from '../../core/models';
                 </span>
               }
             </div>
+          } @empty {
+            <div class="px-4 py-3 text-center text-sm text-slate-500">
+              {{ emptyMessage() }}
+            </div>
           }
         </div>
       }
@@ -94,6 +98,7 @@ import { SelectOption } from '../../core/models';
 export class SelectComponent implements ControlValueAccessor {
   options = input<SelectOption[]>([]);
   placeholder = input<string>('Select an option');
+  emptyMessage = input<string>('No options available');
   disabled = input<boolean>(false);
 
   valueChange = output<string>();

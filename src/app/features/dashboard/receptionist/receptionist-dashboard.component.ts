@@ -3,31 +3,40 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { ApiService } from '../../../core/services/api.service';
 import { Appointment, DashboardStats } from '../../../core/models';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
+import { ArabicDigitsPipe } from '../../../shared/pipes/arabic-digits.pipe';
 
 @Component({
   selector: 'app-receptionist-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, TranslatePipe, ArabicDigitsPipe],
   templateUrl: './receptionist-dashboard.component.html',
 })
 export class ReceptionistDashboardComponent {
   private api = inject(ApiService);
+  private translate = inject(TranslateService);
 
   stats = signal<DashboardStats | null>(null);
   upcomingAppointments = signal<Appointment[]>([]);
   loading = signal(true);
   error = signal(false);
 
-  today = new Date().toLocaleDateString('en-GB', {
-    weekday: 'long',
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-  });
-
+  today = signal(this.getFormattedDate(this.translate.currentLang() || 'en'));
   todayIso = new Date().toISOString().split('T')[0];
 
+  private getFormattedDate(lang: string): string {
+    return new Date().toLocaleDateString(lang === 'ar' ? 'ar-EG' : 'en-GB', {
+      weekday: 'long',
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+    });
+  }
+
   constructor() {
+    this.translate.onLangChange.subscribe((event) => {
+      this.today.set(this.getFormattedDate(event.lang));
+    });
     this.api.getDashboardStats().subscribe({
       next: (dashboardStats) => {
         this.stats.set(dashboardStats);

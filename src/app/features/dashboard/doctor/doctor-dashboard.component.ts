@@ -3,27 +3,37 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { ApiService } from '../../../core/services/api.service';
 import { Appointment } from '../../../core/models';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
+import { ArabicDigitsPipe } from '../../../shared/pipes/arabic-digits.pipe';
 
 @Component({
   selector: 'app-doctor-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, TranslatePipe, ArabicDigitsPipe],
   templateUrl: './doctor-dashboard.component.html',
 })
 export class DoctorDashboardComponent {
   private api = inject(ApiService);
+  private translate = inject(TranslateService);
 
   appointments = signal<Appointment[]>([]);
   loading = signal(true);
   error = signal(false);
 
-  todayLabel = new Date().toLocaleDateString('en-GB', {
-    weekday: 'short',
-    day: 'numeric',
-    month: 'short',
-  });
+  todayLabel = signal(this.getFormattedDate(this.translate.currentLang() || 'en'));
+
+  private getFormattedDate(lang: string): string {
+    return new Date().toLocaleDateString(lang === 'ar' ? 'ar-EG' : 'en-GB', {
+      weekday: 'short',
+      day: 'numeric',
+      month: 'short',
+    });
+  }
 
   constructor() {
+    this.translate.onLangChange.subscribe((event) => {
+      this.todayLabel.set(this.getFormattedDate(event.lang));
+    });
     this.api.getDoctorSchedule().subscribe({
       next: (appts) => {
         this.appointments.set(

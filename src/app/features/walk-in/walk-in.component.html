@@ -112,13 +112,34 @@
         </div>
 
         <div class="flex flex-col gap-1">
-          <app-input
-            name="selectedDate"
-            formControlName="selectedDate"
-            [label]="'walk_in.date' | translate"
-            type="date"
-            [min]="today"
-          ></app-input>
+          <label class="mb-1.5 block text-sm font-semibold tracking-wide text-[var(--color-text)]">
+            {{ 'walk_in.date' | translate }}
+          </label>
+          <div class="relative w-full">
+            <input
+              #dateInput
+              name="selectedDate"
+              formControlName="selectedDate"
+              type="date"
+              [min]="today"
+              class="absolute inset-0 z-20 h-11 w-full cursor-pointer opacity-0"
+              (click)="dateInput.showPicker()"
+            />
+            <div
+              class="flex h-11 w-full items-center justify-between rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-2 text-sm shadow-sm transition-all duration-200"
+              [class.text-slate-400]="!walkInForm.get('selectedDate')?.value"
+              [class.text-[var(--color-text)]]="walkInForm.get('selectedDate')?.value"
+            >
+              <span>
+                {{
+                  walkInForm.get('selectedDate')?.value
+                    ? (walkInForm.get('selectedDate')?.value | date: 'dd/MM/yyyy' | arabicDigits)
+                    : ('walk_in.date' | translate)
+                }}
+              </span>
+              <lucide-icon name="calendar" class="h-4 w-4 text-slate-400"></lucide-icon>
+            </div>
+          </div>
         </div>
       </div>
 

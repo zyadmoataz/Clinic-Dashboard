@@ -9,6 +9,7 @@ import {
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { BlockedDate, Doctor, DoctorAvailability } from '../../core/models';
 import { ApiService } from '../../core/services/api.service';
+import { ArabicDigitsPipe } from '../../shared/pipes/arabic-digits.pipe';
 import { LoadingComponent } from '../../shared/components/loading.component';
 import { ToastService } from '../../core/services/toast.service';
 import { LucideAngularModule } from 'lucide-angular';
@@ -24,6 +25,7 @@ import { LucideAngularModule } from 'lucide-angular';
     ButtonComponent,
     ModalComponent,
     LucideAngularModule,
+    ArabicDigitsPipe,
   ],
   templateUrl: './availability.component.html',
 })
@@ -56,10 +58,13 @@ export class AvailabilityComponent {
 
   daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
-  dayOptions = this.daysOfWeek.map((day) => ({
-    label: day,
-    value: day,
-  }));
+  dayOptions = computed(() => {
+    this.translateService.currentLang(); // Trigger reactivity via translation signal
+    return this.daysOfWeek.map((day) => ({
+      label: this.translateService.instant(`days.${day.toLowerCase()}`),
+      value: day,
+    }));
+  });
 
   loadDoctors() {
     this.apiService.getDoctors().subscribe({

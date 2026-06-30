@@ -2,11 +2,11 @@
   <!-- Header -->
   <div>
     <h1 class="text-xl font-bold tracking-tight text-[var(--color-text)] sm:text-2xl">
-      My schedule
+      {{ 'calendar.my_schedule' | translate }}
     </h1>
     @if (!loading() && !error()) {
       <p class="mt-1 text-sm text-[var(--color-muted)]">
-        {{ todayLabel }} · {{ patientCount }} patient{{ patientCount !== 1 ? 's' : '' }}
+        {{ todayLabel() }} · {{ patientCount }} {{ 'dashboard.patients' | translate }}
       </p>
     }
   </div>
@@ -47,7 +47,7 @@
           >
             <!-- Time -->
             <span class="w-11 shrink-0 text-sm font-semibold text-[var(--color-text)]">{{
-              appt.startTime
+              appt.startTime | arabicDigits
             }}</span>
             <!-- Info -->
             <div
@@ -64,14 +64,14 @@
                 class="rounded-[var(--radius-full)] px-2.5 py-1 text-xs font-semibold whitespace-nowrap"
                 [ngClass]="statusClass(appt.status)"
               >
-                {{ statusLabel(appt.status) }}
+                {{ 'calendar.status.' + appt.status | translate }}
               </span>
               @if (canStartVisit(appt.status)) {
                 <button
                   (click)="startVisit(appt)"
                   class="rounded-[var(--radius-sm)] bg-[var(--color-primary)] px-3 py-1.5 text-xs font-semibold whitespace-nowrap text-[var(--color-on-primary)] shadow-[var(--shadow-glow-soft)] transition-all duration-[var(--transition-fast)] hover:bg-[var(--color-primary-hover)]"
                 >
-                  Start visit
+                  {{ 'calendar.start_visit' | translate }}
                 </button>
               }
               @if (canOpen(appt.status)) {
@@ -79,7 +79,7 @@
                   (click)="openAppointment(appt)"
                   class="rounded-[var(--radius-sm)] border border-[var(--color-border-strong)] px-3 py-1.5 text-xs font-semibold whitespace-nowrap text-[var(--color-text)] transition-all duration-[var(--transition-fast)] hover:border-[var(--color-primary)] hover:bg-[var(--color-primary-soft)] hover:text-[var(--color-primary)]"
                 >
-                  Open
+                  {{ 'common.open' | translate }}
                 </button>
               }
               @if (canViewNotes(appt.status)) {
@@ -87,7 +87,7 @@
                   routerLink="/visit-notes/{{ appt.id }}"
                   class="text-xs font-semibold whitespace-nowrap text-[var(--color-primary)] hover:underline"
                 >
-                  View notes
+                  {{ 'calendar.view_notes' | translate }}
                 </a>
               }
             </div>
@@ -108,7 +108,7 @@
             <line x1="8" y1="2" x2="8" y2="6" />
             <line x1="3" y1="10" x2="21" y2="10" />
           </svg>
-          <p>No appointments scheduled for today.</p>
+          <p>{{ 'calendar.no_appointments' | translate }}</p>
         </div>
       }
     </div>
