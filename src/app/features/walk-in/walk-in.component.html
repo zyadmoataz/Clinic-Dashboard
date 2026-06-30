@@ -112,11 +112,15 @@
         </div>
 
         <div class="flex flex-col gap-1">
-          <label class="mb-1.5 block text-sm font-semibold tracking-wide text-[var(--color-text)]">
+          <label
+            for="walkin-date"
+            class="mb-1.5 block text-sm font-semibold tracking-wide text-[var(--color-text)]"
+          >
             {{ 'walk_in.date' | translate }}
           </label>
           <div class="relative w-full">
             <input
+              id="walkin-date"
               #dateInput
               name="selectedDate"
               formControlName="selectedDate"

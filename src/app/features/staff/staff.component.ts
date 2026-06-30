@@ -44,7 +44,7 @@ export class StaffComponent {
         );
         this.isLoading.set(false);
       },
-      error: (err) => {
+      error: (err: unknown) => {
         console.error(err);
         this.isLoading.set(false);
       },

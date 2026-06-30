@@ -215,9 +215,9 @@
       />
 
       <div class="flex flex-col gap-2">
-        <label class="text-sm font-medium text-[var(--color-muted)]">{{
+        <span class="block text-sm font-medium text-[var(--color-muted)]">{{
           'walk_in.time_slot' | translate
-        }}</label>
+        }}</span>
         @if (loadingSlots()) {
           <app-loading />
         } @else if (rescheduleSlots().length === 0) {
