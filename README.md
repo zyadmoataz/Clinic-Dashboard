@@ -1,3 +1,4 @@
+admin@clinic.local & Admin#123
 # Clarity Clinic — Staff Dashboard (Angular)
 
 This is the starter repository for the internal Staff Dashboard (Admin, Doctors, Receptionists).
