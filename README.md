@@ -47,5 +47,3 @@ npm run test     # unit tests
 
 The app expects a backend REST API for authentication and clinic data. The original API is no longer hosted, so sign-in and data pages will fail until you point the app at a compatible API.
 
-## Contributing
-Naming conventions and commit rules are in [CONTRIBUTING.md](./CONTRIBUTING.md).
