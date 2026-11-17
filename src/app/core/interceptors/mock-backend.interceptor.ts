@@ -1,10 +1,9 @@
 import { HttpErrorResponse, HttpInterceptorFn, HttpResponse } from '@angular/common/http';
 import { inject } from '@angular/core';
-import { of, throwError, TimeoutError } from 'rxjs';
-import { catchError, delay, tap, timeout } from 'rxjs/operators';
+import { from, of, throwError, TimeoutError } from 'rxjs';
+import { catchError, delay, switchMap, tap, timeout } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { TransportService } from '../services/transport.service';
-import { dispatchStaffMock } from '../mock/clinic-mock.handlers';
 
 let apiBackoffUntil = 0;
 
@@ -33,12 +32,16 @@ export const mockBackendInterceptor: HttpInterceptorFn = (req, next) => {
 
   const executeMock = () => {
     transport.source.set('browser-mock');
-    try {
-      const body = dispatchStaffMock(req, path);
-      return of(new HttpResponse({ status: 200, body })).pipe(delay(90));
-    } catch (err) {
-      return throwError(() => err);
-    }
+    return from(import('../mock/clinic-mock.handlers')).pipe(
+      switchMap(({ dispatchStaffMock }) => {
+        try {
+          const body = dispatchStaffMock(req, path);
+          return of(new HttpResponse({ status: 200, body })).pipe(delay(90));
+        } catch (err) {
+          return throwError(() => err);
+        }
+      }),
+    );
   };
 
   if (

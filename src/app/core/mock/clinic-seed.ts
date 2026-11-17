@@ -9,7 +9,8 @@ import {
 } from '../models';
 import { toLocalIsoDate } from '../utils/format.util';
 
-export interface MockUserEntry extends Staff {
+export interface MockUserEntry extends Omit<Staff, 'role'> {
+  role: Staff['role'] | 'patient';
   password: string;
 }
 
@@ -50,6 +51,15 @@ export function createStaffMockSeed(): StaffMockDb {
 
   return {
     users: [
+      {
+        id: 'usr-patient-1',
+        name: 'Nour El-Din Hassan',
+        email: 'patient@medoraclinics.com',
+        phone: '01012345678',
+        role: 'patient',
+        isActive: true,
+        password: 'Password123',
+      },
       {
         id: 'usr-admin-1',
         name: 'Karim El-Masry',

@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { LucideAngularModule } from 'lucide-angular';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { fromEvent } from 'rxjs';
 import { ApiService } from '../../../core/services/api.service';
 import { ToastService } from '../../../core/services/toast.service';
 import { Appointment, DashboardStats } from '../../../core/models';
@@ -78,8 +79,12 @@ export class ReceptionistDashboardComponent {
     });
     this.refreshQueue();
     const timer = setInterval(() => this.refreshQueue(true), 8000);
+    const storageSub = fromEvent<StorageEvent>(window, 'storage').subscribe((e) => {
+      if (e.key === 'medora_staff_mock_db_v4') this.refreshQueue(true);
+    });
     this.destroyRef.onDestroy(() => {
       sub.unsubscribe();
+      storageSub.unsubscribe();
       clearInterval(timer);
     });
   }

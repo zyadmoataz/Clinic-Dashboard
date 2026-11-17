@@ -24,7 +24,6 @@ import { InputComponent } from '../../shared/components/input.component';
   templateUrl: './login.component.html',
 })
 export class LoginComponent {
-  showPassword = signal(false);
   loginError = signal<string | null>(null);
   private apiService = inject(ApiService);
   private router = inject(Router);
@@ -43,10 +42,6 @@ export class LoginComponent {
     { role: 'Receptionist', email: 'receptionist@medoraclinics.com', password: 'Password123' },
     { role: 'Doctor (Dr. Sarah)', email: 'dr.sarah@medoraclinics.com', password: 'Password123' },
   ];
-
-  togglePassword() {
-    this.showPassword.update((show) => !show);
-  }
 
   loginAsDemo(email: string, password: string) {
     this.loginForm.setValue({ email, password });

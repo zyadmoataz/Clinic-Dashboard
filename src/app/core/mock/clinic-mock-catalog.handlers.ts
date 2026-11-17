@@ -98,12 +98,22 @@ export function handleStaffCatalogAndPatients(
       : db.patients;
   }
   if (method === 'POST' && path === '/patients') {
+    const rawEmail = String(body['email'] || '')
+      .trim()
+      .toLowerCase();
+    if (
+      rawEmail &&
+      (db.users.some((u) => u.email.toLowerCase() === rawEmail) ||
+        db.patients.some((pt) => (pt.email || '').toLowerCase() === rawEmail))
+    ) {
+      throwHttpError(409, 'Email is already registered.');
+    }
     const id = db.counters.patientId++;
     const p = {
       id,
       name: String(body['name']),
       phone: String(body['phone']),
-      email: String(body['email'] || `walkin-${id}@clinic.local`),
+      email: rawEmail || `walkin-${id}@clinic.local`,
     };
     db.patients.push(p);
     saveStaffDb(db);

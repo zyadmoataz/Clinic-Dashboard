@@ -1,8 +1,12 @@
 import { ClinicReports, DashboardStats } from '../models';
 import { createStaffMockSeed, isoDateOffset, StaffMockDb } from './clinic-seed';
 
-const KEY = 'medora_staff_mock_db_v3';
-const LEGACY_KEYS = ['clarity_staff_mock_db_v1', 'clarity_staff_mock_db_v2'];
+const KEY = 'medora_staff_mock_db_v4';
+const LEGACY_KEYS = [
+  'clarity_staff_mock_db_v1',
+  'clarity_staff_mock_db_v2',
+  'medora_staff_mock_db_v3',
+];
 const DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
 export function loadStaffDb(): StaffMockDb {

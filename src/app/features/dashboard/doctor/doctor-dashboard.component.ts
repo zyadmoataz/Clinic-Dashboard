@@ -1,6 +1,7 @@
 import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { fromEvent } from 'rxjs';
 import { ApiService } from '../../../core/services/api.service';
 import { Appointment } from '../../../core/models';
 import { ArabicDigitsPipe } from '../../../shared/pipes/arabic-digits.pipe';
@@ -39,8 +40,12 @@ export class DoctorDashboardComponent {
     });
     this.loadSchedule();
     const timer = setInterval(() => this.loadSchedule(true), 8000);
+    const storageSub = fromEvent<StorageEvent>(window, 'storage').subscribe((e) => {
+      if (e.key === 'medora_staff_mock_db_v4') this.loadSchedule(true);
+    });
     this.destroyRef.onDestroy(() => {
       sub.unsubscribe();
+      storageSub.unsubscribe();
       clearInterval(timer);
     });
   }

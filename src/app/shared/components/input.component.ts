@@ -1,4 +1,12 @@
-import { Component, input, forwardRef, inject, ChangeDetectorRef } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  computed,
+  forwardRef,
+  inject,
+  input,
+  signal,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -26,7 +34,7 @@ import { TranslatePipe } from '@ngx-translate/core';
       <div class="relative">
         <input
           [id]="inputId"
-          [type]="type()"
+          [type]="effectiveType()"
           [name]="name()"
           [placeholder]="placeholder() | translate"
           [min]="min() ?? null"
@@ -36,6 +44,7 @@ import { TranslatePipe } from '@ngx-translate/core';
           (input)="onInputChange($event)"
           (blur)="onTouched()"
           [ngClass]="{
+            'pe-11': isPassword(),
             'cursor-not-allowed border-[var(--color-border)] bg-[var(--color-surface-2)] text-[var(--color-muted)]':
               disabled,
             'border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text)] hover:border-[var(--color-border-strong)] focus:border-[var(--color-primary)] focus:ring-[var(--color-primary)]/15':
@@ -45,6 +54,54 @@ import { TranslatePipe } from '@ngx-translate/core';
           }"
           class="flex h-11 w-full rounded-xl border px-4 py-2 text-sm shadow-xs transition-all duration-200 outline-none placeholder:text-[var(--color-faint)] focus:ring-4 focus:outline-none focus-visible:outline-none"
         />
+        @if (isPassword()) {
+          <button
+            type="button"
+            (click)="togglePassword()"
+            [attr.aria-label]="showPassword() ? 'Hide password' : 'Show password'"
+            class="text-faint hover:text-text hover:bg-surface-2 absolute end-2.5 top-1/2 flex h-8 w-8 -translate-y-1/2 cursor-pointer items-center justify-center rounded-lg transition-colors"
+          >
+            @if (showPassword()) {
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="h-4 w-4"
+                aria-hidden="true"
+              >
+                <path
+                  d="M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.747 10.747 0 0 1-1.444 2.49"
+                />
+                <path d="M14.084 14.158a3 3 0 0 1-4.242-4.242" />
+                <path
+                  d="M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143"
+                />
+                <path d="m2 2 20 20" />
+              </svg>
+            } @else {
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="h-4 w-4"
+                aria-hidden="true"
+              >
+                <path
+                  d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"
+                />
+                <circle cx="12" cy="12" r="3" />
+              </svg>
+            }
+          </button>
+        }
       </div>
       @if (error()) {
         <p class="mt-1.5 flex items-center gap-1 text-xs font-medium text-rose-500">
@@ -74,8 +131,16 @@ export class InputComponent implements ControlValueAccessor {
   min = input<string>();
   error = input<string | null | false>(null);
 
+  showPassword = signal(false);
+  isPassword = computed(() => this.type() === 'password');
+  effectiveType = computed(() => (this.isPassword() && this.showPassword() ? 'text' : this.type()));
+
   value = '';
   disabled = false;
+
+  togglePassword(): void {
+    this.showPassword.update((v) => !v);
+  }
   onChange: (value: string) => void = () => {
     // no-op
   };

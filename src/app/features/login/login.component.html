@@ -72,22 +72,12 @@
           formControlName="email"
           placeholder="name@medoraclinics.com"
         ></app-input>
-        <div class="relative">
-          <app-input
-            label="Password"
-            [type]="showPassword() ? 'text' : 'password'"
-            formControlName="password"
-            placeholder="••••••••"
-          ></app-input>
-          <button
-            type="button"
-            aria-label="Toggle password visibility"
-            class="text-faint hover:text-text hover:bg-surface-2 absolute end-2.5 top-[30px] flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg transition-colors"
-            (click)="togglePassword()"
-          >
-            <lucide-icon [name]="showPassword() ? 'eye-off' : 'eye'" class="h-4 w-4"></lucide-icon>
-          </button>
-        </div>
+        <app-input
+          label="Password"
+          type="password"
+          formControlName="password"
+          placeholder="••••••••"
+        ></app-input>
 
         <app-button
           type="submit"

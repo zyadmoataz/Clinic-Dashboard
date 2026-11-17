@@ -342,5 +342,8 @@
     "success": "Logout successful",
     "message": "You have been logged out",
     "button": "Sign out"
+  },
+  "validation": {
+    "email_in_use": "That email is already registered in the clinic system."
   }
 }

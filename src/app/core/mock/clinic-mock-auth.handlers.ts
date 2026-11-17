@@ -1,4 +1,5 @@
 import { HttpErrorResponse, HttpRequest } from '@angular/common/http';
+import { Staff } from '../models';
 import { MockUserEntry, StaffMockDb } from './clinic-seed';
 import {
   computeClinicReports,
@@ -7,13 +8,13 @@ import {
   saveStaffDb,
 } from './clinic-mock.store';
 
-function toPublicStaff(u: MockUserEntry) {
+function toPublicStaff(u: MockUserEntry): Staff {
   return {
     id: u.id,
     name: u.name,
     email: u.email,
     phone: u.phone,
-    role: u.role,
+    role: u.role as Staff['role'],
     isActive: u.isActive,
     specialization: u.specialization,
   };
@@ -67,6 +68,8 @@ export function handleStaffAuthAndAdmin(
       (u) => u.email.toLowerCase() === email && u.password === body['password'],
     );
     if (!user || !user.isActive) throwHttpError(401, 'Invalid email or password.');
+    if (user.role === 'patient')
+      throwHttpError(403, 'Patient accounts cannot access Staff Portal.');
     return {
       token: `mock-jwt.${btoa(user.id)}`,
       user: { id: user.id, email: user.email, displayName: user.name, role: user.role },
@@ -89,14 +92,18 @@ export function handleStaffAuthAndAdmin(
 
   if (method === 'GET' && path === '/dashboard/stats') return computeDashboardStats(db);
   if (method === 'GET' && path === '/admin/reports') return computeClinicReports(db);
-  if (method === 'GET' && path === '/admin/staff') return db.users.map(toPublicStaff);
+  if (method === 'GET' && path === '/admin/staff') {
+    return db.users.filter((u) => u.role !== 'patient').map(toPublicStaff);
+  }
 
   if (method === 'POST' && (path === '/admin/doctors' || path === '/admin/receptionists')) {
     const email = String(body['email'] || '')
       .trim()
       .toLowerCase();
-    if (db.users.some((u) => u.email.toLowerCase() === email))
-      throwHttpError(409, 'Email already exists.');
+    const emailTaken =
+      db.users.some((u) => u.email.toLowerCase() === email) ||
+      db.patients.some((p) => (p.email || '').toLowerCase() === email);
+    if (emailTaken) throwHttpError(409, 'Email already exists.');
     const isDoc = path.endsWith('/doctors');
     const id = `${isDoc ? 'doc' : 'usr-recep'}-${Date.now()}`;
     const entry: MockUserEntry = {

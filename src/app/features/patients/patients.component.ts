@@ -124,9 +124,11 @@ export class PatientsComponent {
       error: (err: unknown) => {
         const errorObj = err as HttpErrorResponse;
         const message =
-          errorObj?.error?.details?.[0] ||
-          errorObj?.error?.message ||
-          this.translate.instant('patients.create_failed');
+          errorObj?.status === 409
+            ? this.translate.instant('validation.email_in_use')
+            : errorObj?.error?.details?.[0] ||
+              errorObj?.error?.message ||
+              this.translate.instant('patients.create_failed');
 
         this.toast.error(message, this.translate.instant('common.error'));
         this.isSubmitting.set(false);
