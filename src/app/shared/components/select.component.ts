@@ -29,7 +29,7 @@ import { SelectOption } from '../../core/models';
         type="button"
         (click)="toggleDropdown()"
         (blur)="onBlur()"
-        [disabled]="disabled() || isDisabled"
+        [disabled]="disabled() || isDisabled()"
         class="flex h-11 w-full cursor-pointer items-center justify-between rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-2 text-sm text-[var(--color-text)] shadow-xs transition-all duration-200 outline-none hover:border-[var(--color-border-strong)] focus:border-[var(--color-primary)] focus:ring-4 focus:ring-[var(--color-primary)]/15 focus:outline-none focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-60"
       >
         <span class="truncate" [class.text-[var(--color-faint)]]="!hasSelectedValue()">
@@ -104,8 +104,8 @@ export class SelectComponent implements ControlValueAccessor {
   valueChange = output<string>();
   selectedValue = input<string>('');
 
-  internalValue = '';
-  isDisabled = false;
+  internalValue = signal('');
+  isDisabled = signal(false);
   isOpen = signal(false);
 
   private elementRef = inject(ElementRef);
@@ -121,30 +121,31 @@ export class SelectComponent implements ControlValueAccessor {
   }
 
   toggleDropdown() {
-    if (!this.disabled() && !this.isDisabled) {
+    if (!this.disabled() && !this.isDisabled()) {
       this.isOpen.update((v) => !v);
     }
   }
 
   isItemSelected(value: string | number): boolean {
-    return String(value) === String(this.internalValue || this.selectedValue());
+    return String(value) === String(this.internalValue() || this.selectedValue());
   }
 
   selectItem(value: string | number) {
-    this.internalValue = String(value);
-    this.valueChange.emit(this.internalValue);
-    this.onChangeFn(this.internalValue);
+    const strVal = String(value);
+    this.internalValue.set(strVal);
+    this.valueChange.emit(strVal);
+    this.onChangeFn(strVal);
     this.isOpen.set(false);
   }
 
   hasSelectedValue(): boolean {
-    return !!(this.internalValue || this.selectedValue());
+    return !!(this.internalValue() || this.selectedValue());
   }
 
   getDisplayLabel(): string {
-    const val = this.internalValue || this.selectedValue();
+    const val = this.internalValue() || this.selectedValue();
     if (!val) return this.placeholder();
-    const opt = this.options().find((o) => o.value === val);
+    const opt = this.options().find((o) => String(o.value) === String(val));
     return opt ? opt.label : this.placeholder();
   }
 
@@ -153,7 +154,7 @@ export class SelectComponent implements ControlValueAccessor {
   }
 
   writeValue(val: string): void {
-    this.internalValue = val || '';
+    this.internalValue.set(val || '');
   }
 
   registerOnChange(fn: (value: string) => void): void {
@@ -165,6 +166,6 @@ export class SelectComponent implements ControlValueAccessor {
   }
 
   setDisabledState(isDisabled: boolean): void {
-    this.isDisabled = isDisabled;
+    this.isDisabled.set(isDisabled);
   }
 }

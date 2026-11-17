@@ -53,6 +53,8 @@ export class WalkInComponent implements OnInit {
   walkInForm!: FormGroup;
 
   doctors = signal<Doctor[]>([]);
+  allServices = signal<Service[]>([]);
+  selectedDoctorIdSignal = signal<string>('');
   availableSlots = signal<Slot[]>([]);
   loadingSlots = signal<boolean>(false);
   saving = signal<boolean>(false);
@@ -64,11 +66,13 @@ export class WalkInComponent implements OnInit {
 
   private patientSearch$ = new Subject<string>();
 
-  // Services are scoped to the chosen doctor
+  // Services are scoped to the chosen doctor (tracked via Signal, with /services catalog fallback)
   serviceOptions = computed<Service[]>(() => {
-    const docId = this.walkInForm?.get('selectedDoctorId')?.value;
-    const doctor = this.doctors().find((d) => d.id === docId);
-    return doctor?.services ?? [];
+    const docId = this.selectedDoctorIdSignal();
+    if (!docId) return [];
+    const doctor = this.doctors().find((d) => String(d.id) === docId);
+    if (doctor?.services?.length) return doctor.services;
+    return this.allServices().filter((s) => String(s.doctorId) === docId);
   });
 
   doctorsSelectOptions = computed(() =>
@@ -76,13 +80,16 @@ export class WalkInComponent implements OnInit {
   );
 
   servicesSelectOptions = computed(() =>
-    this.serviceOptions().map((s) => ({ value: s.id.toString(), label: s.name })),
+    this.serviceOptions().map((s) => ({
+      value: s.id.toString(),
+      label: `${s.name} · ${s.durationMinutes} min · ${s.price} EGP`,
+    })),
   );
 
   ngOnInit() {
     this.walkInForm = this.fb.group({
-      patientName: ['', [Validators.minLength(2)]],
-      patientPhone: ['', [Validators.minLength(6)]],
+      patientName: ['', [Validators.required, Validators.minLength(2)]],
+      patientPhone: ['', [Validators.required, Validators.minLength(6)]],
       selectedDoctorId: ['', Validators.required],
       selectedServiceId: ['', Validators.required],
       selectedDate: [this.today, Validators.required],
@@ -115,8 +122,12 @@ export class WalkInComponent implements OnInit {
       this.patientSearch$.next(name || '');
     });
 
-    this.walkInForm.get('selectedDoctorId')?.valueChanges.subscribe(() => {
-      this.walkInForm.get('selectedServiceId')?.setValue('', { emitEvent: false });
+    this.walkInForm.get('selectedDoctorId')?.valueChanges.subscribe((docId) => {
+      const normalizedDocId = String(docId || '');
+      this.selectedDoctorIdSignal.set(normalizedDocId);
+      const matchingServices = this.serviceOptions();
+      const autoServiceId = matchingServices.length === 1 ? matchingServices[0].id.toString() : '';
+      this.walkInForm.get('selectedServiceId')?.setValue(autoServiceId, { emitEvent: false });
       this.walkInForm.get('selectedSlot')?.setValue('', { emitEvent: false });
       this.loadSlots();
     });
@@ -150,7 +161,7 @@ export class WalkInComponent implements OnInit {
 
   get canLoadSlots(): boolean {
     const val = this.walkInForm?.value;
-    return !!val?.selectedDoctorId && !!val?.selectedDate && !!val?.selectedServiceId;
+    return !!val?.selectedDoctorId && !!val?.selectedDate;
   }
 
   get patientNameValue(): string {
@@ -196,6 +207,10 @@ export class WalkInComponent implements OnInit {
       next: (doctorsList) => this.doctors.set(doctorsList.items ?? []),
       error: () =>
         this.toastService.error(this.translateService.instant('walk_in.load_doctors_failed')),
+    });
+    this.apiService.getServices().subscribe({
+      next: (services) => this.allServices.set(services ?? []),
+      error: () => undefined,
     });
   }
 
@@ -263,6 +278,7 @@ export class WalkInComponent implements OnInit {
   }
 
   resetForm() {
+    this.selectedDoctorIdSignal.set('');
     this.walkInForm.reset({
       patientName: '',
       patientPhone: '',

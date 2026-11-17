@@ -32,7 +32,12 @@ export function resetStaffDb(): StaffMockDb {
   return seed;
 }
 
-export function computeStaffOpenSlots(db: StaffMockDb, doctorId: string, date: string): string[] {
+export function computeStaffOpenSlots(
+  db: StaffMockDb,
+  doctorId: string,
+  date: string,
+  stepMinutes = 30,
+): string[] {
   const doc = db.doctors.find((d) => String(d.id) === String(doctorId));
   if (!doc || !date || date < isoDateOffset(0)) return [];
   if (doc.blockedDates.some((b) => b.date === date)) return [];
@@ -57,7 +62,7 @@ export function computeStaffOpenSlots(db: StaffMockDb, doctorId: string, date: s
     const [eh, em] = w.endTime.split(':').map(Number);
     const start = sh * 60 + sm;
     const end = eh * 60 + em;
-    for (let t = start; t + 30 <= end; t += 30) {
+    for (let t = start; t + stepMinutes <= end; t += 30) {
       const label = `${String(Math.floor(t / 60)).padStart(2, '0')}:${String(t % 60).padStart(2, '0')}`;
       if (!taken.has(label)) slots.add(label);
     }

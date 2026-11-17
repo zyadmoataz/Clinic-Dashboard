@@ -22,7 +22,12 @@ export function dispatchStaffMock(req: HttpRequest<unknown>, path: string): unkn
   const slotMatch = path.match(/^\/doctors\/([^/]+)\/slots$/);
   if (method === 'GET' && slotMatch) {
     const date = req.params.get('date') || '';
-    return { date, slots: computeStaffOpenSlots(db, slotMatch[1], date) };
+    const serviceId = Number(req.params.get('serviceId') || 0);
+    const srv = db.services.find((s) => s.id === serviceId);
+    return {
+      date,
+      slots: computeStaffOpenSlots(db, slotMatch[1], date, srv?.durationMinutes || 30),
+    };
   }
 
   if (method === 'GET' && path === '/appointments') {
