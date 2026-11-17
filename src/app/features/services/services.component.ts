@@ -3,17 +3,20 @@ import { ApiService } from '../../core/services/api.service';
 import { Doctor, Service } from '../../core/models';
 import {
   ButtonComponent,
+  DataTableCellType,
   DataTableComponent,
   FeedbackStatesComponent,
   ModalComponent,
   PageHeaderComponent,
   InputComponent,
+  SearchInputComponent,
   SelectComponent,
 } from '../../shared/components';
 import { LoadingComponent } from '../../shared/components/loading.component';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { LucideAngularModule } from 'lucide-angular';
 import { ToastService } from '../../core/services/toast.service';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -26,11 +29,14 @@ import { CommonModule } from '@angular/common';
     LoadingComponent,
     TranslatePipe,
     ModalComponent,
+    FormsModule,
     ReactiveFormsModule,
     CommonModule,
     PageHeaderComponent,
     InputComponent,
+    SearchInputComponent,
     SelectComponent,
+    LucideAngularModule,
   ],
   templateUrl: './services.component.html',
 })
@@ -41,6 +47,8 @@ export class ServicesComponent {
 
   servicesList = signal<Service[]>([]);
   doctorsList = signal<Doctor[]>([]);
+  searchTerm = signal<string>('');
+  doctorFilter = signal<string>('');
 
   loadingStatus = signal<boolean>(true);
   errMsg = signal<string | null>(null);
@@ -69,9 +77,28 @@ export class ServicesComponent {
     'services.columns.duration',
     'services.columns.price',
   ];
+  columnTypes: DataTableCellType[] = ['avatar', 'text', 'duration', 'price'];
+
+  filteredServices = computed(() => {
+    const q = this.searchTerm().trim().toLowerCase();
+    const docId = this.doctorFilter();
+    return this.servicesList().filter((s) => {
+      if (docId && String(s.doctorId) !== docId) return false;
+      if (!q) return true;
+      return `${s.name} ${s.doctorName}`.toLowerCase().includes(q);
+    });
+  });
+
+  avgPrice = computed(() => {
+    const list = this.servicesList();
+    if (!list.length) return 0;
+    return Math.round(list.reduce((sum, s) => sum + s.price, 0) / list.length);
+  });
+
+  specialistsCount = computed(() => new Set(this.servicesList().map((s) => s.doctorId)).size);
 
   tableData = computed(() =>
-    this.servicesList().map((ser) => ({
+    this.filteredServices().map((ser) => ({
       id: ser.id,
       cells: [ser.name, ser.doctorName, `${ser.durationMinutes} min`, `${ser.price} EGP`],
     })),

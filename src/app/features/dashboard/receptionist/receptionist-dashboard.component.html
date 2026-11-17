@@ -1,229 +1,241 @@
-<div class="flex flex-col gap-4 sm:gap-6">
-  <!-- Header -->
-  <div>
-    <h1
-      class="flex flex-wrap items-baseline gap-2 text-xl font-bold tracking-tight text-[var(--color-text)] sm:text-2xl"
-    >
-      {{ 'dashboard.title' | translate }}
-      <span class="text-sm font-normal text-[var(--color-muted)]">{{ today() }}</span>
-    </h1>
+<div class="flex flex-col gap-5">
+  <div class="flex flex-wrap items-center justify-between gap-3">
+    <div>
+      <h1
+        class="flex flex-wrap items-baseline gap-2 text-xl font-bold tracking-tight text-[var(--color-text)] sm:text-2xl"
+      >
+        {{ 'dashboard.title' | translate }}
+        <span class="text-sm font-normal text-[var(--color-muted)]">{{ today() }}</span>
+      </h1>
+    </div>
+    <div class="flex items-center gap-2">
+      <button
+        type="button"
+        (click)="refreshQueue(true)"
+        class="border-border bg-surface text-text hover:bg-surface-2 inline-flex cursor-pointer items-center gap-1.5 rounded-xl border px-3 py-2 text-xs font-semibold"
+      >
+        <lucide-icon name="refresh-cw" class="h-3.5 w-3.5"></lucide-icon>
+        Refresh
+      </button>
+      <a
+        routerLink="/staff/walk-in"
+        class="bg-primary text-on-primary inline-flex items-center gap-1.5 rounded-xl px-4 py-2 text-xs font-bold shadow-sm"
+      >
+        <lucide-icon name="plus" class="h-3.5 w-3.5"></lucide-icon>
+        {{ 'calendar.new_walk_in' | translate }}
+      </a>
+    </div>
   </div>
 
-  <!-- Skeleton -->
   @if (loading()) {
-    <div class="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
+    <div class="grid grid-cols-2 gap-4 lg:grid-cols-4">
       @for (i of [1, 2, 3, 4]; track i) {
-        <div class="h-28 animate-pulse rounded-[var(--radius)] bg-[var(--color-surface-2)]"></div>
+        <div class="h-24 animate-pulse rounded-[var(--radius)] bg-[var(--color-surface-2)]"></div>
       }
     </div>
     <div class="h-64 animate-pulse rounded-[var(--radius)] bg-[var(--color-surface-2)]"></div>
-  } @else if (error()) {
-    <div
-      class="flex flex-col items-center gap-3 py-12 text-center text-sm text-[var(--color-muted)]"
-    >
-      <svg
-        width="32"
-        height="32"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="var(--color-danger)"
-        stroke-width="1.5"
-      >
-        <circle cx="12" cy="12" r="10" />
-        <line x1="12" y1="8" x2="12" y2="12" />
-        <line x1="12" y1="16" x2="12.01" y2="16" />
-      </svg>
-      <p>Could not load dashboard data. Please refresh.</p>
-    </div>
   } @else if (stats()) {
-    <!-- Stat cards -->
-    <div class="grid grid-cols-1 gap-3 sm:gap-4 md:grid-cols-2 lg:grid-cols-4">
+    <div class="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
       <div
-        class="flex items-start gap-3 rounded-[var(--radius)] border border-[var(--color-border)] bg-[var(--color-surface)] p-3 shadow-[var(--shadow-sm)] transition-all duration-[var(--transition-fast)] hover:-translate-y-px hover:shadow-[var(--shadow-md)] sm:p-4"
+        class="spotlight-card interactive-hover animate-fade-up flex items-center gap-3.5 rounded-[var(--radius)] border border-[var(--color-border)] bg-[var(--color-surface)] p-4 shadow-[var(--shadow-sm)]"
       >
         <div
-          class="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-[var(--radius-sm)] bg-[var(--color-primary-soft)]"
+          class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[var(--color-primary-soft)] text-[var(--color-primary)]"
         >
-          <svg
-            width="18"
-            height="18"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="var(--color-primary)"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <rect x="3" y="4" width="18" height="18" rx="2" />
-            <line x1="16" y1="2" x2="16" y2="6" />
-            <line x1="8" y1="2" x2="8" y2="6" />
-            <line x1="3" y1="10" x2="21" y2="10" />
-          </svg>
+          <lucide-icon name="calendar" class="h-5 w-5"></lucide-icon>
         </div>
-        <div class="flex min-w-0 flex-col gap-0.5">
-          <span class="truncate text-xs font-medium text-[var(--color-muted)]">{{
+        <div class="min-w-0">
+          <span class="block truncate text-xs font-medium text-[var(--color-muted)]">{{
             'dashboard.appointments_today' | translate
           }}</span>
-          <span
-            class="text-2xl leading-tight font-bold tracking-tight text-[var(--color-text)] sm:text-3xl"
-            >{{ stats()!.todaysAppointments | arabicDigits }}</span
-          >
+          <p class="mt-0.5 text-2xl font-extrabold text-[var(--color-text)] tabular-nums">
+            {{ stats()!.todaysAppointments | arabicDigits }}
+          </p>
         </div>
       </div>
       <div
-        class="flex items-start gap-3 rounded-[var(--radius)] border border-[var(--color-border)] bg-[var(--color-surface)] p-3 shadow-[var(--shadow-sm)] transition-all duration-[var(--transition-fast)] hover:-translate-y-px hover:shadow-[var(--shadow-md)] sm:p-4"
+        class="spotlight-card interactive-hover animate-fade-up flex items-center gap-3.5 rounded-[var(--radius)] border border-[var(--color-border)] bg-[var(--color-surface)] p-4 shadow-[var(--shadow-sm)]"
+        style="animation-delay: 50ms"
       >
         <div
-          class="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-[var(--radius-sm)] bg-[var(--color-warning-soft)]"
+          class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[var(--color-warning-soft)] text-[var(--color-warning)]"
         >
-          <svg
-            width="18"
-            height="18"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="var(--color-warning)"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <polyline points="20 6 9 17 4 12" />
-          </svg>
+          <lucide-icon name="clock" class="h-5 w-5"></lucide-icon>
         </div>
-        <div class="flex min-w-0 flex-col gap-0.5">
-          <span class="text-xs font-medium text-[var(--color-muted)]">{{
+        <div class="min-w-0">
+          <span class="block truncate text-xs font-medium text-[var(--color-muted)]">{{
             'dashboard.confirmed' | translate
           }}</span>
-          <span
-            class="text-2xl leading-tight font-bold tracking-tight text-[var(--color-text)] sm:text-3xl"
-            >{{ stats()!.confirmed | arabicDigits }}</span
-          >
+          <p class="mt-0.5 text-2xl font-extrabold text-[var(--color-warning)] tabular-nums">
+            {{ stats()!.confirmed | arabicDigits }}
+          </p>
         </div>
       </div>
       <div
-        class="flex items-start gap-3 rounded-[var(--radius)] border border-[var(--color-border)] bg-[var(--color-surface)] p-3 shadow-[var(--shadow-sm)] transition-all duration-[var(--transition-fast)] hover:-translate-y-px hover:shadow-[var(--shadow-md)] sm:p-4"
+        class="spotlight-card interactive-hover animate-fade-up flex items-center gap-3.5 rounded-[var(--radius)] border border-[var(--color-border)] bg-[var(--color-surface)] p-4 shadow-[var(--shadow-sm)]"
+        style="animation-delay: 100ms"
       >
         <div
-          class="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-[var(--radius-sm)] bg-[var(--color-primary-soft)]"
+          class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[var(--color-accent-soft)] text-[var(--color-accent)]"
         >
-          <svg
-            width="18"
-            height="18"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="var(--color-primary)"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-            <circle cx="12" cy="7" r="4" />
-          </svg>
+          <lucide-icon name="user-check" class="h-5 w-5"></lucide-icon>
         </div>
-        <div class="flex min-w-0 flex-col gap-0.5">
-          <span class="truncate text-xs font-medium text-[var(--color-muted)]">{{
+        <div class="min-w-0">
+          <span class="block truncate text-xs font-medium text-[var(--color-muted)]">{{
             'dashboard.checked_in' | translate
           }}</span>
-          <span
-            class="text-2xl leading-tight font-bold tracking-tight text-[var(--color-text)] sm:text-3xl"
-          >
+          <p class="mt-0.5 text-2xl font-extrabold text-[var(--color-primary)] tabular-nums">
             {{ stats()!.arrived | arabicDigits }}
-          </span>
+          </p>
         </div>
       </div>
       <div
-        class="flex items-start gap-3 rounded-[var(--radius)] border border-[var(--color-border)] bg-[var(--color-surface)] p-3 shadow-[var(--shadow-sm)] transition-all duration-[var(--transition-fast)] hover:-translate-y-px hover:shadow-[var(--shadow-md)] sm:p-4"
+        class="spotlight-card interactive-hover animate-fade-up flex items-center gap-3.5 rounded-[var(--radius)] border border-[var(--color-border)] bg-[var(--color-surface)] p-4 shadow-[var(--shadow-sm)]"
+        style="animation-delay: 150ms"
       >
         <div
-          class="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-[var(--radius-sm)] bg-[var(--color-success-soft)]"
+          class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[var(--color-success-soft)] text-[var(--color-success)]"
         >
-          <svg
-            width="18"
-            height="18"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="var(--color-success)"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-            <circle cx="9" cy="7" r="4" />
-            <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-          </svg>
+          <lucide-icon name="check-circle-2" class="h-5 w-5"></lucide-icon>
         </div>
-        <div class="flex min-w-0 flex-col gap-0.5">
-          <span class="text-xs font-medium text-[var(--color-muted)]">{{
+        <div class="min-w-0">
+          <span class="block truncate text-xs font-medium text-[var(--color-muted)]">{{
             'calendar.status.Completed' | translate
           }}</span>
-          <span
-            class="text-lg leading-tight font-extrabold tracking-tight text-[var(--color-text)] sm:text-xl"
-            >{{ stats()!.completed | arabicDigits }}</span
-          >
+          <p class="mt-0.5 text-2xl font-extrabold text-[var(--color-success)] tabular-nums">
+            {{ stats()!.completed | arabicDigits }}
+          </p>
         </div>
       </div>
     </div>
-    <!-- Next up -->
+
     <div
-      class="overflow-auto rounded-[var(--radius)] border border-[var(--color-border)] bg-[var(--color-surface)] shadow-[var(--shadow-sm)]"
+      class="overflow-hidden rounded-[var(--radius)] border border-[var(--color-border)] bg-[var(--color-surface)] shadow-[var(--shadow-sm)]"
     >
       <div
-        class="flex items-center justify-between border-b border-[var(--color-border)] px-4 py-3.5 sm:px-5"
+        class="flex flex-wrap items-center justify-between gap-3 border-b border-[var(--color-border)] px-4 py-3.5 sm:px-5"
       >
-        <span class="text-sm font-semibold text-[var(--color-text)]">{{
-          'dashboard.live' | translate
-        }}</span>
-        <a
-          routerLink="/staff/calendar"
-          class="text-xs font-medium text-[var(--color-primary)] transition-colors duration-[var(--transition-fast)] hover:text-[var(--color-primary-hover)]"
-        >
-          {{ 'header.calendar' | translate }}
-          <span class="inline-block rtl:rotate-180">&rarr;</span>
-        </a>
-      </div>
-      <div class="divide-y divide-[var(--color-border)]">
-        @if (upcomingAppointments().length > 0) {
-          @for (appt of upcomingAppointments(); track appt) {
-            <div
-              class="flex items-center gap-3 px-4 py-3 transition-colors duration-[var(--transition-fast)] hover:bg-[var(--color-bg)] sm:gap-4 sm:px-5 sm:py-3.5"
+        <div class="flex flex-wrap items-center gap-3">
+          <div class="flex items-center gap-2">
+            <lucide-icon name="ticket" class="text-primary h-4 w-4"></lucide-icon>
+            <span class="text-sm font-bold text-[var(--color-text)]">Live Ticket Queue</span>
+          </div>
+          <div
+            class="flex items-center gap-1 rounded-xl bg-[var(--color-surface-2)] p-1 text-xs font-semibold"
+          >
+            <button
+              type="button"
+              (click)="queueFilter.set('all')"
+              class="cursor-pointer rounded-lg px-2.5 py-1 transition-colors"
+              [ngClass]="
+                queueFilter() === 'all'
+                  ? 'bg-[var(--color-surface)] text-[var(--color-primary)] shadow-xs'
+                  : 'text-[var(--color-muted)]'
+              "
             >
-              <span class="w-11 shrink-0 text-sm font-semibold text-[var(--color-text)]">{{
-                appt.startTime | arabicDigits
-              }}</span>
+              All ({{ upcomingAppointments().length }})
+            </button>
+            <button
+              type="button"
+              (click)="queueFilter.set('Confirmed')"
+              class="cursor-pointer rounded-lg px-2.5 py-1 transition-colors"
+              [ngClass]="
+                queueFilter() === 'Confirmed'
+                  ? 'bg-[var(--color-surface)] text-[var(--color-warning)] shadow-xs'
+                  : 'text-[var(--color-muted)]'
+              "
+            >
+              Waiting
+            </button>
+            <button
+              type="button"
+              (click)="queueFilter.set('Arrived')"
+              class="cursor-pointer rounded-lg px-2.5 py-1 transition-colors"
+              [ngClass]="
+                queueFilter() === 'Arrived'
+                  ? 'bg-[var(--color-surface)] text-[var(--color-accent)] shadow-xs'
+                  : 'text-[var(--color-muted)]'
+              "
+            >
+              Checked In
+            </button>
+          </div>
+        </div>
+        <div class="w-full sm:w-80">
+          <app-search-input
+            [value]="ticketSearch()"
+            [compact]="true"
+            placeholder="Search CLR ticket, #token, patient..."
+            (searchChange)="ticketSearch.set($event)"
+          ></app-search-input>
+        </div>
+      </div>
+
+      <div class="divide-y divide-[var(--color-border)]">
+        @for (appt of filteredQueue(); track appt.id) {
+          <div
+            class="flex flex-wrap items-center justify-between gap-3 px-4 py-3.5 transition-colors hover:bg-[var(--color-bg)] sm:px-5"
+          >
+            <div class="flex min-w-0 flex-1 items-center gap-3">
+              <span class="w-12 shrink-0 text-sm font-bold text-[var(--color-text)] tabular-nums">
+                {{ appt.startTime | arabicDigits }}
+              </span>
               <div
-                class="h-9 w-0.5 shrink-0 rounded-full"
+                class="h-10 w-1 shrink-0 rounded-full"
                 [ngClass]="borderClass(appt.status)"
               ></div>
               <div class="min-w-0 flex-1">
-                <p class="truncate text-sm font-semibold text-[var(--color-text)]">
+                <div class="flex flex-wrap items-center gap-2">
+                  <span
+                    class="bg-primary-soft text-primary rounded-full px-2 py-0.5 text-[11px] font-bold tabular-nums"
+                  >
+                    {{ appt.ticketCode || 'MDR-' + appt.id }}
+                  </span>
+                  @if (appt.queueToken) {
+                    <span
+                      class="bg-surface-2 text-text rounded-full px-2 py-0.5 text-[11px] font-extrabold tabular-nums"
+                    >
+                      #{{ appt.queueToken }}
+                    </span>
+                  }
+                </div>
+                <p class="mt-1 truncate text-sm font-bold text-[var(--color-text)]">
                   {{ appt.patientName }} · {{ appt.doctorName }}
                 </p>
                 <p class="truncate text-xs text-[var(--color-muted)]">{{ appt.serviceName }}</p>
               </div>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-2">
               <span
-                class="shrink-0 rounded-[var(--radius-full)] px-2 py-1 text-xs font-semibold whitespace-nowrap sm:px-2.5"
+                class="rounded-full px-2.5 py-1 text-xs font-semibold"
                 [ngClass]="statusClass(appt.status)"
               >
                 {{ 'calendar.status.' + appt.status | translate }}
               </span>
+              @if (appt.status === 'Confirmed') {
+                <button
+                  type="button"
+                  (click)="checkIn(appt.id)"
+                  class="bg-primary text-on-primary hover:bg-primary-hover cursor-pointer rounded-lg px-3 py-1.5 text-xs font-bold"
+                >
+                  Check In
+                </button>
+              }
+              @if (appt.payment?.status !== 'Paid') {
+                <button
+                  type="button"
+                  (click)="collectCash(appt.id)"
+                  class="border-border bg-surface text-text hover:bg-surface-2 cursor-pointer rounded-lg border px-3 py-1.5 text-xs font-semibold"
+                >
+                  Collect Cash
+                </button>
+              }
             </div>
-          }
-        } @else {
-          <div class="flex flex-col items-center gap-2 py-10 text-sm text-[var(--color-faint)]">
-            <svg
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="1.5"
-            >
-              <rect x="3" y="4" width="18" height="18" rx="2" />
-              <line x1="16" y1="2" x2="16" y2="6" />
-              <line x1="8" y1="2" x2="8" y2="6" />
-              <line x1="3" y1="10" x2="21" y2="10" />
-            </svg>
-            <p>No upcoming appointments for today.</p>
+          </div>
+        } @empty {
+          <div class="py-12 text-center text-sm text-[var(--color-faint)]">
+            No active tickets in today's queue.
           </div>
         }
       </div>

@@ -1,5 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
+import { LucideAngularModule } from 'lucide-angular';
 import { ApiService } from '../../../core/services/api.service';
 import { DashboardStats } from '../../../core/models';
 
@@ -8,7 +10,7 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
-  imports: [CommonModule, TranslatePipe],
+  imports: [CommonModule, RouterLink, LucideAngularModule, TranslatePipe],
   templateUrl: './admin-dashboard.component.html',
 })
 export class AdminDashboardComponent {

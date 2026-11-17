@@ -1,9 +1,9 @@
-import { Component, ElementRef, viewChild, inject, signal } from '@angular/core';
+import { Component, ElementRef, inject, signal, viewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ApiService } from '../../core/services/api.service';
-import { ClinicReports } from '../../core/models';
 import type { Chart } from 'chart.js';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { ApiService } from '../../core/services/api.service';
+import { ClinicReports } from '../../core/models';
 
 @Component({
   selector: 'app-reports',
@@ -25,17 +25,11 @@ export class ReportsComponent {
   loading = signal(true);
   error = signal(false);
 
-  noShowThisMonth = 6.2;
+  noShowThisMonth = 0;
   noShowLastMonth = 7.6;
   noShowTarget = 8;
 
-  statusMix = [
-    { key: 'confirmed', pct: 61, dot: 'bg-[#10b981]' },
-    { key: 'completed', pct: 22, dot: 'bg-[#34d399]' },
-    { key: 'awaiting_payment', pct: 10, dot: 'bg-[#f59e0b]' },
-    { key: 'no_show', pct: 7, dot: 'bg-[#ef4444]' },
-  ];
-
+  statusMix = signal<{ key: string; pct: number; dot: string }[]>([]);
   serviceBars = signal<{ name: string; revenue: number; pct: number }[]>([]);
   weekValues = signal<number[]>([]);
 
@@ -47,16 +41,37 @@ export class ReportsComponent {
           this.weekValues.set(
             [0.22, 0.27, 0.24, 0.27].map((s) => Math.round(clinicReports.totalRevenue * s)),
           );
+          this.buildStatusMix(clinicReports);
           this.buildServiceBars(clinicReports);
         }
         this.loading.set(false);
-        this.initCharts();
+        setTimeout(() => this.initCharts(), 0);
       },
       error: () => {
         this.error.set(true);
         this.loading.set(false);
       },
     });
+  }
+
+  private buildStatusMix(data: ClinicReports): void {
+    const b = data.statusBreakdown ?? {
+      confirmed: 50,
+      completed: 35,
+      awaitingPayment: 10,
+      noShowOrCancelled: 5,
+    };
+    this.noShowThisMonth = b.noShowOrCancelled;
+    this.statusMix.set([
+      { key: 'confirmed', pct: b.confirmed, dot: 'bg-[var(--color-primary)]' },
+      { key: 'completed', pct: b.completed, dot: 'bg-[var(--color-success)]' },
+      { key: 'awaiting_payment', pct: b.awaitingPayment, dot: 'bg-[var(--color-warning)]' },
+      { key: 'no_show', pct: b.noShowOrCancelled, dot: 'bg-[var(--color-danger)]' },
+    ]);
+  }
+
+  private tokenColor(name: string, fallback: string): string {
+    return getComputedStyle(document.documentElement).getPropertyValue(name).trim() || fallback;
   }
 
   private async initCharts(): Promise<void> {
@@ -71,7 +86,6 @@ export class ReportsComponent {
       DoughnutController,
       BarController,
     } = await import('chart.js');
-
     Chart.register(
       ArcElement,
       BarElement,
@@ -83,34 +97,28 @@ export class ReportsComponent {
       BarController,
     );
 
+    const colors = [
+      this.tokenColor('--color-primary', '#3b82f6'),
+      this.tokenColor('--color-success', '#10b981'),
+      this.tokenColor('--color-warning', '#f59e0b'),
+      this.tokenColor('--color-danger', '#ef4444'),
+    ];
+
     if (this.doughnutCanvas()?.nativeElement) {
       this.doughnutChart?.destroy();
       this.doughnutChart = new Chart(this.doughnutCanvas()!.nativeElement, {
         type: 'doughnut',
         data: {
-          labels: [
-            this.translate.instant('reports.status.confirmed') || 'Confirmed',
-            this.translate.instant('reports.status.completed') || 'Completed',
-            this.translate.instant('reports.status.awaiting_payment') || 'Awaiting payment',
-            this.translate.instant('reports.status.no_show') || 'No-show / cancelled',
-          ],
+          labels: this.statusMix().map((m) => this.translate.instant(`reports.status.${m.key}`)),
           datasets: [
-            {
-              data: [61, 22, 10, 7],
-              backgroundColor: ['#10b981', '#34d399', '#f59e0b', '#ef4444'],
-              borderWidth: 0,
-              hoverOffset: 4,
-            },
+            { data: this.statusMix().map((m) => m.pct), backgroundColor: colors, borderWidth: 0 },
           ],
         },
         options: {
           responsive: true,
           maintainAspectRatio: true,
           cutout: '72%',
-          plugins: {
-            legend: { display: false },
-            tooltip: { callbacks: { label: (ctx) => ` ${ctx.label}: ${ctx.parsed}%` } },
-          },
+          plugins: { legend: { display: false } },
         },
       });
     }
@@ -121,31 +129,13 @@ export class ReportsComponent {
         type: 'bar',
         data: {
           labels: ['W1', 'W2', 'W3', 'W4'],
-          datasets: [
-            {
-              data: this.weekValues(),
-              backgroundColor: '#10b981',
-              borderRadius: 6,
-              borderSkipped: false,
-            },
-          ],
+          datasets: [{ data: this.weekValues(), backgroundColor: colors[1], borderRadius: 6 }],
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          plugins: {
-            legend: { display: false },
-            tooltip: { callbacks: { label: (ctx) => ` EGP ${Number(ctx.raw).toLocaleString()}` } },
-          },
-          scales: {
-            x: { grid: { display: false }, border: { display: false } },
-            y: {
-              min: 0,
-              grid: { color: '#f1f5f9' },
-              border: { display: false },
-              ticks: { callback: (v) => `${Number(v) / 1000}k` },
-            },
-          },
+          plugins: { legend: { display: false } },
+          scales: { x: { grid: { display: false } }, y: { min: 0 } },
         },
       });
     }
@@ -153,7 +143,7 @@ export class ReportsComponent {
 
   private buildServiceBars(data: ClinicReports): void {
     if (!data.revenueByService?.length) return;
-    const max = Math.max(...data.revenueByService.map((s) => s.revenue));
+    const max = Math.max(...data.revenueByService.map((s) => s.revenue)) || 1;
     this.serviceBars.set(
       data.revenueByService.map((s) => ({
         name: s.serviceName,
@@ -164,17 +154,16 @@ export class ReportsComponent {
   }
 
   exportCsv(): void {
-    const currentReports = this.reports();
-    if (!currentReports) return;
+    const r = this.reports();
+    if (!r) return;
     const rows = [
       ['Metric', 'Value'],
-      ['Total Revenue', currentReports.totalRevenue],
-      ['Completed Visits', currentReports.completedVisitsCount],
-      ['New Patients', currentReports.newPatientsCount],
-      ...currentReports.revenueByService.map((s) => [s.serviceName, s.revenue]),
+      ['Total Revenue', r.totalRevenue],
+      ['Completed Visits', r.completedVisitsCount],
+      ['New Patients', r.newPatientsCount],
+      ...r.revenueByService.map((s) => [s.serviceName, s.revenue]),
     ];
-    const csv = rows.map((r) => r.join(',')).join('\n');
-    const blob = new Blob([csv], { type: 'text/csv' });
+    const blob = new Blob([rows.map((row) => row.join(',')).join('\n')], { type: 'text/csv' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;

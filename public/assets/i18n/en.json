@@ -41,6 +41,7 @@
     }
   },
   "patients": {
+    "patients": "Patients",
     "subtitle": "Register and search patients.",
     "name": "Name",
     "name_placeholder": "e.g. John Doe",
@@ -195,8 +196,8 @@
       "Pending": "Pending"
     },
     "actions": {
-      "checked_in": "Checked in",
-      "cash_paid": "Cash paid",
+      "checked_in": "Check in",
+      "cash_paid": "Collect cash",
       "no_show": "No-show"
     },
     "status": {

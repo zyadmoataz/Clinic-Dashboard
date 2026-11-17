@@ -1,29 +1,89 @@
 <div class="space-y-6">
-  <div class="flex items-center justify-between">
+  <div class="flex flex-wrap items-center justify-between gap-3">
     <div>
       <h2 class="text-text text-2xl font-bold tracking-tight">
-        {{ 'calendar.title' | translate }}
+        {{ 'sidebar.my_schedule' | translate }}
       </h2>
       <p class="text-muted text-sm">{{ 'calendar.subtitle' | translate }}</p>
     </div>
-    <div class="flex items-center gap-2">
-      <span class="text-muted text-sm font-medium">{{ 'calendar.date' | translate }}</span>
-      <div
-        class="bg-surface border-border flex items-center gap-2 rounded-xl border px-3 py-2 text-sm"
-      >
-        <span class="text-text font-medium">{{ today | date: 'MM/dd/yyyy' }}</span>
-        <lucide-icon name="calendar" class="text-muted h-4 w-4"></lucide-icon>
-      </div>
+    <div class="flex gap-2">
+      @for (tab of ['active', 'completed', 'all']; track tab) {
+        <button
+          type="button"
+          (click)="filter.set($any(tab))"
+          class="cursor-pointer rounded-full border px-4 py-1.5 text-xs font-bold capitalize transition-colors"
+          [class.bg-primary-soft]="filter() === tab"
+          [class.text-primary]="filter() === tab"
+          [class.border-primary]="filter() === tab"
+          [class.border-border]="filter() !== tab"
+          [class.text-muted]="filter() !== tab"
+        >
+          {{ tab }}
+        </button>
+      }
     </div>
   </div>
 
-  <div class="flex flex-col items-center justify-center py-24 text-center">
-    <div
-      class="bg-surface-2 ring-border/50 mb-4 flex h-16 w-16 items-center justify-center rounded-2xl ring-1"
-    >
-      <lucide-icon name="calendar" class="text-muted h-8 w-8"></lucide-icon>
+  @if (loading()) {
+    <div class="space-y-3">
+      @for (i of [1, 2, 3]; track i) {
+        <div class="bg-surface-2 h-20 animate-pulse rounded-2xl"></div>
+      }
     </div>
-    <h3 class="text-text text-lg font-bold">{{ 'calendar.no_appointments' | translate }}</h3>
-    <p class="text-muted text-sm">{{ 'calendar.no_appointments_desc' | translate }}</p>
-  </div>
+  } @else if (filteredAppointments().length === 0) {
+    <div
+      class="bg-surface border-border flex flex-col items-center justify-center rounded-2xl border py-16 text-center"
+    >
+      <lucide-icon name="calendar" class="text-muted mb-3 h-10 w-10"></lucide-icon>
+      <h3 class="text-text text-base font-bold">{{ 'calendar.no_appointments' | translate }}</h3>
+      <p class="text-muted text-sm">{{ 'calendar.no_appointments_desc' | translate }}</p>
+    </div>
+  } @else {
+    <div
+      class="bg-surface border-border divide-border divide-y overflow-hidden rounded-2xl border shadow-sm"
+    >
+      @for (appt of filteredAppointments(); track appt.id) {
+        <div
+          class="hover:bg-surface-2/40 flex flex-wrap items-center justify-between gap-4 px-5 py-4 transition-colors"
+        >
+          <div class="min-w-0 flex-1">
+            <div class="flex flex-wrap items-center gap-2">
+              <span
+                class="bg-primary-soft text-primary rounded-full px-2.5 py-0.5 text-xs font-bold tabular-nums"
+              >
+                {{ appt.ticketCode || 'MDR-' + appt.id }}
+              </span>
+              <span class="text-text text-xs font-bold tabular-nums">
+                {{ appt.date }} · {{ appt.startTime }}
+              </span>
+            </div>
+            <p class="text-text mt-1 text-sm font-bold">{{ appt.patientName }}</p>
+            <p class="text-muted text-xs">{{ appt.serviceName }}</p>
+          </div>
+
+          <div class="flex items-center gap-2.5">
+            <span
+              class="rounded-full px-2.5 py-1 text-xs font-semibold"
+              [ngClass]="statusClass(appt.status)"
+            >
+              {{ 'calendar.status.' + appt.status | translate }}
+            </span>
+            <button
+              type="button"
+              (click)="activeConsultation.set(appt)"
+              class="bg-primary text-on-primary hover:bg-primary-hover cursor-pointer rounded-xl px-3.5 py-2 text-xs font-bold"
+            >
+              {{ appt.status === 'Completed' ? 'View Visit & Rx' : 'Start Consultation' }}
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+  }
 </div>
+
+<app-visit-consultation-modal
+  [appointment]="activeConsultation()"
+  (closed)="activeConsultation.set(null)"
+  (completed)="activeConsultation.set(null); loadSchedule(true)"
+/>

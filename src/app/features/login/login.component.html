@@ -1,74 +1,77 @@
-<div class="bg-bg selection:bg-primary/20 flex min-h-screen">
-  <!-- Left: Decorative Branding Area -->
+<main class="bg-bg selection:bg-primary/20 flex min-h-screen">
   <div
     class="relative hidden flex-col justify-between overflow-hidden p-12 text-white lg:flex lg:w-1/2"
   >
-    <!-- Background Mesh Gradient -->
     <div
       class="from-primary via-primary-hover absolute inset-0 z-0 bg-gradient-to-br to-[#1e3a8a]"
     ></div>
+    <div class="hero-dot-grid pointer-events-none absolute inset-0 z-10 opacity-45"></div>
     <div
-      class="pointer-events-none absolute -top-40 -left-40 z-10 h-[600px] w-[600px] rounded-full bg-white opacity-10 blur-[100px]"
+      class="pointer-events-none absolute -end-24 -top-24 z-10 h-80 w-80 rounded-full bg-white/10 blur-3xl"
     ></div>
-    <div
-      class="pointer-events-none absolute -right-40 -bottom-40 z-10 h-[600px] w-[600px] rounded-full bg-white opacity-20 blur-[120px]"
-    ></div>
+    <div class="relative z-20">
+      <app-brand-logo [inverted]="true" />
+    </div>
 
-    <div class="relative z-20 flex items-center gap-3">
-      <div
-        class="rounded-xl bg-white/20 p-2 text-2xl leading-none font-black text-white shadow-lg ring-1 ring-white/30 backdrop-blur-md"
+    <div class="animate-fade-up relative z-20 mb-8 max-w-lg">
+      <span
+        class="mb-4 inline-flex items-center gap-2 rounded-full bg-white/15 px-3.5 py-1.5 text-xs font-bold tracking-wider uppercase ring-1 ring-white/25 backdrop-blur-md"
       >
-        ✦
-      </div>
-      <span class="text-2xl font-extrabold tracking-tight">Clarity Clinic</span>
-    </div>
-
-    <div class="relative z-20 mb-12 max-w-lg">
-      <h1 class="mb-6 text-5xl leading-tight font-bold tracking-tight">
+        <span class="h-2 w-2 animate-pulse rounded-full bg-emerald-400"></span>
+        Unified Clinic Operations
+      </span>
+      <h1 class="mb-5 text-5xl leading-tight font-bold tracking-tight">
         Next-Generation <br />
-        <span class="text-white/80">Clinic Management.</span>
+        <span class="text-white/80">Clinic Operations.</span>
       </h1>
-      <p class="text-lg leading-relaxed text-white/70">
-        Experience seamless scheduling, intelligent reporting, and effortless patient care. Welcome
-        to the future of healthcare administration.
+      <p class="mb-8 text-lg leading-relaxed text-white/80">
+        Unified front-desk ticket check-in, doctor clinical e-prescriptions, and live clinic metrics
+        synchronized with the Patient Portal.
       </p>
+
+      <div class="rounded-2xl border border-white/20 bg-white/10 p-4 backdrop-blur-md">
+        <div class="flex items-center justify-between text-xs font-semibold text-white/85">
+          <span>Patient → Reception → Physician Room</span>
+          <span class="rounded-full bg-emerald-500/25 px-2.5 py-0.5 text-emerald-200"
+            >Live Sync</span
+          >
+        </div>
+        <p class="mt-2 font-mono text-xs text-white/75">
+          Ticket MDR-2026-0101 · Queue #A-01 · Verified E-Rx Pipeline
+        </p>
+      </div>
     </div>
 
-    <div class="relative z-20 text-sm text-white/50">
-      &copy; 2026 Clarity Clinic. All rights reserved.
+    <div class="relative z-20 text-sm text-white/60">
+      &copy; 2026 Medora Clinics. All rights reserved.
     </div>
   </div>
 
-  <!-- Right: Form Area -->
-  <div class="relative flex flex-1 items-center justify-center overflow-hidden p-8 sm:p-12">
-    <!-- Mobile background glow -->
-    <div
-      class="bg-primary/10 pointer-events-none absolute top-0 right-0 z-0 h-[400px] w-[400px] rounded-full blur-[80px] lg:hidden"
-    ></div>
-
-    <div class="relative z-10 w-full max-w-md">
-      <div class="mb-10 text-center lg:text-left">
-        <h2 class="text-text mb-2 text-3xl font-extrabold tracking-tight">Welcome back</h2>
-        <p class="text-muted">Enter your credentials to access your dashboard.</p>
+  <div class="relative flex flex-1 items-center justify-center p-6 sm:p-12">
+    <div class="w-full max-w-md">
+      <div class="mb-8 text-center lg:text-start">
+        <h2 class="text-text mb-2 text-3xl font-extrabold tracking-tight">Staff Portal</h2>
+        <p class="text-muted text-sm">
+          Sign in with your clinic account or use a 1-click demo role below.
+        </p>
       </div>
 
       @if (loginError()) {
         <div
-          class="mb-6 flex items-start gap-3 rounded-xl border border-[var(--color-danger-soft)] bg-[var(--color-danger-soft)] p-4 text-[var(--color-danger)]"
+          class="bg-danger-soft text-danger mb-5 flex items-start gap-3 rounded-xl border border-[var(--color-danger-soft)] p-4 text-sm font-medium"
         >
           <lucide-icon name="alert-circle" class="mt-0.5 h-5 w-5 shrink-0"></lucide-icon>
-          <p class="text-sm leading-relaxed font-medium">{{ loginError() }}</p>
+          <p>{{ loginError() }}</p>
         </div>
       }
 
-      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="space-y-5">
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="space-y-4">
         <app-input
           label="Email address"
           type="email"
           formControlName="email"
-          placeholder="name@clarityclinic.com"
+          placeholder="name@medoraclinics.com"
         ></app-input>
-
         <div class="relative">
           <app-input
             label="Password"
@@ -78,21 +81,39 @@
           ></app-input>
           <button
             type="button"
-            class="absolute end-4 top-[34px] text-slate-400 hover:text-slate-600 focus:outline-none dark:text-slate-500 dark:hover:text-slate-300"
+            aria-label="Toggle password visibility"
+            class="text-faint hover:text-text hover:bg-surface-2 absolute end-2.5 top-[30px] flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg transition-colors"
             (click)="togglePassword()"
           >
-            <lucide-icon [name]="showPassword() ? 'eye-off' : 'eye'" class="h-5 w-5"></lucide-icon>
+            <lucide-icon [name]="showPassword() ? 'eye-off' : 'eye'" class="h-4 w-4"></lucide-icon>
           </button>
         </div>
 
         <app-button
           type="submit"
           [disabled]="loginForm.invalid"
-          customClass="bg-primary shadow-primary/20 hover:bg-primary-hover mt-6 flex h-11 w-full items-center justify-center rounded-xl font-semibold text-[var(--color-on-primary)] shadow-md transition-all hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-60 disabled:hover:translate-y-0"
+          customClass="bg-primary hover:bg-primary-hover mt-4 flex h-11 w-full items-center justify-center rounded-xl font-semibold text-on-primary shadow-md disabled:opacity-50"
         >
           Sign in to Dashboard
         </app-button>
       </form>
+
+      <div class="border-border mt-7 border-t pt-5">
+        <p class="text-muted mb-3 text-xs font-bold tracking-wider uppercase">
+          1-Click Demo Staff Roles
+        </p>
+        <div class="grid grid-cols-1 gap-2 sm:grid-cols-3">
+          @for (acc of demoAccounts; track acc.email) {
+            <button
+              type="button"
+              (click)="loginAsDemo(acc.email, acc.password)"
+              class="bg-surface border-border text-text hover:border-primary hover:text-primary cursor-pointer rounded-xl border px-3 py-2 text-xs font-semibold transition-colors"
+            >
+              {{ acc.role }}
+            </button>
+          }
+        </div>
+      </div>
     </div>
   </div>
-</div>
+</main>

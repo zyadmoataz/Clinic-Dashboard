@@ -35,11 +35,11 @@ import { TranslatePipe } from '@ngx-translate/core';
           (input)="onInputChange($event)"
           (blur)="onTouched()"
           [ngClass]="{
-            'cursor-not-allowed border-slate-200 bg-slate-50 text-[var(--color-muted)] dark:border-slate-700 dark:bg-[var(--color-surface-2)]':
+            'cursor-not-allowed border-[var(--color-border)] bg-[var(--color-surface-2)] text-[var(--color-muted)]':
               disabled,
-            'border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text)] hover:border-slate-400 focus:border-[var(--color-primary)] focus:ring-[var(--color-primary)]/20':
+            'border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text)] hover:border-[var(--color-muted)] focus:border-[var(--color-primary)] focus:ring-[var(--color-primary)]/20':
               !error() && !disabled,
-            'border-rose-300 bg-[var(--color-surface)] text-[var(--color-text)] focus:border-rose-500 focus:ring-rose-500/20':
+            'border-[var(--color-danger)] bg-[var(--color-surface)] text-[var(--color-text)] focus:border-[var(--color-danger)] focus:ring-[var(--color-danger)]/20':
               error() && !disabled,
           }"
           class="flex h-11 w-full rounded-xl border px-4 py-2 text-sm shadow-sm transition-all duration-200 placeholder:text-slate-400 focus:ring-4 focus:outline-none"

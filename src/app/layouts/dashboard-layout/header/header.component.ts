@@ -1,16 +1,18 @@
 import { Component, inject } from '@angular/core';
-
+import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { LucideAngularModule } from 'lucide-angular';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { ApiService } from '../../../core/services/api.service';
+import { AuthService } from '../../../core/services/auth.service';
+import { ToastService } from '../../../core/services/toast.service';
+import { TransportService } from '../../../core/services/transport.service';
+import { resetStaffDb } from '../../../core/mock/clinic-mock.store';
 import {
   AvatarComponent,
   LanguageToggleComponent,
   ThemeToggleComponent,
 } from '../../../shared/components';
-import { AuthService } from '../../../core/services/auth.service';
-import { ToastService } from '../../../core/services/toast.service';
-import { TranslateService, TranslatePipe } from '@ngx-translate/core';
-import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-header',
@@ -26,44 +28,58 @@ import { CommonModule } from '@angular/common';
   ],
   template: `
     <header
-      class="bg-surface/70 border-border/50 glass sticky top-0 z-30 flex h-[72px] items-center justify-between border-b px-4 shadow-sm backdrop-blur-xl sm:px-6"
+      class="bg-surface/85 border-border sticky top-0 z-30 flex h-[68px] items-center justify-between border-b px-4 shadow-sm backdrop-blur-xl sm:px-6"
     >
-      <div class="flex items-center">
-        <!-- Mobile menu button -->
+      <div class="flex items-center gap-3">
         <button
-          class="mr-3 flex h-10 w-10 items-center justify-center rounded-xl text-[var(--color-muted)] transition-colors hover:bg-[var(--color-surface-2)] hover:text-[var(--color-text)] md:hidden"
+          type="button"
+          aria-label="Open menu"
+          class="text-muted hover:bg-surface-2 hover:text-text flex h-10 w-10 cursor-pointer items-center justify-center rounded-xl md:hidden"
           (click)="toggleMobileMenu()"
         >
           <lucide-icon name="menu" class="h-5 w-5"></lucide-icon>
         </button>
+
+        <div
+          class="bg-surface-2 border-border hidden items-center gap-2 rounded-full border px-3 py-1 text-xs sm:inline-flex"
+        >
+          <lucide-icon name="database" class="text-primary h-3.5 w-3.5"></lucide-icon>
+          <span class="text-muted font-medium">
+            {{
+              transport.source() === 'live-api' ? 'Synced: Mock API (:5000)' : 'Local Browser Mock'
+            }}
+          </span>
+          <button
+            type="button"
+            (click)="onResetDemo()"
+            class="text-primary inline-flex cursor-pointer items-center gap-1 font-bold hover:underline"
+          >
+            <lucide-icon name="rotate-ccw" class="h-3 w-3"></lucide-icon>
+            Reset
+          </button>
+        </div>
       </div>
 
-      <div class="flex items-center gap-3 sm:gap-5">
-        <div class="flex items-center gap-2">
-          <app-theme-toggle></app-theme-toggle>
-          <app-language-toggle></app-language-toggle>
-        </div>
+      <div class="flex items-center gap-2.5 sm:gap-4">
+        <app-theme-toggle></app-theme-toggle>
+        <app-language-toggle></app-language-toggle>
 
-        <div class="bg-border-strong hidden h-8 w-[1px] opacity-50 sm:block"></div>
+        <div class="bg-border hidden h-7 w-px sm:block"></div>
 
-        <!-- User profile dropdown trigger -->
         <div class="relative">
           <button
-            class="group flex cursor-pointer items-center gap-3 rounded-xl px-2 py-1.5 transition-all hover:bg-[var(--color-surface-2)]"
-            (click)="toggleUserMenu()"
+            type="button"
+            class="group hover:bg-surface-2 flex cursor-pointer items-center gap-2.5 rounded-xl px-2 py-1.5"
+            (click)="showUserMenu = !showUserMenu"
           >
-            <div class="hidden text-right sm:block">
-              <p
-                class="text-text group-hover:text-primary text-sm leading-tight font-bold capitalize transition-colors"
-              >
-                {{ currentUser?.role || 'Guest' }}
-              </p>
+            <div class="hidden text-end sm:block">
+              <p class="text-text text-xs font-bold">{{ currentUser?.displayName || 'Staff' }}</p>
+              <p class="text-muted text-[11px] capitalize">{{ currentUser?.role || 'Staff' }}</p>
             </div>
-            <div
-              class="ring-border group-hover:ring-primary/50 rounded-full transition-all duration-300 group-hover:ring-2"
-            >
-              <app-avatar [name]="currentUser?.role || 'Guest'" size="sm"></app-avatar>
-            </div>
+            <app-avatar
+              [name]="currentUser?.displayName || currentUser?.role || 'S'"
+              size="sm"
+            ></app-avatar>
             <lucide-icon
               name="chevron-down"
               class="text-muted hidden h-4 w-4 transition-transform sm:block"
@@ -71,35 +87,25 @@ import { CommonModule } from '@angular/common';
             ></lucide-icon>
           </button>
 
-          <!-- Dropdown menu -->
           @if (showUserMenu) {
             <div
-              class="absolute end-0 top-full mt-2 w-56 rounded-xl border border-slate-200 bg-[var(--color-surface)] p-1.5 shadow-lg dark:border-slate-700"
+              class="border-border bg-surface absolute end-0 top-full mt-2 w-56 rounded-xl border p-1.5 shadow-lg"
             >
-              <!-- User info -->
-              <div class="border-b border-slate-100 px-3 py-3 dark:border-slate-700">
-                <p class="text-sm font-semibold text-[var(--color-text)] capitalize">
-                  {{ currentUser?.role || 'Guest' }}
-                </p>
-                <p class="text-xs text-[var(--color-muted)]">{{ currentUser?.email || '' }}</p>
+              <div class="border-border border-b px-3 py-2.5">
+                <p class="text-text text-sm font-bold">{{ currentUser?.displayName || 'Staff' }}</p>
+                <p class="text-muted truncate text-xs">{{ currentUser?.email || '' }}</p>
               </div>
-
-              <!-- Profile link -->
               <a
                 routerLink="/staff/profile"
-                class="mt-1 flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-[var(--color-text)] transition-colors hover:bg-[var(--color-surface-2)]"
+                class="text-text hover:bg-surface-2 mt-1 flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium"
                 (click)="showUserMenu = false"
               >
-                <lucide-icon name="user" class="h-4 w-4 text-[var(--color-muted)]"></lucide-icon>
+                <lucide-icon name="user" class="text-muted h-4 w-4"></lucide-icon>
                 {{ 'header.profile' | translate }}
               </a>
-
-              <!-- Separator -->
-              <div class="my-1 border-t border-slate-100 dark:border-slate-700"></div>
-
-              <!-- Logout -->
               <button
-                class="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-rose-600 transition-colors hover:bg-rose-50 dark:text-rose-400 dark:hover:bg-rose-900/20"
+                type="button"
+                class="text-danger hover:bg-danger-soft mt-1 flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-semibold"
                 (click)="onLogout()"
               >
                 <lucide-icon name="log-out" class="h-4 w-4"></lucide-icon>
@@ -114,6 +120,8 @@ import { CommonModule } from '@angular/common';
 })
 export class HeaderComponent {
   authService = inject(AuthService);
+  transport = inject(TransportService);
+  private apiService = inject(ApiService);
   private toastService = inject(ToastService);
   private translate = inject(TranslateService);
   router = inject(Router);
@@ -124,13 +132,22 @@ export class HeaderComponent {
     return this.authService.currentUser();
   }
 
-  toggleUserMenu() {
-    this.showUserMenu = !this.showUserMenu;
+  toggleMobileMenu() {
+    window.dispatchEvent(new CustomEvent('toggle-mobile-sidebar'));
   }
 
-  toggleMobileMenu() {
-    // Dispatch custom event so the layout can listen and toggle the sidebar
-    window.dispatchEvent(new CustomEvent('toggle-mobile-sidebar'));
+  onResetDemo() {
+    this.apiService.resetDemo().subscribe({
+      next: () => {
+        resetStaffDb();
+        this.toastService.success('Demo data restored.');
+        window.location.reload();
+      },
+      error: () => {
+        resetStaffDb();
+        window.location.reload();
+      },
+    });
   }
 
   onLogout() {

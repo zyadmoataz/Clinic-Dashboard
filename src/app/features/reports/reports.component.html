@@ -66,8 +66,8 @@
             'reports.status_mix' | translate
           }}</span>
           <span class="text-xs text-[var(--color-muted)]"
-            >{{ reports()!.completedVisitsCount + 952 | number }}
-            {{ 'reports.appts' | translate }}</span
+            >{{ reports()!.completedVisitsCount | number }}
+            {{ 'calendar.status.Completed' | translate }}</span
           >
         </div>
         <div class="flex flex-col items-center gap-4 sm:flex-row sm:gap-6">
@@ -78,16 +78,16 @@
               class="pointer-events-none absolute inset-0 flex flex-col items-center justify-center"
             >
               <span class="text-base font-bold text-[var(--color-text)]">{{
-                reports()!.completedVisitsCount + 952 | number
+                reports()!.completedVisitsCount | number
               }}</span>
               <span class="text-xs text-[var(--color-muted)]">{{
-                'reports.appts' | translate
+                'calendar.status.Completed' | translate
               }}</span>
             </div>
           </div>
           <!-- Legend -->
           <div class="flex w-full flex-1 flex-col gap-2.5">
-            @for (item of statusMix; track item) {
+            @for (item of statusMix(); track item.key) {
               <div class="flex items-center gap-2">
                 <span class="h-2 w-2 shrink-0 rounded-full" [ngClass]="item.dot"></span>
                 <span class="flex-1 truncate text-xs text-[var(--color-muted)]">{{
@@ -179,7 +179,7 @@
             'reports.revenue_by_service' | translate
           }}</span>
           <span class="text-xs text-[var(--color-muted)]"
-            >EGP {{ 'reports.total' | translate }}</span
+            >EGP {{ reports()!.totalRevenue | number }} {{ 'reports.total' | translate }}</span
           >
         </div>
         @if (serviceBars().length > 0) {

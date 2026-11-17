@@ -1,49 +1,76 @@
-# Clarity Clinic: Staff Dashboard (Angular)
+# Medora Clinics — Staff Dashboard (Angular 21)
 
 [![Angular](https://img.shields.io/badge/Angular_21-DD0031?style=flat-square&logo=angular&logoColor=white)](https://angular.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS_v4-38B2AC?style=flat-square&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
 
-The internal dashboard for Clarity Clinic, built for three staff roles: **Admin, Doctors and Receptionists**. It is the staff-side companion to the [Clarity Clinic Patient Website](https://github.com/zyadmoataz/Clinic-Website).
+Internal operations dashboard for **Medora Clinics** (Admin, Receptionist, and Doctor portals), built as the staff-side companion to the [Medora Clinics Patient Website](https://github.com/zyadmoataz/Clinic-Website).
 
 **Live demo:** https://clinic-dashboard-ashy.vercel.app/staff/login
 
-> **Demo status:** sign-in depends on a REST API that is no longer hosted, so the live demo cannot log in right now. The interface, routing, state and data layer are all in this repository.
+---
 
-## Features
-- Staff sign-in page
-- Dashboard with statistic cards and charts (Chart.js)
-- Built for Admin, Doctor and Receptionist roles
-- Arabic and English interface
-- Toast notifications for user feedback
-- Medical blue theme built with Tailwind CSS v4
+## Backend Status & Dual-Layer Mock Architecture
 
-## Tech stack
+> **Notice:** The original hosted REST backend (`https://api.clinic.kaessam.codes/api`) is offline/decommissioned.
+> All HTTP calls continue flowing through `ApiService` (`HttpClient`) and `authInterceptor`. When `environment.dataMode` is `'auto'` (default in `environment.ts`), requests hit `http://localhost:5000/api` (`../mock-api`) to synchronize live with the Patient Website, and automatically fall back to Angular's functional `mockBackendInterceptor` (`src/app/core/mock/`) if no local server is running. Production builds (`environment.prod.ts`) use stateful in-browser `mock` mode so Vercel deployments work completely out of the box.
 
-| Area | Technology |
-|:---|:---|
-| Framework | Angular 21, TypeScript, RxJS |
-| State | Angular Signals |
-| HTTP | HttpClient with interceptors |
-| Internationalization | ngx-translate (core and HTTP loader) for Arabic and English |
-| Charts | Chart.js |
-| UI | Tailwind CSS v4, lucide-angular icons, ngx-toastr, Angular CDK |
-| Code quality | ESLint (angular-eslint), Prettier (with Tailwind class sorting), Husky, lint-staged, commitlint |
+| `dataMode` | Behavior                                                                                                                                           |
+| :--------- | :------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **`auto`** | Connects to `environment.apiUrl` (`http://localhost:5000/api`); falls back to the `localStorage` mock interceptor if unreachable (`status === 0`). |
+| **`api`**  | Strict live backend HTTP only.                                                                                                                     |
+| **`mock`** | Pure in-browser mock interceptor (default for standalone production builds).                                                                       |
 
-## How it is built
-- **State with Signals:** application state lives in Signal-based services instead of scattered component fields, which keeps updates predictable and templates simple.
-- **HTTP interceptors:** cross-cutting request logic is handled in one place instead of in every service call.
-- **Two languages:** ngx-translate loads translation files over HTTP so Arabic and English share the same components.
-- **Consistent code:** ESLint and Prettier run on staged files through lint-staged and Husky, and commit messages follow Conventional Commits (commitlint). File naming and component conventions are documented in [CONTRIBUTING.md](./CONTRIBUTING.md).
+---
 
-## Run locally
-```bash
-npm install
-npm run start    # http://localhost:4200
-npm run build    # production build
-npm run lint     # lint the project
-npm run test     # unit tests
-```
+## Demo Staff Accounts (Also Available via 1-Click Buttons on `/staff/login`)
 
-The app expects a backend REST API for authentication and clinic data. The original API is no longer hosted, so sign-in and data pages will fail until you point the app at a compatible API.
+| Role                    | Email                            | Password      |
+| :---------------------- | :------------------------------- | :------------ |
+| **Admin**               | `admin@medoraclinics.com`        | `Password123` |
+| **Receptionist**        | `receptionist@medoraclinics.com` | `Password123` |
+| **Doctor (Cardiology)** | `dr.sarah@medoraclinics.com`     | `Password123` |
 
+---
+
+## Key Features
+
+- **Receptionist Live Ticket Queue & Calendar:** Search tickets (`MDR-2026-...` / `#A-01`), 1-click check-in (`Arrived`), collect cash (`Paid`), reschedule, mark no-show/cancel, and issue printable **Walk-In Queue Tickets**.
+- **Doctor Clinical Schedule & E-Prescriptions:** Interactive schedule queue, patient history lookup, structured medication entry (`drug`, `dosage`, `duration`), and visit completion that publishes directly to the Patient Website.
+- **Admin Operations & Analytics:** Staff provisioning, service pricing CRUD, weekly availability/blocked dates, and dynamic clinic reports with CSV export.
+
+---
+
+## Tech Stack
+
+| Area                 | Technology                                                                                              |
+| :------------------- | :------------------------------------------------------------------------------------------------------ |
+| Framework            | Angular 21, TypeScript, RxJS                                                                            |
+| State                | Angular Signals                                                                                         |
+| HTTP                 | `HttpClient` with `authInterceptor` and `mockBackendInterceptor`                                        |
+| Internationalization | `ngx-translate` (core & HTTP loader) for Arabic and English                                             |
+| Charts               | Chart.js                                                                                                |
+| UI                   | Tailwind CSS v4, `lucide-angular` icons, `ngx-toastr`, Angular CDK                                      |
+| Code Quality         | ESLint (`angular-eslint`), Prettier (`prettier-plugin-tailwindcss`), Husky, `lint-staged`, `commitlint` |
+
+---
+
+## Getting Started
+
+1. _(Optional for live cross-app sync with Patient Website)_ Start `../mock-api`:
+   ```bash
+   cd ../mock-api
+   npm start
+   ```
+2. Run the Staff Dashboard:
+   ```bash
+   npm install
+   npm run start
+   # Runs on http://localhost:4200
+   ```
+3. Build or lint:
+   ```bash
+   npm run lint
+   npm run build
+   npm run test
+   ```

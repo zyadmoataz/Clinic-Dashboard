@@ -1,20 +1,36 @@
-import { Component, inject, signal } from '@angular/core';
-
+import { Component, computed, inject, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { LucideAngularModule } from 'lucide-angular';
 import { ApiService } from '../../core/services/api.service';
-
-import { DataTableComponent } from '../../shared/components/data-table.component';
+import { Staff } from '../../core/models';
+import {
+  DataTableCellType,
+  DataTableComponent,
+} from '../../shared/components/data-table.component';
 import { ButtonComponent } from '../../shared/components/button.component';
+import { SearchInputComponent } from '../../shared/components/search-input.component';
 import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-staff',
   standalone: true,
-  imports: [DataTableComponent, ButtonComponent, TranslatePipe],
+  imports: [
+    CommonModule,
+    FormsModule,
+    LucideAngularModule,
+    DataTableComponent,
+    ButtonComponent,
+    SearchInputComponent,
+    TranslatePipe,
+  ],
   templateUrl: './staff.component.html',
 })
 export class StaffComponent {
-  staffList = signal<{ id: string; cells: (string | number | boolean | null | undefined)[] }[]>([]);
+  rawStaff = signal<Staff[]>([]);
+  roleFilter = signal<'all' | 'doctor' | 'receptionist' | 'admin'>('all');
+  searchTerm = signal<string>('');
   isLoading = signal(false);
 
   columns = [
@@ -23,6 +39,29 @@ export class StaffComponent {
     { key: 'specialty', label: 'staff.columns.specialty' },
     { key: 'isActive', label: 'staff.columns.status' },
   ];
+  columnTypes: DataTableCellType[] = ['avatar', 'role', 'text', 'boolean'];
+
+  doctorCount = computed(
+    () => this.rawStaff().filter((s) => s.role.toLowerCase() === 'doctor').length,
+  );
+  supportCount = computed(
+    () => this.rawStaff().filter((s) => s.role.toLowerCase() !== 'doctor').length,
+  );
+
+  staffList = computed(() => {
+    const rf = this.roleFilter();
+    const q = this.searchTerm().trim().toLowerCase();
+    return this.rawStaff()
+      .filter((s) => {
+        if (rf !== 'all' && s.role.toLowerCase() !== rf) return false;
+        if (!q) return true;
+        return `${s.name} ${s.role} ${s.specialization || ''}`.toLowerCase().includes(q);
+      })
+      .map((s) => ({
+        id: s.id,
+        cells: [s.name, s.role, s.specialization, s.isActive],
+      }));
+  });
 
   private apiService = inject(ApiService);
   private router = inject(Router);
@@ -33,26 +72,21 @@ export class StaffComponent {
 
   loadStaff(): void {
     this.isLoading.set(true);
-
     this.apiService.getStaff().subscribe({
       next: (staffListResponse) => {
-        this.staffList.set(
-          staffListResponse.map((staff) => ({
-            id: staff.id,
-            cells: [staff.name, staff.role, staff.specialization, staff.isActive],
-          })),
-        );
+        this.rawStaff.set(staffListResponse);
         this.isLoading.set(false);
       },
-      error: (err: unknown) => {
-        console.error(err);
+      error: () => {
         this.isLoading.set(false);
       },
     });
   }
+
   goToAddDoctor(): void {
     this.router.navigate(['/staff/add-doctor']);
   }
+
   goToAddreciptionist(): void {
     this.router.navigate(['/staff/add-receptionist']);
   }

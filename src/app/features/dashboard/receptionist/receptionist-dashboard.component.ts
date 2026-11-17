@@ -1,28 +1,67 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, DestroyRef, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { LucideAngularModule } from 'lucide-angular';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ApiService } from '../../../core/services/api.service';
+import { ToastService } from '../../../core/services/toast.service';
 import { Appointment, DashboardStats } from '../../../core/models';
-import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { ArabicDigitsPipe } from '../../../shared/pipes/arabic-digits.pipe';
+import {
+  getAppointmentStatusClass,
+  getStatusAccentClass,
+} from '../../../core/utils/status-style.util';
+import { toLocalIsoDate } from '../../../core/utils/format.util';
+import { SearchInputComponent } from '../../../shared/components/search-input.component';
 
 @Component({
   selector: 'app-receptionist-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterModule, TranslatePipe, ArabicDigitsPipe],
+  imports: [
+    CommonModule,
+    FormsModule,
+    RouterModule,
+    LucideAngularModule,
+    TranslatePipe,
+    ArabicDigitsPipe,
+    SearchInputComponent,
+  ],
   templateUrl: './receptionist-dashboard.component.html',
 })
 export class ReceptionistDashboardComponent {
   private api = inject(ApiService);
   private translate = inject(TranslateService);
+  private toast = inject(ToastService);
+  private destroyRef = inject(DestroyRef);
 
   stats = signal<DashboardStats | null>(null);
   upcomingAppointments = signal<Appointment[]>([]);
+  ticketSearch = signal<string>('');
+  queueFilter = signal<'all' | 'Confirmed' | 'Arrived'>('all');
   loading = signal(true);
   error = signal(false);
 
-  today = signal(this.getFormattedDate(this.translate.currentLang() || 'en'));
-  todayIso = new Date().toISOString().split('T')[0];
+  today = signal(this.getFormattedDate('en'));
+  todayIso = toLocalIsoDate();
+
+  filteredQueue = computed(() => {
+    const q = this.ticketSearch().trim().toLowerCase();
+    const filter = this.queueFilter();
+    return this.upcomingAppointments().filter((a) => {
+      if (filter === 'Confirmed' && !['Confirmed', 'PendingPayment'].includes(a.status)) {
+        return false;
+      }
+      if (filter === 'Arrived' && a.status !== 'Arrived') return false;
+      if (!q) return true;
+      return (
+        (a.ticketCode || '').toLowerCase().includes(q) ||
+        (a.queueToken || '').toLowerCase().includes(q) ||
+        (a.patientName || '').toLowerCase().includes(q) ||
+        (a.doctorName || '').toLowerCase().includes(q)
+      );
+    });
+  });
 
   private getFormattedDate(lang: string): string {
     return new Date().toLocaleDateString(lang === 'ar' ? 'ar-EG' : 'en-GB', {
@@ -34,9 +73,19 @@ export class ReceptionistDashboardComponent {
   }
 
   constructor() {
-    this.translate.onLangChange.subscribe((event) => {
+    const sub = this.translate.onLangChange.subscribe((event) => {
       this.today.set(this.getFormattedDate(event.lang));
     });
+    this.refreshQueue();
+    const timer = setInterval(() => this.refreshQueue(true), 8000);
+    this.destroyRef.onDestroy(() => {
+      sub.unsubscribe();
+      clearInterval(timer);
+    });
+  }
+
+  refreshQueue(silent = false): void {
+    if (!silent) this.loading.set(true);
     this.api.getDashboardStats().subscribe({
       next: (dashboardStats) => {
         this.stats.set(dashboardStats);
@@ -55,51 +104,34 @@ export class ReceptionistDashboardComponent {
         this.upcomingAppointments.set(
           appts
             .filter((a) => ['Confirmed', 'PendingPayment', 'Arrived'].includes(a.status))
-            .sort((a, b) => (a.startTime || '').localeCompare(b.startTime || ''))
-            .slice(0, 8),
+            .sort((a, b) => (a.startTime || '').localeCompare(b.startTime || '')),
         );
         this.loading.set(false);
       },
-      error: () => {
-        this.loading.set(false);
-      },
+      error: () => this.loading.set(false),
     });
   }
 
-  statusLabel(status: Appointment['status']): string {
-    const map: Record<string, string> = {
-      Confirmed: 'Confirmed',
-      PendingPayment: 'Pending payment',
-      Arrived: 'Arrived',
-      Completed: 'Completed',
-      NoShow: 'No-show',
-      Cancelled: 'Cancelled',
-    };
-    return map[status] ?? status;
+  checkIn(id: number): void {
+    this.api.markArrived(id).subscribe({
+      next: () => {
+        this.toast.success('Patient checked in to waiting queue.');
+        this.refreshQueue(true);
+      },
+      error: () => this.toast.error('Could not update check-in status.'),
+    });
   }
 
-  statusClass(status: Appointment['status']): string {
-    const map: Record<string, string> = {
-      Confirmed: 'bg-[var(--color-success-soft)] text-[var(--color-success)]',
-      PendingPayment: 'bg-[var(--color-warning-soft)] text-[var(--color-warning)]',
-      Arrived: 'bg-[var(--color-primary-soft)] text-[var(--color-primary)]',
-      Completed: 'bg-[var(--color-surface-2)] text-[var(--color-muted)]',
-      NoShow: 'bg-[var(--color-danger-soft)] text-[var(--color-danger)]',
-      Cancelled: 'bg-[var(--color-surface-2)] text-[var(--color-faint)]',
-    };
-    return map[status] ?? '';
+  collectCash(id: number): void {
+    this.api.markCashPaid(id).subscribe({
+      next: () => {
+        this.toast.success('Cash payment recorded.');
+        this.refreshQueue(true);
+      },
+      error: () => this.toast.error('Could not record payment.'),
+    });
   }
 
-  borderClass(status: Appointment['status']): string {
-    const map: Record<string, string> = {
-      Confirmed: 'bg-[var(--color-success)]',
-      PendingPayment: 'bg-[var(--color-warning)]',
-      Arrived: 'bg-[var(--color-primary)]',
-    };
-    return map[status] ?? 'bg-[var(--color-border-strong)]';
-  }
-
-  get awaitingPaymentCount(): number {
-    return this.upcomingAppointments().filter((a) => a.status === 'PendingPayment').length;
-  }
+  statusClass = getAppointmentStatusClass;
+  borderClass = getStatusAccentClass;
 }

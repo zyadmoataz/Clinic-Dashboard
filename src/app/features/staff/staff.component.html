@@ -1,26 +1,114 @@
-<div class="space-y-8">
+<div class="space-y-6">
   <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
     <div>
-      <h1 class="text-2xl font-bold text-[var(--color-text)] sm:text-4xl">
+      <h1 class="text-2xl font-bold text-[var(--color-text)] sm:text-3xl">
         {{ 'staff.title' | translate }}
       </h1>
       <p class="mt-1 text-sm text-[var(--color-muted)]">{{ 'staff.subtitle' | translate }}</p>
     </div>
 
-    <div class="flex shrink-0 gap-3">
+    <div class="flex shrink-0 flex-wrap gap-2.5">
       <app-button (clicked)="goToAddDoctor()">
         {{ 'staff.add_doctor' | translate }}
       </app-button>
 
-      <app-button
-        (clicked)="goToAddreciptionist()"
-        customClass="border border-[var(--color-border)] bg-[var(--color-surface)] px-5 py-2.5 transition hover:bg-[var(--color-surface-2)] text-[var(--color-text)]"
-      >
+      <app-button variant="secondary" (clicked)="goToAddreciptionist()">
         {{ 'staff.add_receptionist' | translate }}
       </app-button>
     </div>
   </div>
 
-  <app-data-table [data]="staffList()" [columns]="columns" [isLoading]="isLoading()">
-  </app-data-table>
+  <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+    <div
+      class="spotlight-card interactive-hover animate-fade-up flex items-center gap-3.5 rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-4 shadow-[var(--shadow-sm)]"
+    >
+      <div
+        class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[var(--color-primary-soft)] text-[var(--color-primary)]"
+      >
+        <lucide-icon name="users" class="h-5 w-5"></lucide-icon>
+      </div>
+      <div>
+        <span class="block text-xs font-medium text-[var(--color-muted)]">Total Team Members</span>
+        <p class="text-2xl font-extrabold text-[var(--color-text)] tabular-nums">
+          {{ rawStaff().length }}
+        </p>
+      </div>
+    </div>
+
+    <div
+      class="spotlight-card interactive-hover animate-fade-up flex items-center gap-3.5 rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-4 shadow-[var(--shadow-sm)]"
+      style="animation-delay: 60ms"
+    >
+      <div
+        class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[var(--color-accent-soft)] text-[var(--color-accent)]"
+      >
+        <lucide-icon name="stethoscope" class="h-5 w-5"></lucide-icon>
+      </div>
+      <div>
+        <span class="block text-xs font-medium text-[var(--color-muted)]">Medical Doctors</span>
+        <p class="text-2xl font-extrabold text-[var(--color-text)] tabular-nums">
+          {{ doctorCount() }}
+        </p>
+      </div>
+    </div>
+
+    <div
+      class="spotlight-card interactive-hover animate-fade-up flex items-center gap-3.5 rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-4 shadow-[var(--shadow-sm)]"
+      style="animation-delay: 120ms"
+    >
+      <div
+        class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[var(--color-success-soft)] text-[var(--color-success)]"
+      >
+        <lucide-icon name="shield-check" class="h-5 w-5"></lucide-icon>
+      </div>
+      <div>
+        <span class="block text-xs font-medium text-[var(--color-muted)]"
+          >Reception &amp; Admin</span
+        >
+        <p class="text-2xl font-extrabold text-[var(--color-text)] tabular-nums">
+          {{ supportCount() }}
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="flex flex-wrap items-center justify-between gap-3">
+    <div
+      class="flex flex-wrap items-center gap-1 rounded-xl bg-[var(--color-surface-2)] p-1 text-xs font-semibold"
+    >
+      @for (tab of ['all', 'doctor', 'receptionist', 'admin']; track tab) {
+        <button
+          type="button"
+          (click)="roleFilter.set($any(tab))"
+          class="cursor-pointer rounded-lg px-3 py-1.5 capitalize transition-colors"
+          [ngClass]="
+            roleFilter() === tab
+              ? 'bg-[var(--color-surface)] text-[var(--color-primary)] shadow-xs'
+              : 'text-[var(--color-muted)] hover:text-[var(--color-text)]'
+          "
+        >
+          {{ tab === 'all' ? ('common.all' | translate) : tab }}
+        </button>
+      }
+    </div>
+
+    <div class="w-full sm:w-72">
+      <app-search-input
+        [value]="searchTerm()"
+        [compact]="true"
+        placeholder="Search team or specialty..."
+        (searchChange)="searchTerm.set($event)"
+      ></app-search-input>
+    </div>
+  </div>
+
+  <div class="animate-fade-up">
+    <app-data-table
+      [data]="staffList()"
+      [columns]="columns"
+      [columnTypes]="columnTypes"
+      [isLoading]="isLoading()"
+      emptyLabel="No staff members match the filter."
+    ></app-data-table>
+  </div>
 </div>

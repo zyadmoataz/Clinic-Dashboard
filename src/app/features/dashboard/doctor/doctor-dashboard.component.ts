@@ -1,26 +1,29 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ApiService } from '../../../core/services/api.service';
 import { Appointment } from '../../../core/models';
-import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { ArabicDigitsPipe } from '../../../shared/pipes/arabic-digits.pipe';
+import { VisitConsultationModalComponent } from '../../schedule/visit-consultation-modal.component';
+import { getAppointmentStatusClass } from '../../../core/utils/status-style.util';
 
 @Component({
   selector: 'app-doctor-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterModule, TranslatePipe, ArabicDigitsPipe],
+  imports: [CommonModule, TranslatePipe, ArabicDigitsPipe, VisitConsultationModalComponent],
   templateUrl: './doctor-dashboard.component.html',
 })
 export class DoctorDashboardComponent {
   private api = inject(ApiService);
   private translate = inject(TranslateService);
+  private destroyRef = inject(DestroyRef);
 
   appointments = signal<Appointment[]>([]);
+  activeConsultation = signal<Appointment | null>(null);
   loading = signal(true);
   error = signal(false);
 
-  todayLabel = signal(this.getFormattedDate(this.translate.currentLang() || 'en'));
+  todayLabel = signal(this.getFormattedDate('en'));
 
   private getFormattedDate(lang: string): string {
     return new Date().toLocaleDateString(lang === 'ar' ? 'ar-EG' : 'en-GB', {
@@ -31,13 +34,25 @@ export class DoctorDashboardComponent {
   }
 
   constructor() {
-    this.translate.onLangChange.subscribe((event) => {
+    const sub = this.translate.onLangChange.subscribe((event) => {
       this.todayLabel.set(this.getFormattedDate(event.lang));
     });
+    this.loadSchedule();
+    const timer = setInterval(() => this.loadSchedule(true), 8000);
+    this.destroyRef.onDestroy(() => {
+      sub.unsubscribe();
+      clearInterval(timer);
+    });
+  }
+
+  loadSchedule(silent = false): void {
+    if (!silent) this.loading.set(true);
     this.api.getDoctorSchedule().subscribe({
       next: (appts) => {
         this.appointments.set(
-          appts.sort((a, b) => (a.startTime || '').localeCompare(b.startTime || '')),
+          [...appts].sort((a, b) =>
+            `${a.date} ${a.startTime}`.localeCompare(`${b.date} ${b.startTime}`),
+          ),
         );
         this.loading.set(false);
       },
@@ -52,44 +67,13 @@ export class DoctorDashboardComponent {
     return this.appointments().length;
   }
 
-  statusLabel(status: Appointment['status']): string {
-    const map: Record<string, string> = {
-      Confirmed: 'Confirmed',
-      PendingPayment: 'Pending payment',
-      Arrived: 'Arrived',
-      Completed: 'Completed',
-      NoShow: 'No-show',
-      Cancelled: 'Cancelled',
-    };
-    return map[status] ?? status;
-  }
-
-  statusClass(status: Appointment['status']): string {
-    const map: Record<string, string> = {
-      Confirmed: 'bg-[var(--color-success-soft)] text-[var(--color-success)]',
-      PendingPayment: 'bg-[var(--color-warning-soft)] text-[var(--color-warning)]',
-      Arrived: 'bg-[var(--color-primary-soft)] text-[var(--color-primary)]',
-      Completed: 'bg-[var(--color-surface-2)] text-[var(--color-muted)]',
-      NoShow: 'bg-[var(--color-danger-soft)] text-[var(--color-danger)]',
-      Cancelled: 'bg-[var(--color-surface-2)] text-[var(--color-faint)]',
-    };
-    return map[status] ?? '';
-  }
-
-  canStartVisit(status: Appointment['status']): boolean {
-    return status === 'Arrived';
-  }
-  canOpen(status: Appointment['status']): boolean {
-    return status === 'Confirmed';
-  }
-  canViewNotes(status: Appointment['status']): boolean {
-    return status === 'Completed';
-  }
+  statusClass = getAppointmentStatusClass;
 
   startVisit(appt: Appointment): void {
-    console.log('Start visit', appt.id);
+    this.activeConsultation.set(appt);
   }
+
   openAppointment(appt: Appointment): void {
-    console.log('Open appointment', appt.id);
+    this.activeConsultation.set(appt);
   }
 }

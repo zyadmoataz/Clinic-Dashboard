@@ -19,7 +19,7 @@ import { LucideAngularModule } from 'lucide-angular';
 })
 export class ThemeToggleComponent implements OnInit {
   isDark = false;
-  private readonly THEME_KEY = 'clarity-theme';
+  private readonly THEME_KEY = 'medora-theme';
 
   ngOnInit() {
     // Sync with HTML class and localstorage

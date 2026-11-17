@@ -1,27 +1,49 @@
-import { Component } from '@angular/core';
+import { Component, HostListener, input, output } from '@angular/core';
+import { LucideAngularModule } from 'lucide-angular';
 
 @Component({
   selector: 'app-modal',
   standalone: true,
-  imports: [],
+  imports: [LucideAngularModule],
   template: `
-    <!-- <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-      <div class="w-full max-w-md rounded-xl bg-white p-6 shadow-xl">
-        <h2 class="mb-4 text-xl font-bold">Modal Title</h2>
-        <p>Modal content goes here.</p>
-        <div class="mt-6 flex justify-end gap-2">
-          <button class="rounded-lg bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700">
-            Close
-          </button>
-        </div>
-      </div>
-    </div>-->
-
-    <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-      <div class="bg-surface border-border w-full max-w-md rounded-xl border p-6 shadow-xl">
+    <div
+      class="fixed inset-0 z-50 flex items-center justify-center p-4"
+      role="dialog"
+      aria-modal="true"
+    >
+      <button
+        type="button"
+        aria-label="Close modal backdrop"
+        class="fixed inset-0 cursor-default bg-black/55 backdrop-blur-xs"
+        (click)="closed.emit()"
+      ></button>
+      <div
+        class="bg-surface border-border relative z-10 max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl border p-6 shadow-xl"
+      >
+        @if (title()) {
+          <div class="border-border mb-4 flex items-center justify-between border-b pb-3">
+            <h2 class="text-text text-lg font-bold">{{ title() }}</h2>
+            <button
+              type="button"
+              aria-label="Close modal"
+              (click)="closed.emit()"
+              class="text-muted hover:bg-surface-2 hover:text-text cursor-pointer rounded-full p-1.5"
+            >
+              <lucide-icon name="x" class="h-4 w-4"></lucide-icon>
+            </button>
+          </div>
+        }
         <ng-content />
       </div>
     </div>
   `,
 })
-export class ModalComponent {}
+export class ModalComponent {
+  title = input<string>('');
+  closed = output<void>();
+
+  @HostListener('document:keydown.escape')
+  onEscape() {
+    this.closed.emit();
+  }
+}

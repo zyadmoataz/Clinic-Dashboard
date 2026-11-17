@@ -192,4 +192,6 @@
       </app-button>
     </div>
   </form>
+
+  <app-walk-in-ticket-modal [ticket]="issuedTicket()" (closed)="issuedTicket.set(null)" />
 </div>

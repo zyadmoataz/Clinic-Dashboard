@@ -18,6 +18,9 @@ import { Doctor, Service, Slot, WalkInBookingRequest, Patient } from '../../core
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subject, of } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap, catchError } from 'rxjs/operators';
+import { Appointment } from '../../core/models';
+import { WalkInTicketModalComponent } from './walk-in-ticket-modal.component';
+import { toLocalIsoDate } from '../../core/utils/format.util';
 
 @Component({
   selector: 'app-walk-in',
@@ -34,6 +37,7 @@ import { debounceTime, distinctUntilChanged, switchMap, catchError } from 'rxjs/
     LucideAngularModule,
     DatePipe,
     ArabicDigitsPipe,
+    WalkInTicketModalComponent,
   ],
   templateUrl: './walk-in.component.html',
 })
@@ -44,7 +48,7 @@ export class WalkInComponent implements OnInit {
   router = inject(Router);
   fb = inject(FormBuilder);
 
-  today = new Date().toISOString().split('T')[0];
+  today = toLocalIsoDate();
 
   walkInForm!: FormGroup;
 
@@ -56,6 +60,7 @@ export class WalkInComponent implements OnInit {
   patientSearchResults = signal<Patient[]>([]);
   showPatientDropdown = signal<boolean>(false);
   selectedPatient = signal<Patient | null>(null);
+  issuedTicket = signal<Appointment | null>(null);
 
   private patientSearch$ = new Subject<string>();
 
@@ -244,8 +249,9 @@ export class WalkInComponent implements OnInit {
     }
 
     this.apiService.bookWalkIn(payload).subscribe({
-      next: () => {
+      next: (created) => {
         this.saving.set(false);
+        this.issuedTicket.set(created);
         this.toastService.success(this.translateService.instant('walk_in.book_success'));
         this.resetForm();
       },

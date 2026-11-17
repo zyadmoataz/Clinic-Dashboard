@@ -1,20 +1,24 @@
 /* You can add global styles to this file, and also import other style files */
 
-@import 'tailwindcss';
+@import 'tailwindcss' source('./');
 @custom-variant dark (&:where(.dark, .dark *));
 @import 'ngx-toastr/toastr';
 
 @theme {
-  /* ── Primary (Vibrant Premium Blue) ── */
-  --color-primary: #3b82f6;
-  --color-primary-hover: #2563eb;
+  /* ── Primary (WCAG AA Accessible Vibrant Blue) ── */
+  --color-primary: #1d4ed8;
+  --color-primary-hover: #1e40af;
   --color-primary-soft: #eff6ff;
-  --color-primary-ring: rgba(59, 130, 246, 0.3);
+  --color-primary-ring: rgba(29, 78, 216, 0.28);
   --color-on-primary: #ffffff;
 
+  /* ── Accent (Clinical Teal) ── */
+  --color-accent: #0f766e;
+  --color-accent-soft: #f0fdfa;
+
   /* ── Secondary ── */
-  --color-secondary: #64748b;
-  --color-secondary-hover: #94a3b8;
+  --color-secondary: #475569;
+  --color-secondary-hover: #334155;
 
   /* ── Surfaces & Backgrounds ── */
   --color-bg: #f8fafc;
@@ -25,17 +29,17 @@
   --color-border: #e2e8f0;
   --color-border-strong: #cbd5e1;
 
-  /* ── Text ── */
+  /* ── Text (High Contrast WCAG AA >= 4.5:1) ── */
   --color-text: #0f172a;
-  --color-muted: #64748b;
-  --color-faint: #94a3b8;
+  --color-muted: #475569;
+  --color-faint: #52627a;
 
   /* ── Semantic ── */
-  --color-success: #10b981;
+  --color-success: #047857;
   --color-success-soft: #ecfdf5;
-  --color-warning: #f59e0b;
+  --color-warning: #b45309;
   --color-warning-soft: #fffbeb;
-  --color-danger: #ef4444;
+  --color-danger: #dc2626;
   --color-danger-hover: #b91c1c;
   --color-danger-soft: #fef2f2;
 
@@ -95,11 +99,16 @@ html {
   --color-border-strong: #334155;
   --color-text: #f8fafc;
   --color-muted: #94a3b8;
-  --color-faint: #64748b;
-  --color-primary-soft: rgba(59, 130, 246, 0.15);
-  --color-success-soft: rgba(16, 185, 129, 0.15);
-  --color-warning-soft: rgba(245, 158, 11, 0.15);
-  --color-danger-soft: rgba(239, 68, 68, 0.15);
+  --color-faint: #94a3b8;
+  --color-primary-soft: rgba(59, 130, 246, 0.18);
+  --color-accent: #2dd4bf;
+  --color-accent-soft: rgba(20, 184, 166, 0.16);
+  --color-success: #34d399;
+  --color-success-soft: rgba(16, 185, 129, 0.16);
+  --color-warning: #fbbf24;
+  --color-warning-soft: rgba(245, 158, 11, 0.16);
+  --color-danger: #f87171;
+  --color-danger-soft: rgba(239, 68, 68, 0.16);
 }
 
 .dark ::-webkit-scrollbar-thumb {
@@ -145,14 +154,73 @@ body {
 
 /* Base interactive utilities */
 .interactive-hover {
-  transition: all var(--transition-fast) ease;
+  transition:
+    transform var(--transition-fast) ease,
+    box-shadow var(--transition-fast) ease;
 }
 
 .interactive-hover:hover {
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-sm);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
 }
 
 .interactive-hover:active {
   transform: translateY(0);
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-up {
+  animation: fadeUp 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.spotlight-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.spotlight-card::before {
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.spotlight-card:hover::before {
+  transform: scaleX(1);
+}
+
+.hero-dot-grid {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.22) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-up,
+  .spotlight-card::before {
+    animation: none;
+    transition: none;
+  }
+  .interactive-hover {
+    transition: none;
+  }
 }

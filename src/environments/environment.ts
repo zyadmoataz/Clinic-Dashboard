@@ -1,4 +1,7 @@
+export type DataMode = 'auto' | 'api' | 'mock';
+
 export const environment = {
   production: false,
-  apiUrl: 'https://api.clinic.kaessam.codes/api',
+  apiUrl: 'http://localhost:5000/api',
+  dataMode: 'auto' as DataMode,
 };

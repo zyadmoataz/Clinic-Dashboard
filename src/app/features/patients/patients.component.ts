@@ -1,14 +1,18 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { LucideAngularModule } from 'lucide-angular';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ApiService } from '../../core/services/api.service';
 import { Patient } from '../../core/models';
 import { SearchInputComponent } from '../../shared/components/search-input.component';
 import { ButtonComponent } from '../../shared/components/button.component';
 import { InputComponent } from '../../shared/components/input.component';
-import { DataTableComponent } from '../../shared/components/data-table.component';
+import {
+  DataTableCellType,
+  DataTableComponent,
+} from '../../shared/components/data-table.component';
 import { ModalComponent } from '../../shared/components/modal.component';
 import { ToastService } from '../../core/services/toast.service';
 
@@ -17,6 +21,7 @@ import { ToastService } from '../../core/services/toast.service';
   standalone: true,
   imports: [
     ReactiveFormsModule,
+    LucideAngularModule,
     SearchInputComponent,
     ButtonComponent,
     InputComponent,
@@ -32,6 +37,14 @@ export class PatientsComponent {
   isLoading = signal(false);
   isSubmitting = signal(false);
   showForm = signal(false);
+  columnTypes: DataTableCellType[] = ['avatar', 'text', 'text', 'role'];
+
+  registeredCount = computed(
+    () => this.patients().filter((p) => !p.email?.includes('clinic.local')).length,
+  );
+  walkInCount = computed(
+    () => this.patients().filter((p) => p.email?.includes('clinic.local')).length,
+  );
 
   patientForm: FormGroup;
 
@@ -58,7 +71,6 @@ export class PatientsComponent {
         this.isLoading.set(false);
       },
       error: (err: unknown) => {
-        console.error(err);
         const errorObj = err as HttpErrorResponse;
         this.toast.error(
           errorObj?.error?.message || this.translate.instant('patients.load_failed'),
@@ -110,7 +122,6 @@ export class PatientsComponent {
         );
       },
       error: (err: unknown) => {
-        console.error(err);
         const errorObj = err as HttpErrorResponse;
         const message =
           errorObj?.error?.details?.[0] ||

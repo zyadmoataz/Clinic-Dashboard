@@ -4,30 +4,24 @@ import { RouterModule } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { LucideAngularModule } from 'lucide-angular';
 import { AuthService } from '../../../core/services/auth.service';
+import { BrandLogoComponent } from '../../../shared/components';
 
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [RouterModule, TranslatePipe, LucideAngularModule],
+  imports: [RouterModule, TranslatePipe, LucideAngularModule, BrandLogoComponent],
   template: `
     <aside
       class="border-border flex h-screen w-64 flex-col border-r bg-[var(--color-surface)] shadow-2xl transition-all max-md:rounded-r-2xl md:rounded-none md:shadow-none"
     >
       <!-- Logo Area -->
       <div class="border-border/50 flex h-[72px] items-center justify-between border-b px-6">
-        <div
-          class="group flex cursor-pointer items-center gap-3 transition-transform hover:scale-[1.02]"
-        >
-          <div
-            class="from-primary to-primary-hover shadow-glow ring-primary/20 flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br text-lg leading-none font-black text-white ring-2"
-          >
-            ✦
-          </div>
-          <h1 class="text-text text-xl leading-tight font-extrabold tracking-tight">
-            Clarity <span class="text-primary font-medium">Clinic</span>
-          </h1>
+        <div class="group flex cursor-pointer items-center transition-transform hover:scale-[1.02]">
+          <app-brand-logo size="md" />
         </div>
         <button
+          type="button"
+          aria-label="Close navigation sidebar"
           class="flex h-8 w-8 items-center justify-center rounded-lg text-[var(--color-muted)] transition-colors hover:bg-[var(--color-surface-2)] hover:text-[var(--color-text)] md:hidden"
           (click)="closeSidebar()"
         >

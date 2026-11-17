@@ -51,7 +51,7 @@ export class ApiService {
     });
   }
 
-  getDoctorById(id: number): Observable<Doctor> {
+  getDoctorById(id: string | number): Observable<Doctor> {
     return this.http.get<Doctor>(`${this.baseUrl}/doctors/${id}`);
   }
 
@@ -195,5 +195,9 @@ export class ApiService {
   // ── Dashboard ──
   getDashboardStats(): Observable<DashboardStats> {
     return this.http.get<DashboardStats>(`${this.baseUrl}/dashboard/stats`);
+  }
+
+  resetDemo(): Observable<{ reset: boolean }> {
+    return this.http.post<{ reset: boolean }>(`${this.baseUrl}/demo/reset`, {});
   }
 }

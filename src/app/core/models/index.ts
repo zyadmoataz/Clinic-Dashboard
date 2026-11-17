@@ -1,4 +1,3 @@
-// Core interfaces for staff dashboard
 export interface User {
   id: string;
   email: string;
@@ -16,11 +15,10 @@ export interface LoginResponse {
   user: User;
 }
 
-export interface RegisterRequest {
-  displayName: string;
-  email: string;
-  phone: string;
-  password: string;
+export interface PrescriptionItem {
+  drug: string;
+  dosage: string;
+  duration: string;
 }
 
 export interface PaginatedDoctorsResponse {
@@ -40,6 +38,7 @@ export interface Doctor {
   rating: number;
   reviewCount: number;
   yearsExperience: number;
+  roomNumber?: string;
 }
 
 export interface getDoctorsParams {
@@ -59,9 +58,9 @@ export interface Slot {
 
 export interface DoctorAvailability {
   id: number;
-  dayOfWeek: string; // e.g. Sunday, etc.
-  startTime: string; // e.g. "09:00"
-  endTime: string; // e.g. "17:00"
+  dayOfWeek: string;
+  startTime: string;
+  endTime: string;
 }
 
 export interface Service {
@@ -80,7 +79,10 @@ export interface BlockedDate {
 
 export interface Appointment {
   id: number;
-  doctorId: number;
+  ticketCode?: string;
+  queueToken?: string;
+  roomNumber?: string;
+  doctorId: string | number;
   doctorName?: string;
   serviceId: number;
   serviceName?: string;
@@ -88,6 +90,10 @@ export interface Appointment {
   patientName?: string;
   date: string;
   startTime: string;
+  endTime?: string;
+  mode?: string;
+  notes?: string;
+  price?: number;
   status: 'PendingPayment' | 'Confirmed' | 'Arrived' | 'Completed' | 'NoShow' | 'Cancelled';
   payment?: {
     id: number;
@@ -97,15 +103,13 @@ export interface Appointment {
     transactionRef: string;
     paidAt: string | null;
   };
+  visit?: Visit | null;
 }
 
 export interface WalkInBookingRequest {
   doctorId: string;
   serviceId: number;
-  newPatient?: {
-    name: string;
-    phone: string;
-  };
+  newPatient?: { name: string; phone: string };
   patientId?: number;
   date: string;
   startTime: string;
@@ -118,7 +122,7 @@ export interface RescheduleRequest {
 
 export interface VisitRecordRequest {
   diagnosis: string;
-  prescription: string;
+  prescription: PrescriptionItem[] | string;
   notes?: string;
 }
 
@@ -127,11 +131,11 @@ export interface Visit {
   appointmentId: number;
   patientId: number;
   patientName: string;
-  doctorId: number;
+  doctorId: string | number;
   doctorName: string;
   date: string;
   diagnosis: string;
-  prescription: string;
+  prescription: PrescriptionItem[] | string;
   notes?: string;
 }
 
@@ -168,7 +172,7 @@ export interface DoctorRegisterRequest {
 export interface ReceptionistRegisterRequest {
   name: string;
   email: string;
-  phone: number;
+  phone: number | string;
   password: string;
 }
 
@@ -177,6 +181,12 @@ export interface ClinicReports {
   completedVisitsCount: number;
   newPatientsCount: number;
   revenueByService: { serviceName: string; revenue: number }[];
+  statusBreakdown?: {
+    confirmed: number;
+    completed: number;
+    awaitingPayment: number;
+    noShowOrCancelled: number;
+  };
 }
 
 export interface DashboardStats {
@@ -186,4 +196,6 @@ export interface DashboardStats {
   completed: number;
   noShow: number;
   todaysRevenue: number;
+  activeDoctors?: number;
+  totalPatients?: number;
 }

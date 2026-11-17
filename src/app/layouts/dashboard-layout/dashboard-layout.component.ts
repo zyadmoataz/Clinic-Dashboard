@@ -12,10 +12,10 @@ import { HeaderComponent } from './header/header.component';
     <div class="bg-bg selection:bg-primary/20 relative flex h-screen overflow-hidden">
       <!-- Decorative background glows -->
       <div
-        class="bg-primary pointer-events-none absolute -top-40 -right-40 z-0 h-96 w-96 rounded-full opacity-10 blur-[100px] transition-opacity duration-1000 dark:opacity-20"
+        class="bg-primary pointer-events-none absolute -top-40 -right-40 z-0 h-80 w-80 rounded-full opacity-[0.07] blur-[110px]"
       ></div>
       <div
-        class="bg-primary pointer-events-none absolute bottom-0 left-60 z-0 h-96 w-96 rounded-full opacity-10 blur-[100px] transition-opacity duration-1000 dark:opacity-20"
+        class="bg-accent pointer-events-none absolute -bottom-32 left-48 z-0 h-72 w-72 rounded-full opacity-[0.05] blur-[110px]"
       ></div>
 
       <!-- Mobile sidebar overlay -->

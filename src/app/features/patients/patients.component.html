@@ -77,24 +77,76 @@
     </app-modal>
   }
 
+  <!-- Summary Telemetry -->
+  <div class="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
+    <div
+      class="spotlight-card interactive-hover animate-fade-up flex items-center gap-3.5 rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-4 shadow-[var(--shadow-sm)]"
+    >
+      <div
+        class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[var(--color-primary-soft)] text-[var(--color-primary)]"
+      >
+        <lucide-icon name="contact" class="h-5 w-5"></lucide-icon>
+      </div>
+      <div>
+        <span class="block text-xs font-medium text-[var(--color-muted)]">Total Directory</span>
+        <p class="text-2xl font-extrabold text-[var(--color-text)] tabular-nums">
+          {{ patients().length }}
+        </p>
+      </div>
+    </div>
+
+    <div
+      class="spotlight-card interactive-hover animate-fade-up flex items-center gap-3.5 rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-4 shadow-[var(--shadow-sm)]"
+      style="animation-delay: 60ms"
+    >
+      <div
+        class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[var(--color-success-soft)] text-[var(--color-success)]"
+      >
+        <lucide-icon name="user-check" class="h-5 w-5"></lucide-icon>
+      </div>
+      <div>
+        <span class="block text-xs font-medium text-[var(--color-muted)]">{{
+          'patients.registered' | translate
+        }}</span>
+        <p class="text-2xl font-extrabold text-[var(--color-text)] tabular-nums">
+          {{ registeredCount() }}
+        </p>
+      </div>
+    </div>
+
+    <div
+      class="spotlight-card interactive-hover animate-fade-up flex items-center gap-3.5 rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-4 shadow-[var(--shadow-sm)]"
+      style="animation-delay: 120ms"
+    >
+      <div
+        class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[var(--color-warning-soft)] text-[var(--color-warning)]"
+      >
+        <lucide-icon name="door-open" class="h-5 w-5"></lucide-icon>
+      </div>
+      <div>
+        <span class="block text-xs font-medium text-[var(--color-muted)]">{{
+          'patients.walk_in' | translate
+        }}</span>
+        <p class="text-2xl font-extrabold text-[var(--color-text)] tabular-nums">
+          {{ walkInCount() }}
+        </p>
+      </div>
+    </div>
+  </div>
+
   <!-- Search -->
-  <div class="mb-6">
+  <div class="mb-5">
     <app-search-input (searchChange)="onSearch($event)" />
   </div>
 
-  <!-- Loading -->
-  @if (isLoading()) {
-    <div class="py-10 text-center text-[var(--color-muted)]">
-      {{ 'patients.loading' | translate }}
-    </div>
-  }
-
   <!-- Table -->
-  @if (!isLoading()) {
+  <div class="animate-fade-up">
     <app-data-table
       [data]="tableData"
       [columns]="tableColumns"
+      [columnTypes]="columnTypes"
       [isLoading]="isLoading()"
+      emptyLabel="No matching patient records."
     ></app-data-table>
-  }
+  </div>
 </div>

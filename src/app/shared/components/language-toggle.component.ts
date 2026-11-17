@@ -9,9 +9,12 @@ import { LucideAngularModule } from 'lucide-angular';
   imports: [LucideAngularModule],
   template: `
     <button
+      type="button"
       (click)="toggleLanguage()"
       class="flex h-10 items-center justify-center gap-2 rounded-full px-3 text-sm font-bold text-[var(--color-muted)] transition-colors hover:bg-[var(--color-surface-2)] hover:text-[var(--color-text)] focus:ring-2 focus:ring-[var(--color-primary)]/20 focus:outline-none"
-      aria-label="Toggle language"
+      [attr.aria-label]="
+        currentLang === 'en' ? 'AR, switch language to Arabic' : 'EN, switch language to English'
+      "
     >
       <lucide-icon name="globe" class="h-5 w-5"></lucide-icon>
       <span>{{ currentLang === 'en' ? 'AR' : 'EN' }}</span>
