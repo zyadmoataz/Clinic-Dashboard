@@ -16,12 +16,9 @@
 
   <!-- Add Patient Modal -->
   @if (showForm()) {
-    <app-modal (closeModal)="toggleForm()">
+    <app-modal [title]="'patients.add' | translate" (closed)="toggleForm()">
       <div class="mb-5">
-        <h2 class="text-xl font-bold text-[var(--color-text)]">
-          {{ 'patients.add' | translate }}
-        </h2>
-        <p class="mt-1 text-sm text-[var(--color-muted)]">
+        <p class="text-sm text-[var(--color-muted)]">
           {{ 'patients.subtitle' | translate }}
         </p>
       </div>
@@ -31,14 +28,15 @@
           <!-- Name -->
           <app-input
             formControlName="name"
-            [placeholder]="'patients.name_placeholder' | translate"
+            placeholder="patients.name_placeholder"
             [label]="'patients.name' | translate"
             [error]="name.invalid && name.touched ? ('patients.name_required' | translate) : null"
           ></app-input>
           <!-- Phone -->
           <app-input
             formControlName="phone"
-            [placeholder]="'patients.phone_placeholder' | translate"
+            type="tel"
+            placeholder="patients.phone_placeholder"
             [label]="'patients.phone' | translate"
             [error]="
               phone.invalid && phone.touched
@@ -52,7 +50,7 @@
           <app-input
             formControlName="email"
             type="email"
-            [placeholder]="'patients.email_placeholder' | translate"
+            placeholder="patients.email_placeholder"
             [error]="email.invalid && email.touched ? ('patients.email_invalid' | translate) : null"
             [label]="
               ('patients.email' | translate) + ' (' + ('patients.optional' | translate) + ')'

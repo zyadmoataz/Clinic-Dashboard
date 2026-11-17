@@ -44,8 +44,11 @@
     "patients": "المرضى",
     "subtitle": "تسجيل المرضى والبحث عنهم.",
     "name": "الاسم",
+    "name_placeholder": "مثال: نور الدين حسن",
     "phone": "الهاتف",
+    "phone_placeholder": "01012345678",
     "email": "البريد الإلكتروني",
+    "email_placeholder": "patient@medoraclinics.com",
     "optional": "اختياري",
     "account": "الحساب",
     "add": "+ إضافة مريض",
@@ -76,7 +79,7 @@
     "delete": "حذف",
     "toggle": "تبديل",
     "actions": "إجراءات",
-    "enter_text": "...أدخل النص",
+    "enter_text": "أدخل النص...",
     "admin": "مشرف",
     "doctor": "طبيب",
     "receptionist": "موظف استقبال",
@@ -147,7 +150,9 @@
     "subtitle": "حجز موعد مباشر.",
     "patient_details": "بيانات المريض",
     "patient_name": "اسم المريض",
+    "patient_name_placeholder": "مثال: نور الدين حسن",
     "patient_phone": "رقم الهاتف",
+    "patient_phone_placeholder": "01012345678",
     "booking_details": "تفاصيل الحجز",
     "doctor": "الطبيب",
     "select_doctor": "اختر الطبيب",
@@ -213,6 +218,7 @@
     "cancel": "إلغاء",
     "name": "الاسم الكامل",
     "email": "البريد الإلكتروني",
+    "email_placeholder": "name@medoraclinics.com",
     "role": "الصلاحية",
     "save": "حفظ التغييرات",
     "saving": "جاري الحفظ...",
@@ -267,11 +273,25 @@
     "weekly_availability": "التوفر الأسبوعي",
     "add_window": "+ إضافة فترة",
     "create": "إضافة طبيب",
-    "creating": "جارٍ الإضافة..."
+    "creating": "جارٍ الإضافة...",
+    "placeholders": {
+      "full_name": "مثال: د. نادية السيد",
+      "email": "dr.nadia@medoraclinics.com",
+      "phone": "01012345678",
+      "temp_password": "٦ أحرف على الأقل",
+      "specialty": "مثال: أمراض القلب",
+      "photo_url": "https://example.com/doctor-avatar.jpg",
+      "bio": "نبذة مختصرة عن الخبرة الطبية والتخصص..."
+    }
   },
   "add_receptionist": {
     "title": "إضافة موظف استقبال",
-    "create": "إضافة موظف استقبال"
+    "create": "إضافة موظف استقبال",
+    "placeholders": {
+      "full_name": "مثال: سلمى طارق",
+      "email": "salma.desk@medoraclinics.com",
+      "phone": "01122334455"
+    }
   },
   "reports": {
     "title": "التقارير",

@@ -11,12 +11,13 @@
   <form
     [formGroup]="receptionistForm"
     (ngSubmit)="onSubmit()"
-    class="flex w-full flex-col gap-6 rounded-3xl bg-[var(--color-surface)] p-6 shadow-sm sm:p-10"
+    class="flex w-full flex-col gap-6 rounded-3xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 shadow-sm sm:p-10"
   >
     <!-- Full Name -->
     <app-input
       formControlName="displayName"
       [label]="'add_doctor.full_name' | translate"
+      placeholder="add_receptionist.placeholders.full_name"
       [error]="
         displayName!.invalid && displayName!.touched
           ? ('add_doctor.full_name_required' | translate)
@@ -29,6 +30,7 @@
       formControlName="email"
       type="email"
       [label]="'add_doctor.email' | translate"
+      placeholder="add_receptionist.placeholders.email"
       [error]="
         email!.invalid && email!.touched
           ? email!.errors?.['required']
@@ -41,7 +43,9 @@
     <!-- Phone -->
     <app-input
       formControlName="phone"
+      type="tel"
       [label]="'add_doctor.phone' | translate"
+      placeholder="add_receptionist.placeholders.phone"
       [error]="phone!.invalid && phone!.touched ? ('add_doctor.phone_required' | translate) : null"
     ></app-input>
 
@@ -50,6 +54,7 @@
       formControlName="password"
       type="password"
       [label]="'add_doctor.temp_password' | translate"
+      placeholder="add_doctor.placeholders.temp_password"
       [error]="
         password!.invalid && password!.touched
           ? password!.errors?.['required']

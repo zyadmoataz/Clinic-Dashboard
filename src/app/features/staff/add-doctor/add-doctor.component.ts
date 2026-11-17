@@ -6,13 +6,20 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { ApiService } from '../../../core/services/api.service';
 import { ToastService } from '../../../core/services/toast.service';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { LucideAngularModule } from 'lucide-angular';
 import { InputComponent } from '../../../shared/components/input.component';
 import { ButtonComponent } from '../../../shared/components/button.component';
 
 @Component({
   selector: 'app-add-doctor',
   standalone: true,
-  imports: [ReactiveFormsModule, TranslatePipe, InputComponent, ButtonComponent],
+  imports: [
+    ReactiveFormsModule,
+    TranslatePipe,
+    LucideAngularModule,
+    InputComponent,
+    ButtonComponent,
+  ],
   templateUrl: './add-doctor.component.html',
 })
 export class AddDoctorComponent {

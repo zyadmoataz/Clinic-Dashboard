@@ -44,11 +44,11 @@
     "patients": "Patients",
     "subtitle": "Register and search patients.",
     "name": "Name",
-    "name_placeholder": "e.g. John Doe",
+    "name_placeholder": "e.g. Nour El-Din Hassan",
     "phone": "Phone",
-    "phone_placeholder": "e.g. 01012345678",
+    "phone_placeholder": "01012345678",
     "email": "Email",
-    "email_placeholder": "e.g. john@example.com",
+    "email_placeholder": "e.g. patient@medoraclinics.com",
     "optional": "optional",
     "account": "Account",
     "add": "+ Add patient",
@@ -81,7 +81,7 @@
     "delete": "Delete",
     "toggle": "Toggle",
     "actions": "Actions",
-    "enter_text": "...Enter text",
+    "enter_text": "Enter text...",
     "admin": "Admin",
     "doctor": "Doctor",
     "receptionist": "Receptionist",
@@ -152,7 +152,9 @@
     "subtitle": "Book a walk-in appointment.",
     "patient_details": "Patient Details",
     "patient_name": "Patient Name",
+    "patient_name_placeholder": "e.g. Nour El-Din Hassan",
     "patient_phone": "Phone Number",
+    "patient_phone_placeholder": "01012345678",
     "booking_details": "Booking Details",
     "doctor": "Doctor",
     "select_doctor": "Select Doctor",
@@ -218,6 +220,7 @@
     "cancel": "Cancel",
     "name": "Full Name",
     "email": "Email Address",
+    "email_placeholder": "name@medoraclinics.com",
     "role": "Role",
     "save": "Save Changes",
     "saving": "Saving...",
@@ -272,11 +275,25 @@
     "weekly_availability": "Weekly availability",
     "add_window": "+ Add window",
     "create": "Create doctor",
-    "creating": "Creating..."
+    "creating": "Creating...",
+    "placeholders": {
+      "full_name": "e.g. Dr. Nadia El-Sayed",
+      "email": "dr.nadia@medoraclinics.com",
+      "phone": "01012345678",
+      "temp_password": "Minimum 6 characters",
+      "specialty": "e.g. Cardiology",
+      "photo_url": "https://example.com/doctor-avatar.jpg",
+      "bio": "Brief clinical background and specialization highlights..."
+    }
   },
   "add_receptionist": {
     "title": "Add receptionist",
-    "create": "Create receptionist"
+    "create": "Create receptionist",
+    "placeholders": {
+      "full_name": "e.g. Salma Tarek",
+      "email": "salma.desk@medoraclinics.com",
+      "phone": "01122334455"
+    }
   },
   "reports": {
     "title": "Reports",

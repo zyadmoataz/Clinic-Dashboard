@@ -30,9 +30,9 @@ import { SelectOption } from '../../core/models';
         (click)="toggleDropdown()"
         (blur)="onBlur()"
         [disabled]="disabled() || isDisabled"
-        class="flex h-11 w-full items-center justify-between rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-2 text-sm text-[var(--color-text)] shadow-sm transition-all duration-200 hover:border-slate-400 focus:border-[var(--color-primary)] focus:ring-4 focus:ring-[var(--color-primary)]/20 focus:outline-none disabled:cursor-not-allowed disabled:opacity-60"
+        class="flex h-11 w-full cursor-pointer items-center justify-between rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-2 text-sm text-[var(--color-text)] shadow-xs transition-all duration-200 outline-none hover:border-[var(--color-border-strong)] focus:border-[var(--color-primary)] focus:ring-4 focus:ring-[var(--color-primary)]/15 focus:outline-none focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-60"
       >
-        <span class="truncate" [class.text-slate-400]="!hasSelectedValue()">
+        <span class="truncate" [class.text-[var(--color-faint)]]="!hasSelectedValue()">
           {{ getDisplayLabel() }}
         </span>
         <svg
@@ -43,7 +43,7 @@ import { SelectOption } from '../../core/models';
           stroke-width="2"
           stroke-linecap="round"
           stroke-linejoin="round"
-          class="h-4 w-4 text-slate-400 transition-transform duration-200"
+          class="h-4 w-4 shrink-0 text-[var(--color-faint)] transition-transform duration-200"
           [class.rotate-180]="isOpen()"
         >
           <path d="m6 9 6 6 6-6" />
@@ -60,7 +60,7 @@ import { SelectOption } from '../../core/models';
               (keydown.enter)="selectItem(item.value)"
               (keydown.space)="selectItem(item.value)"
               tabindex="0"
-              class="relative cursor-pointer py-2 pr-9 pl-4 text-sm transition-colors select-none hover:bg-[var(--color-surface-2)]"
+              class="relative cursor-pointer py-2 ps-4 pe-9 text-sm transition-colors select-none hover:bg-[var(--color-surface-2)] focus:outline-none focus-visible:bg-[var(--color-surface-2)]"
               [class.bg-[var(--color-primary)]]="isItemSelected(item.value)"
               [class.text-white]="isItemSelected(item.value)"
               [class.text-[var(--color-text)]]="!isItemSelected(item.value)"
@@ -69,7 +69,7 @@ import { SelectOption } from '../../core/models';
                 {{ item.label }}
               </span>
               @if (isItemSelected(item.value)) {
-                <span class="absolute inset-y-0 right-0 flex items-center pr-3">
+                <span class="absolute inset-y-0 end-0 flex items-center pe-3">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"

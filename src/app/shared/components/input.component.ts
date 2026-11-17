@@ -30,6 +30,7 @@ import { TranslatePipe } from '@ngx-translate/core';
           [name]="name()"
           [placeholder]="placeholder() | translate"
           [min]="min() ?? null"
+          [attr.aria-invalid]="!!error()"
           [value]="value"
           [disabled]="disabled"
           (input)="onInputChange($event)"
@@ -37,12 +38,12 @@ import { TranslatePipe } from '@ngx-translate/core';
           [ngClass]="{
             'cursor-not-allowed border-[var(--color-border)] bg-[var(--color-surface-2)] text-[var(--color-muted)]':
               disabled,
-            'border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text)] hover:border-[var(--color-muted)] focus:border-[var(--color-primary)] focus:ring-[var(--color-primary)]/20':
+            'border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text)] hover:border-[var(--color-border-strong)] focus:border-[var(--color-primary)] focus:ring-[var(--color-primary)]/15':
               !error() && !disabled,
             'border-[var(--color-danger)] bg-[var(--color-surface)] text-[var(--color-text)] focus:border-[var(--color-danger)] focus:ring-[var(--color-danger)]/20':
               error() && !disabled,
           }"
-          class="flex h-11 w-full rounded-xl border px-4 py-2 text-sm shadow-sm transition-all duration-200 placeholder:text-slate-400 focus:ring-4 focus:outline-none"
+          class="flex h-11 w-full rounded-xl border px-4 py-2 text-sm shadow-xs transition-all duration-200 outline-none placeholder:text-[var(--color-faint)] focus:ring-4 focus:outline-none focus-visible:outline-none"
         />
       </div>
       @if (error()) {

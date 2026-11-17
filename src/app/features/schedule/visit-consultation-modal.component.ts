@@ -66,7 +66,7 @@ import { ButtonComponent, ModalComponent } from '../../shared/components';
               [ngModel]="diagnosis()"
               (ngModelChange)="diagnosis.set($event)"
               placeholder="e.g. Mild essential hypertension"
-              class="border-border bg-surface text-text w-full rounded-xl border px-3 py-2 text-sm focus:outline-none"
+              class="border-border bg-surface text-text w-full rounded-xl border px-3 py-2 text-sm transition-all outline-none placeholder:text-[var(--color-faint)] focus:border-[var(--color-primary)] focus:ring-4 focus:ring-[var(--color-primary)]/15 focus:outline-none focus-visible:outline-none"
             />
           </div>
 
@@ -81,7 +81,7 @@ import { ButtonComponent, ModalComponent } from '../../shared/components';
               [ngModel]="notes()"
               (ngModelChange)="notes.set($event)"
               placeholder="Care instructions & follow-up advice..."
-              class="border-border bg-surface text-text w-full rounded-xl border px-3 py-2 text-sm focus:outline-none"
+              class="border-border bg-surface text-text w-full rounded-xl border px-3 py-2 text-sm transition-all outline-none placeholder:text-[var(--color-faint)] focus:border-[var(--color-primary)] focus:ring-4 focus:ring-[var(--color-primary)]/15 focus:outline-none focus-visible:outline-none"
             ></textarea>
           </div>
 
@@ -108,25 +108,25 @@ import { ButtonComponent, ModalComponent } from '../../shared/components';
                     type="text"
                     [readOnly]="isReadOnly"
                     [(ngModel)]="item.drug"
-                    placeholder="Medication"
+                    placeholder="e.g. Amoxicillin 500mg"
                     aria-label="Medication name"
-                    class="border-border bg-surface rounded-lg border px-2.5 py-2 text-xs sm:col-span-5"
+                    class="border-border bg-surface rounded-lg border px-2.5 py-2 text-xs transition-all outline-none placeholder:text-[var(--color-faint)] focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/15 focus:outline-none focus-visible:outline-none sm:col-span-5"
                   />
                   <input
                     type="text"
                     [readOnly]="isReadOnly"
                     [(ngModel)]="item.dosage"
-                    placeholder="Dosage"
+                    placeholder="e.g. 1 tab twice daily"
                     aria-label="Medication dosage"
-                    class="border-border bg-surface rounded-lg border px-2.5 py-2 text-xs sm:col-span-5"
+                    class="border-border bg-surface rounded-lg border px-2.5 py-2 text-xs transition-all outline-none placeholder:text-[var(--color-faint)] focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/15 focus:outline-none focus-visible:outline-none sm:col-span-5"
                   />
                   <input
                     type="text"
                     [readOnly]="isReadOnly"
                     [(ngModel)]="item.duration"
-                    placeholder="Days"
+                    placeholder="7 days"
                     aria-label="Medication duration"
-                    class="border-border bg-surface rounded-lg border px-2.5 py-2 text-xs sm:col-span-2"
+                    class="border-border bg-surface rounded-lg border px-2.5 py-2 text-xs transition-all outline-none placeholder:text-[var(--color-faint)] focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/15 focus:outline-none focus-visible:outline-none sm:col-span-2"
                   />
                 </div>
               }

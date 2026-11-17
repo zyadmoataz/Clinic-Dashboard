@@ -1,8 +1,8 @@
 /* You can add global styles to this file, and also import other style files */
 
 @import 'tailwindcss' source('./');
-@custom-variant dark (&:where(.dark, .dark *));
 @import 'ngx-toastr/toastr';
+@custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
   /* ── Primary (WCAG AA Accessible Vibrant Blue) ── */
@@ -209,9 +209,11 @@ body {
   background-size: 22px 22px;
 }
 
-:focus-visible {
-  outline: 2px solid var(--color-primary);
-  outline-offset: 2px;
+@layer base {
+  :focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -28,7 +28,7 @@
               formControlName="patientName"
               [label]="'walk_in.patient_name' | translate"
               type="text"
-              [placeholder]="'walk_in.patient_name' | translate"
+              placeholder="walk_in.patient_name_placeholder"
               [error]="nameError()"
               (blur)="hideDropdown()"
             ></app-input>
@@ -68,7 +68,7 @@
             formControlName="patientPhone"
             [label]="'walk_in.patient_phone' | translate"
             type="tel"
-            [placeholder]="'walk_in.patient_phone' | translate"
+            placeholder="walk_in.patient_phone_placeholder"
             [error]="phoneError()"
           ></app-input>
         </div>
@@ -126,12 +126,12 @@
               formControlName="selectedDate"
               type="date"
               [min]="today"
-              class="absolute inset-0 z-20 h-11 w-full cursor-pointer opacity-0"
+              class="peer absolute inset-0 z-20 h-11 w-full cursor-pointer opacity-0 outline-none focus:outline-none focus-visible:outline-none"
               (click)="dateInput.showPicker()"
             />
             <div
-              class="flex h-11 w-full items-center justify-between rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-2 text-sm shadow-sm transition-all duration-200"
-              [class.text-slate-400]="!walkInForm.get('selectedDate')?.value"
+              class="flex h-11 w-full items-center justify-between rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-2 text-sm shadow-xs transition-all duration-200 peer-hover:border-[var(--color-border-strong)] peer-focus:border-[var(--color-primary)] peer-focus:ring-4 peer-focus:ring-[var(--color-primary)]/15"
+              [class.text-[var(--color-faint)]]="!walkInForm.get('selectedDate')?.value"
               [class.text-[var(--color-text)]]="walkInForm.get('selectedDate')?.value"
             >
               <span>
@@ -141,7 +141,7 @@
                     : ('walk_in.date' | translate)
                 }}
               </span>
-              <lucide-icon name="calendar" class="h-4 w-4 text-slate-400"></lucide-icon>
+              <lucide-icon name="calendar" class="h-4 w-4 text-[var(--color-faint)]"></lucide-icon>
             </div>
           </div>
         </div>

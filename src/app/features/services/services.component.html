@@ -111,21 +111,20 @@
 }
 
 @if (showCreateModal()) {
-  <app-modal>
-    <h2 class="text-text mb-4 text-xl font-bold">
-      {{
-        isEditMode()
-          ? ('services.edit_modal.title' | translate)
-          : ('services.create_modal.title' | translate)
-      }}
-    </h2>
-
+  <app-modal
+    [title]="
+      isEditMode()
+        ? ('services.edit_modal.title' | translate)
+        : ('services.create_modal.title' | translate)
+    "
+    (closed)="closeCreateModal()"
+  >
     <form [formGroup]="createServiceForm" (ngSubmit)="submitService()" class="space-y-4">
       <div>
         <app-input
           formControlName="name"
           [label]="'services.create_modal.name' | translate"
-          [placeholder]="'services.create_modal.name_placeholder' | translate"
+          placeholder="services.create_modal.name_placeholder"
           [error]="
             createServiceForm.controls.name.touched &&
             createServiceForm.controls.name.hasError('required')
@@ -143,7 +142,7 @@
           type="number"
           formControlName="durationMinutes"
           [label]="'services.create_modal.duration' | translate"
-          [placeholder]="'services.create_modal.duration_placeholder' | translate"
+          placeholder="services.create_modal.duration_placeholder"
           [error]="
             createServiceForm.controls.durationMinutes.touched &&
             createServiceForm.controls.durationMinutes.hasError('required')
@@ -161,7 +160,7 @@
           type="number"
           formControlName="price"
           [label]="'services.create_modal.price' | translate"
-          [placeholder]="'services.create_modal.price_placeholder' | translate"
+          placeholder="services.create_modal.price_placeholder"
           [error]="
             createServiceForm.controls.price.touched &&
             createServiceForm.controls.price.hasError('required')
@@ -227,11 +226,10 @@
 }
 
 @if (showDeleteModal()) {
-  <app-modal>
-    <h2 class="text-text mb-4 text-xl font-bold">
-      {{ 'services.delete_modal.title' | translate }}
-      <strong>"{{ selectedService()?.name }}"</strong>
-    </h2>
+  <app-modal [title]="'services.delete_modal.title' | translate" (closed)="closeDeleteModal()">
+    <p class="mb-4 text-sm font-semibold text-[var(--color-text)]">
+      "{{ selectedService()?.name }}"
+    </p>
 
     <p class="text-muted mb-6">
       {{ 'services.delete_modal.message' | translate }}

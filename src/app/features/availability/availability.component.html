@@ -72,7 +72,7 @@
                 type="time"
                 [value]="item.startTime"
                 (input)="updateStartTime($index, $any($event.target).value)"
-                class="h-11 w-full min-w-0 flex-1 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm shadow-sm transition-colors hover:border-[var(--color-border-strong)] focus:border-[var(--color-primary)] focus:ring-4 focus:ring-[var(--color-primary)]/10 focus:outline-none"
+                class="h-11 w-full min-w-0 flex-1 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm shadow-xs transition-colors outline-none hover:border-[var(--color-border-strong)] focus:border-[var(--color-primary)] focus:ring-4 focus:ring-[var(--color-primary)]/15 focus:outline-none focus-visible:outline-none"
               />
 
               <span class="rotate-90 text-xs font-medium text-slate-400 min-[360px]:rotate-0"
@@ -83,7 +83,7 @@
                 type="time"
                 [value]="item.endTime"
                 (input)="updateEndTime($index, $any($event.target).value)"
-                class="h-11 w-full min-w-0 flex-1 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm shadow-sm transition-colors hover:border-[var(--color-border-strong)] focus:border-[var(--color-primary)] focus:ring-4 focus:ring-[var(--color-primary)]/10 focus:outline-none"
+                class="h-11 w-full min-w-0 flex-1 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm shadow-xs transition-colors outline-none hover:border-[var(--color-border-strong)] focus:border-[var(--color-primary)] focus:ring-4 focus:ring-[var(--color-primary)]/15 focus:outline-none focus-visible:outline-none"
               />
 
               <button
@@ -129,7 +129,7 @@
             type="date"
             [value]="newBlockedDate()"
             (input)="newBlockedDate.set($any($event.target).value)"
-            class="h-11 w-full flex-1 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-2 text-sm shadow-sm transition-colors hover:border-[var(--color-border-strong)] focus:border-[var(--color-primary)] focus:ring-4 focus:ring-[var(--color-primary)]/10 focus:outline-none"
+            class="h-11 w-full flex-1 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-2 text-sm shadow-xs transition-colors outline-none hover:border-[var(--color-border-strong)] focus:border-[var(--color-primary)] focus:ring-4 focus:ring-[var(--color-primary)]/15 focus:outline-none focus-visible:outline-none"
           />
 
           <app-button
@@ -178,11 +178,7 @@
   </div>
 }
 @if (showDeleteModal()) {
-  <app-modal>
-    <h2 class="text-text mb-4 text-xl font-bold">
-      {{ 'availability.delete_modal.title' | translate }}
-    </h2>
-
+  <app-modal [title]="'availability.delete_modal.title' | translate" (closed)="closeDeleteModal()">
     <p class="text-muted mb-6">
       {{ 'availability.delete_modal.message' | translate }}
     </p>

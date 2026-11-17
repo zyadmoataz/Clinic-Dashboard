@@ -9,18 +9,19 @@
   <form
     [formGroup]="doctorForm"
     (ngSubmit)="onSubmit()"
-    class="flex w-full flex-col gap-8 rounded-3xl bg-[var(--color-surface)] p-6 shadow-sm sm:p-10"
+    class="flex w-full flex-col gap-8 rounded-3xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 shadow-sm sm:p-10"
   >
     <!-- ── Account Section ── -->
-    <p class="text-sm font-medium text-[var(--color-muted)]">
+    <p class="text-sm font-semibold text-[var(--color-muted)]">
       {{ 'add_doctor.account' | translate }}
     </p>
 
-    <div class="grid grid-cols-2 gap-4">
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
       <!-- Full Name -->
       <app-input
         formControlName="displayName"
         [label]="'add_doctor.full_name' | translate"
+        placeholder="add_doctor.placeholders.full_name"
         [error]="
           displayName!.invalid && displayName!.touched
             ? ('add_doctor.full_name_required' | translate)
@@ -33,6 +34,7 @@
         formControlName="email"
         type="email"
         [label]="'add_doctor.email' | translate"
+        placeholder="add_doctor.placeholders.email"
         [error]="
           email!.invalid && email!.touched
             ? email!.errors?.['required']
@@ -45,7 +47,9 @@
       <!-- Phone -->
       <app-input
         formControlName="phone"
+        type="tel"
         [label]="'add_doctor.phone' | translate"
+        placeholder="add_doctor.placeholders.phone"
         [error]="
           phone!.invalid && phone!.touched ? ('add_doctor.phone_required' | translate) : null
         "
@@ -56,6 +60,7 @@
         formControlName="password"
         type="password"
         [label]="'add_doctor.temp_password' | translate"
+        placeholder="add_doctor.placeholders.temp_password"
         [error]="
           password!.invalid && password!.touched
             ? password!.errors?.['required']
@@ -67,15 +72,16 @@
     </div>
 
     <!-- ── Profile Section ── -->
-    <p class="mt-2 text-sm font-medium text-[var(--color-muted)]">
+    <p class="mt-2 text-sm font-semibold text-[var(--color-muted)]">
       {{ 'add_doctor.profile' | translate }}
     </p>
 
-    <div class="grid grid-cols-2 gap-4">
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
       <!-- Specialty -->
       <app-input
         formControlName="specialty"
         [label]="'add_doctor.specialty' | translate"
+        placeholder="add_doctor.placeholders.specialty"
         [error]="
           specialty!.invalid && specialty!.touched
             ? ('add_doctor.specialty_required' | translate)
@@ -86,7 +92,9 @@
       <!-- Photo URL -->
       <app-input
         formControlName="photoUrl"
+        type="url"
         [label]="('add_doctor.photo_url' | translate) + ' ' + ('add_doctor.optional' | translate)"
+        placeholder="add_doctor.placeholders.photo_url"
       ></app-input>
     </div>
 
@@ -94,6 +102,7 @@
     <app-input
       formControlName="bio"
       [label]="('add_doctor.bio' | translate) + ' ' + ('add_doctor.optional' | translate)"
+      placeholder="add_doctor.placeholders.bio"
     ></app-input>
 
     <!-- ── Weekly Availability ── -->
@@ -104,7 +113,7 @@
       <button
         type="button"
         (click)="addWindow()"
-        class="flex items-center gap-1 rounded-[var(--radius-sm)] border border-[var(--color-primary)] px-3 py-1.5 text-sm font-medium text-[var(--color-primary)] transition hover:bg-[var(--color-primary-soft)]"
+        class="flex cursor-pointer items-center gap-1 rounded-[var(--radius-sm)] border border-[var(--color-primary)] px-3 py-1.5 text-sm font-medium text-[var(--color-primary)] transition hover:bg-[var(--color-primary-soft)]"
       >
         {{ 'add_doctor.add_window' | translate }}
       </button>
@@ -113,11 +122,11 @@
     <!-- Availability Rows -->
     <div formArrayName="availability" class="flex flex-col gap-3">
       @for (window of availability.controls; track window; let i = $index) {
-        <div [formGroupName]="i" class="flex items-center gap-3">
+        <div [formGroupName]="i" class="flex flex-col gap-3 sm:flex-row sm:items-center">
           <!-- Day -->
           <select
             formControlName="dayOfWeek"
-            class="w-40 rounded-[var(--radius-sm)] border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm text-[var(--color-text)] transition focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)] focus:outline-none"
+            class="h-11 w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm text-[var(--color-text)] transition outline-none focus:border-[var(--color-primary)] focus:ring-4 focus:ring-[var(--color-primary)]/15 focus:outline-none focus-visible:outline-none sm:w-44"
           >
             @for (day of days; track day) {
               <option [value]="day.value">
@@ -129,21 +138,22 @@
           <input
             formControlName="startTime"
             type="time"
-            class="flex-1 rounded-[var(--radius-sm)] border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm text-[var(--color-text)] transition focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)] focus:outline-none"
+            class="h-11 flex-1 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm text-[var(--color-text)] transition outline-none focus:border-[var(--color-primary)] focus:ring-4 focus:ring-[var(--color-primary)]/15 focus:outline-none focus-visible:outline-none"
           />
           <!-- End Time -->
           <input
             formControlName="endTime"
             type="time"
-            class="flex-1 rounded-[var(--radius-sm)] border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm text-[var(--color-text)] transition focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)] focus:outline-none"
+            class="h-11 flex-1 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm text-[var(--color-text)] transition outline-none focus:border-[var(--color-primary)] focus:ring-4 focus:ring-[var(--color-primary)]/15 focus:outline-none focus-visible:outline-none"
           />
           <!-- Delete -->
           <button
             type="button"
+            aria-label="Remove availability window"
             (click)="removeWindow(i)"
-            class="p-1 text-[var(--color-muted)] transition hover:text-[var(--color-danger)]"
+            class="flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-xl text-[var(--color-muted)] transition hover:bg-[var(--color-danger-soft)] hover:text-[var(--color-danger)]"
           >
-            🗑
+            <lucide-icon name="trash" class="h-4 w-4"></lucide-icon>
           </button>
         </div>
       }
